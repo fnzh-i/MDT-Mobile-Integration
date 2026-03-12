@@ -4,8 +4,6 @@ namespace App\Repositories;
 use mysqli;
 use RuntimeException;
 use App\Models\Person;
-use App\Enums\GenderEnum;
-use App\Enums\BloodTypeEnum;
 use DateTime;
 
 class PersonRepository {
@@ -20,7 +18,7 @@ class PersonRepository {
         $lastName = $person->getLastName();
         $middleName = $person->getMiddleName();
         $suffix = $person->getSuffix();
-        $dateOfBirth = $person->getDateOfBirth();
+        $dateOfBirth = $person->getDateOfBirth()->format("Y-m-d");
         $gender = $person->getGender();
         $address = $person->getAddress();
         $nationality = $person->getNationality();
@@ -29,7 +27,7 @@ class PersonRepository {
         $eyeColor = $person->getEyeColor();
         $bloodType = $person->getBloodType();
 
-        $sql = "INSERT INTO people(
+        $sql = "INSERT INTO persons(
             first_name,
             last_name,
             middle_name,
@@ -76,23 +74,23 @@ class PersonRepository {
     public function hydrate(array $row): Person {
         return new Person(
             $row["first_name"],
+            $row["middle_name"] ?? null,
             $row["last_name"],
+            $row["suffix"] ?? null,
             new DateTime($row["date_of_birth"]),
-            GenderEnum::from($row["gender"]),
+            $row["gender"],
             $row["address"],
             $row["nationality"],
             $row["height"],
             $row["weight"],
             $row["eye_color"],
-            BloodTypeEnum::from($row["blood_type"]),
-            $row["middle_name"] ?? null,
-            $row["suffix"] ?? null,
+            $row["blood_type"],
             (int)$row["person_id"]
         );
     }
 
     // public function findById(int $id): ?Person {
-    //     $sql = "SELECT * FROM people WHERE person_id = ?";
+    //     $sql = "SELECT * FROM persons WHERE person_id = ?";
     //     $stmt = $this->conn->prepare($sql);
         
     //     if (!$stmt) {

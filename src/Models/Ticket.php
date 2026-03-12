@@ -10,17 +10,18 @@ class Ticket {
     private DateTime $dateOfIncident;
     private string $placeOfIncident;
     private array $items = [];
-    private string $notes;
+    private ?string $notes;
     private TicketStatusEnum $status;
     private ?int $id;
     private int $totalFine = 0;
+    private ?string $createdAt = null;
 
 
     public function __construct(License $license,
                                 int $refNumber,
                                 DateTime $dateOfIncident,
                                 string $placeOfIncident,
-                                string $notes,
+                                ?string $notes,
                                 TicketStatusEnum $status = TicketStatusEnum::Unsettled,
                                 ?int $id = null) {
 
@@ -36,11 +37,13 @@ class Ticket {
     public function getRefNumber(): int {return $this->refNumber;}
     public function getDateOfIncident(): string {return $this->dateOfIncident->format("Y-m-d");}
     public function getPlaceOfIncident(): string {return $this->placeOfIncident;}
-    public function getNotes(): string {return $this->notes;}
+    public function getNotes(): ?string {return $this->notes;}
     public function getStatus(): string {return $this->status->value;}
     public function getItems(): array {return $this->items;}
     public function getLicense(): License {return $this->license;}
     public function getTotalFine(): int {return $this->totalFine;}
+    public function getId(): ?int {return $this->id;}
+    public function getCreatedAt(): ?string {return $this->createdAt;}
 
     public function setStatus(TicketStatusEnum $status) {
         $this->status = $status;
@@ -53,6 +56,10 @@ class Ticket {
     }
     public function setTotalFine(int $totalFine): void {
         $this->totalFine = $totalFine;
+    }
+
+    public function setCreatedAt(string $createdAt): void {
+        $this->createdAt = $createdAt;
     }
 
     public static function createUniqueRefNum(array $existingRefNums): int {

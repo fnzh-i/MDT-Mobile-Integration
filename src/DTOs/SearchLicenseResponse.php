@@ -26,16 +26,15 @@ class SearchLicenseResponse implements JsonSerializable {
                 "type"          => $this->license->getLicenseType(),
                 "status"        => $this->license->getLicenseStatus(),
                 "dlCodes"       => $this->license->getDLCodesAsString(),
-                "issueDate"     => (new DateTime($this->license->getIssueDate()))->format("F j, Y"),
-                "expiryDate"    => (new DateTime($this->license->getExpiryDate()))->format("F j, Y")
+                "issueDate"     => $this->license->getIssueDate()->format("F j, Y"),
+                "expiryDate"    => $this->license->getExpiryDate()->format("F j, Y")
             ],
             "person" => [
-                // "firstName"   => $person->getFirstName(),
-                // "lastName"    => $person->getLastName(),
-                // "middleName"  => $person->getMiddleName(),
-                // "suffix"      => $person->getSuffix(),
-                "fullName"    => $this->formatFullName($person),
-                "dateOfBirth" => (new DateTime($person->getDateOfBirth()))->format("F j, Y"),
+                "firstName"   => $person->getFirstName(),
+                "lastName"    => $person->getLastName(),
+                "middleName"  => $person->getMiddleName(),
+                "suffix"      => $person->getSuffix(),
+                "dateOfBirth" => $person->getDateOfBirth()->format("F j, Y"),
                 "gender"      => $person->getGender(),
                 "address"     => $person->getAddress(),
                 "nationality" => $person->getNationality(),
@@ -48,11 +47,11 @@ class SearchLicenseResponse implements JsonSerializable {
         ];
     }
 
-    private function formatFullName($person): string {
-        $mname = $person->getMiddleName();
-        $mi = !empty($mname) ? " " . strtoupper($mname[0]) . "." : "";
-        $suffix = !empty($person->getSuffix()) ? " " . $person->getSuffix() : "";
-        return $person->getFirstName() . $mi . " " . $person->getLastName() . $suffix;
-    }
+    // private function formatFullName($person): string {
+    //     $mname = $person->getMiddleName();
+    //     $mi = !empty($mname) ? " " . strtoupper($mname[0]) . "." : "";
+    //     $suffix = !empty($person->getSuffix()) ? " " . $person->getSuffix() : "";
+    //     return $person->getFirstName() . $mi . " " . $person->getLastName() . $suffix;
+    // }
 }
 ?>

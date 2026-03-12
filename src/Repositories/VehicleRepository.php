@@ -17,7 +17,7 @@ class VehicleRepository {
         $this->licenseRepo = $licenseRepo;
     }
 
-    public function save(Vehicle $vehicle, int $licenseId) {
+    public function save(Vehicle $vehicle, int $licenseId): int {
         $plateNumber = $vehicle->getPlateNumber();
         $mvFileNumber = $vehicle->getMVFileNumber();
         $vin = $vehicle->getVIN();
@@ -25,9 +25,9 @@ class VehicleRepository {
         $model = $vehicle->getModel();
         $year = $vehicle->getYear();
         $color = $vehicle->getColor();
-        $issueDate = $vehicle->getIssueDate();
-        $expiryDate = $vehicle->getExpiryDate();
-        $regStatus = $vehicle->getRegStatus();
+        $issueDate = $vehicle->getIssueDate()->format("Y-m-d");
+        $expiryDate = $vehicle->getExpiryDate()->format("Y-m-d");
+        $regStatus = $vehicle->getRegStatus()->value;
 
         $sql = "INSERT INTO vehicles(
             plate_number,
@@ -67,6 +67,8 @@ class VehicleRepository {
         if (!$stmt->execute()) {
             throw new RuntimeException("Execution Failed: {$stmt->error}");
         }
+
+        return $this->conn->insert_id;
     }
 
     public function hydrate(array $row): Vehicle {
@@ -81,6 +83,7 @@ class VehicleRepository {
             (int)$row["year"],
             $row["color"],
             new DateTime($row["issue_date"]),
+            new DateTime($row["expiry_date"]),
             RegStatusEnum::from($row["reg_status"]),
             $license,
             (int)$row["vehicle_id"]
@@ -145,7 +148,7 @@ class VehicleRepository {
         $sql = "SELECT v.*, l.*, p.* 
                 FROM vehicles v
                 JOIN licenses l ON v.license_id = l.license_id
-                JOIN people p ON l.person_id = p.person_id
+                JOIN persons p ON l.person_id = p.person_id
                 WHERE v.plate_number = ? OR v.mv_file_number = ? 
                 LIMIT 1";
 

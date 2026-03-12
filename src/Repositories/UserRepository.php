@@ -57,12 +57,12 @@ class UserRepository{
     public function hydrate(array $row): User {
         return new User(
             $row["first_name"],
+            $row["middle_name"] ?? null,
             $row["last_name"],
             $row["username"],
             $row["password"],
             UserRolesEnum::from($row["role"]),
-            $row["middle_name"],
-            (int)$row["id"]
+            (int)$row["user_id"]
         );
     }
 

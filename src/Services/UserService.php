@@ -5,60 +5,47 @@ use mysqli;
 use Exception;
 use App\Models\User;
 use App\DTOs\CreateUserRequest;
+use App\DTOs\LoginResponse;
 use App\Repositories\UserRepository;
 
 class UserService {
     private mysqli $conn;
     private UserRepository $userRepo;
 
-    public function __construct(UserRepository $userRepo) {
+    public function __construct(mysqli $conn, UserRepository $userRepo) {
+        $this->conn = $conn;
         $this->userRepo = $userRepo;
     }
 
     public function createUser(CreateUserRequest $request): int {
         $username = $request->getUsername();
-        $plainPassword = $request->getPassword();
-        $firstName = $request->getFirstName();
-        $middleName = $request->getMiddleName();
-        $lastName = $request->getLastName();
-        $role = $request->getRole();
 
-        $this->conn->begin_transaction();
+        $existingUser = $this->userRepo->existsByUsername($username);
 
-        try {
-            $existingUser = $this->userRepo->findByUsername($username);
-
-            if ($existingUser !== null) {
-                throw new Exception("Username {$username} is already taken.");
-            }
-
-            $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
-
-            $user = new User(
-                $firstName,
-                $lastName,
-                $username,
-                $hashedPassword,
-                $role,
-                $middleName,
-            );
-
-            $userId =  $this->userRepo->save($user);
-
-            $this->conn->commit();
-
-            return $userId;
-            
-        } catch (Exception $e) {
-            $this->conn->rollback();
-            throw $e;
+        if ($existingUser) {
+            throw new Exception("Username {$username} is already taken.");
         }
+
+        $plainPassword = $request->getPassword();
+        $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        $user = new User(
+            $request->getFirstName(),
+            ($request->getMiddleName() === "") ? null : $request->getMiddleName(),
+            $request->getLastName(),
+            $username,
+            $hashedPassword,
+            $request->getRole()
+        );
+
+        $userId =  $this->userRepo->save($user);
+        return $userId;
     }
 
-    public function loginUser(string $username, string $plainPassword): User {
+    public function loginUser(string $username, string $plainPassword): LoginResponse {
         $user = $this->userRepo->findByUsername($username);
 
-        if (!$user) {
+        if (!$user || $user->getUsername() !== $username) {
             throw new Exception("Invalid username or password.");
         }
 
@@ -66,7 +53,7 @@ class UserService {
             throw new Exception("Incorrect password.");
         }
 
-        return $user;
+        return new LoginResponse($user);
     }
 
     public function resetPassword(string $username, string $newPassword): void {

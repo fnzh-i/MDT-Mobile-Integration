@@ -13,11 +13,11 @@ class User {
     private ?int $id;
 
     public function __construct(string $firstName,
+                                ?string $middleName,
                                 string $lastName,
                                 string $username,
                                 string $password,
                                 UserRolesEnum $role,
-                                ?string $middleName,
                                 ?int $id = null) {
 
         $this->firstName = $firstName;
@@ -37,7 +37,7 @@ class User {
     public function getRole(): UserRolesEnum {return $this->role;}
     public function getId(): ?int {return $this->id;}
     public function setFirstName(string $firstName) {$this->firstName = $firstName;}
-    public function setMiddleName(string $middleName) {$this->middleName = $middleName;}
+    public function setMiddleName(?string $middleName) {$this->middleName = $middleName;}
     public function setLastName(string $lastName) {$this->lastName = $lastName;}
     public function setUsername(string $username) {$this->username = $username;}
     public function setPassword(string $password) {$this->password = $password;}

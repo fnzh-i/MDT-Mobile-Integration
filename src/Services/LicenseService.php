@@ -4,9 +4,10 @@ namespace App\Services;
 use mysqli;
 use Exception;
 use InvalidArgumentException;
-use App\DTOs\SearchLicenseResponse;
-use App\Models\License;
+use App\DTOs\{CreateLicenseRequest, SearchLicenseResponse};
+use App\Models\{License, Person};
 use App\Repositories\{PersonRepository, LicenseRepository, TicketRepository};
+use DateTime;
 
 class LicenseService {
     private mysqli $conn;
@@ -24,20 +25,49 @@ class LicenseService {
         $this->ticketRepo = $ticketRepo;
     }
 
-    public function createLicense(License $license): int {
+    public function createLicense(CreateLicenseRequest $request): int {
         $this->conn->begin_transaction();
 
         try {
-            $licenseNumber = $license->getLicenseNumber();
+            $licenseNumber = $request->getLicenseNumber();
             
             if ($this->licenseRepo->existsByLicenseNumber($licenseNumber)) {
                 throw new Exception("License number {$licenseNumber} already exists.");
             }
 
-            $person = $license->getPerson();
-            $personId = $this->personRepo->save($person);
+            $person = new Person(
+                $request->getFirstName(),
+                ($request->getMiddleName() === "") ? null: $request->getMiddleName(),
+                $request->getLastName(),
+                ($request->getSuffix() === "") ? null: $request->getSuffix(),
+                $request->getDateOfBirth(),
+                $request->getGender(),
+                $request->getAddress(),
+                $request->getNationality(),
+                $request->getHeight(),
+                $request->getWeight(),
+                $request->getEyeColor(),
+                $request->getBloodType()
+            );
 
-            $licenseId = $this->licenseRepo->save($license, $personId);
+            $issueDate = $request->getIssueDate();
+            $expiryOption = $request->getExpiryOption();
+            $expiryDate = (clone $issueDate)->modify("+$expiryOption years");
+
+            $license = new License(
+                $person,
+                $licenseNumber,
+                $request->getLicenseType(),
+                $request->getLicenseStatus(),
+                $request->getDLCodes(),
+                $issueDate,
+                $expiryDate
+            );
+
+            $personId = $this->personRepo->save($person);
+            $person->setId($personId);
+
+            $licenseId = $this->licenseRepo->save($license);
 
             $this->conn->commit();
 

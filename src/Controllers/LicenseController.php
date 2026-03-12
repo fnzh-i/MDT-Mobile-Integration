@@ -16,15 +16,16 @@ class LicenseController extends BaseController {
     }
 
     public function search(): void {
-        $licenseNumber = $_GET['license_number'] ?? null; // or $_POST idk
+        $licenseNumber = trim($_GET['license_number'] ?? '');
 
-        if (!$licenseNumber) {
+        if (empty($licenseNumber)) {
             $this->sendResponse("Please enter the license number.", 400);
+            return;
         }
 
         try {
             $result = $this->licenseService->searchLicense($licenseNumber);
-            $this->sendResponse($result);
+            $this->sendResponse($result, 200, "License found.");
         } catch (Throwable $e) {
             $this->sendResponse($e->getMessage(), 404);
         }
@@ -34,44 +35,30 @@ class LicenseController extends BaseController {
         $data = $this->getJsonInput();
 
         try {
-            $dto = new CreateLicenseRequest($data);
-
-            $person = new Person(
-                $dto->getFirstName(),
-                $dto->getLastName(),
-                new DateTime($dto->getDateOfBirth()),
-                GenderEnum::from($dto->getGender()),
-                $dto->getAddress(),
-                $dto->getNationality(),
-                $dto->getHeight(),
-                $dto->getWeight(),
-                $dto->getEyeColor(),
-                BloodTypeEnum::from($dto->getBloodType()),
-                $dto->getMiddleName(),
-                $dto->getSuffix()
+            $request = new CreateLicenseRequest(
+                $data['license_number'],
+                LicenseTypeEnum::from($data['license_type']),
+                LicenseStatusEnum::from($data['license_status']),
+                $data['dl_codes'] ?? [],
+                new DateTime($data['issue_date']),
+                (int)$data['expiry_option'],
+                $data['first_name'],
+                $data['middle_name'] ?? null,
+                $data['last_name'],
+                $data['suffix'] ?? null,
+                new DateTime($data['date_of_birth']),
+                $data['gender'],
+                $data['address'],
+                $data['nationality'],
+                $data['height'],
+                $data['weight'],
+                $data['eye_color'],
+                $data['blood_type']
             );
 
-            $dlCodes = array_map(
-                fn($code) => DLCodesEnum::from($code), 
-                $dto->getDLCodes()
-            );
+            $licenseId = $this->licenseService->createLicense($request);
 
-            $license = new License(
-                $dto->getLicenseNumber(),
-                LicenseTypeEnum::from($dto->getLicenseType()),
-                LicenseStatusEnum::from($dto->getLicenseStatus()),
-                $dlCodes,
-                new DateTime($dto->getIssueDate()),
-                LicenseExpiryEnum::from($dto->getExpiryYears()),
-                $person
-            );
-
-            $licenseId = $this->licenseService->createLicense($license);
-
-            $this->sendResponse([
-                "message" => "License created successfully",
-                "license_id" => $licenseId
-            ], 201);
+            $this->sendResponse(["license_id" => $licenseId], 201, "License created successfully.");
 
         } catch (Throwable $e) {
             $this->sendResponse($e->getMessage(), 400);

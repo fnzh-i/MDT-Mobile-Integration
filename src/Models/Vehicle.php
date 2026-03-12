@@ -26,6 +26,7 @@ class Vehicle {
                                 int $year,
                                 string $color,
                                 DateTime $issueDate,
+                                DateTime $expiryDate,
                                 RegStatusEnum $regStatus,
                                 ?License $license = null,
                                 ?int $id = null) {
@@ -39,13 +40,13 @@ class Vehicle {
         $this->year = $year;
         $this->color = $color;
         $this->issueDate = $issueDate;
-        $this->expiryDate = (clone $issueDate)->modify("+1 year");
+        $this->expiryDate = $expiryDate;
         $this->regStatus = $regStatus;
         $this->license = $license;
         $this->id = $id;
     }
 
-    public function getId(): int {return $this->id;}
+    public function getId(): ?int {return $this->id;}
     public function getLicense(): ?License {return $this->license;}
     public function getPlateNumber(): string {return $this->plateNumber;}
     public function getMVFileNumber(): string {return $this->mvFileNumber;}
@@ -54,9 +55,9 @@ class Vehicle {
     public function getModel(): string {return $this->model;}
     public function getYear(): int {return $this->year;}
     public function getColor(): string {return $this->color;}
-    public function getIssueDate(): string {return $this->issueDate->format("Y-m-d");}
-    public function getExpiryDate(): string {return $this->expiryDate->format("Y-m-d");}
-    public function getRegStatus(): string {return $this->regStatus->value;}
+    public function getIssueDate(): DateTime {return $this->issueDate;}
+    public function getExpiryDate(): DateTime {return $this->expiryDate;}
+    public function getRegStatus(): RegStatusEnum {return $this->regStatus;}
     
     public function setColor(string $color) {
         $this->color = $color;

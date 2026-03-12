@@ -6,11 +6,7 @@ use RuntimeException;
 use DateTime;
 use App\Models\License;
 use App\Repositories\PersonRepository;
-use App\Enums\{
-    LicenseTypeEnum,
-    LicenseStatusEnum,
-    LicenseExpiryEnum
-};
+use App\Enums\{LicenseTypeEnum,LicenseStatusEnum};
 
 class LicenseRepository {
     private mysqli $conn;
@@ -23,22 +19,23 @@ class LicenseRepository {
         $this->personRepo = $personRepo;
     }
 
-    public function save(License $license, int $personId): int {
+    public function save(License $license): int {
+        $personId = $license->getPerson()->getId();
         $licenseNumber = $license->getLicenseNumber();
-        $licenseType = $license->getLicenseType();
-        $licenseStatus = $license->getLicenseStatus();
+        $licenseType = $license->getLicenseType()->value;
+        $licenseStatus = $license->getLicenseStatus()->value;
         $dlCodes = $license->getDLCodesAsString();
-        $issueDate = $license->getIssueDate();
-        $expiryDate = $license->getExpiryDate();
+        $issueDate = $license->getIssueDate()->format("Y-m-d");
+        $expiryDate = $license->getExpiryDate()->format("Y-m-d");
 
         $sql = "INSERT INTO licenses(
+            person_id,
             license_number,
             license_type,
             license_status,
             dl_codes,
             issue_date,
-            expiry_date,
-            person_id
+            expiry_date
         ) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
@@ -48,14 +45,14 @@ class LicenseRepository {
         }
 
         $stmt->bind_param(
-            "ssssssi",
+            "issssss",
+            $personId,
             $licenseNumber,
             $licenseType,
             $licenseStatus,
             $dlCodes,
             $issueDate,
-            $expiryDate,
-            $personId
+            $expiryDate
         );
 
         if (!$stmt->execute()) {
@@ -68,18 +65,14 @@ class LicenseRepository {
     public function hydrate(array $row): License {
         $person = $this->personRepo->hydrate($row);
 
-        $dlCodes = License::parseDLCodes($row['dl_codes']);
-        $issueDate = new DateTime($row['issue_date']);
-        $expiryDate = new DateTime($row['expiry_date']);
-
-        return new License(
+        return new License (
+            $person,
             $row["license_number"],
             LicenseTypeEnum::from($row["license_type"]),
             LicenseStatusEnum::from($row["license_status"]),
-            $dlCodes,
-            $issueDate,
-            LicenseExpiryEnum::getInterval($issueDate, $expiryDate),
-            $person,
+            License::parseDLCodes($row['dl_codes']),
+            new DateTime($row['issue_date']),
+            new DateTime($row['expiry_date']),
             (int)$row["license_id"]
         );
     }
@@ -140,7 +133,7 @@ class LicenseRepository {
                     p.eye_color,
                     p.blood_type
                 FROM licenses l
-                JOIN people p ON l.person_id = p.person_id
+                JOIN persons p ON l.person_id = p.person_id
                 WHERE l.license_number = ?
                 LIMIT 1";
 
@@ -179,7 +172,7 @@ class LicenseRepository {
                     p.eye_color,
                     p.blood_type
                 FROM licenses l
-                JOIN people p ON l.person_id = p.person_id
+                JOIN persons p ON l.person_id = p.person_id
                 WHERE license_id = ?
                 LIMIT 1";
 

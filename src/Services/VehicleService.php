@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\DTOs\CreateVehicleRequest;
 use mysqli;
 use Exception;
 use InvalidArgumentException;
@@ -21,13 +22,18 @@ class VehicleService {
         $this->licenseRepo = $licenseRepo;
     }
 
-    public function createVehicle(Vehicle $vehicle, string $licenseNumber) {
+    public function createVehicle(CreateVehicleRequest $request): int {
         $this->conn->begin_transaction();
 
         try {
-            $plateNumber = $vehicle->getPlateNumber();
-            $mvFileNumber = $vehicle->getMVFileNumber();
-            $vin = $vehicle->getVIN();
+            $licenseNumber = $request->getLicenseNumber();
+            $plateNumber = $request->getPlateNumber();
+            $mvFileNumber = $request->getMVFileNumber();
+            $vin = $request->getVIN();
+            
+            if (!$this->licenseRepo->existsByLicenseNumber($licenseNumber)) {
+                throw new Exception("License number {$licenseNumber} does not exist.");
+            }
 
             if ($this->vehicleRepo->existsByPlateNumber($plateNumber)) {
                 throw new Exception("Plate number {$plateNumber} already exists.");
@@ -41,14 +47,28 @@ class VehicleService {
                 throw new Exception("VIN {$vin} already exists.");
             }
 
-            if (!$this->licenseRepo->existsByLicenseNumber($licenseNumber)) {
-                throw new Exception("License number {$licenseNumber} does not exist.");
-            }
+            $issueDate = $request->getIssueDate();
+            $expiryDate = (clone $issueDate)->modify("+1 year");
+
+            $vehicle = new Vehicle(
+                $plateNumber,
+                $mvFileNumber,
+                $vin,
+                $request->getMake(),
+                $request->getModel(),
+                $request->getYear(),
+                $request->getColor(),
+                $issueDate,
+                $expiryDate,
+                $request->getRegStatus()
+            );
 
             $licenseId = $this->licenseRepo->findIdByLicenseNumber($licenseNumber);
-            $this->vehicleRepo->save($vehicle, $licenseId);
+            $vehicleId = $this->vehicleRepo->save($vehicle, $licenseId);
 
             $this->conn->commit();
+
+            return $vehicleId;
 
         } catch (Exception $e) {
             $this->conn->rollback();

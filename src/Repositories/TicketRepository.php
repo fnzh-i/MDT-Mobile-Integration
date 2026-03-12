@@ -4,13 +4,17 @@ namespace App\Repositories;
 use mysqli;
 use RuntimeException;
 use App\Models\Ticket;
+use App\Enums\TicketStatusEnum;
+use App\Repositories\LicenseRepository;
 use DateTime;
 
 class TicketRepository {
     private mysqli $conn;
+    private LicenseRepository $licenseRepo;
 
-    public function __construct(mysqli $conn) {
+    public function __construct(mysqli $conn, LicenseRepository $licenseRepo) {
         $this->conn = $conn;
+        $this->licenseRepo = $licenseRepo;
     }
 
     public function save(Ticket $ticket): int {
@@ -51,7 +55,7 @@ class TicketRepository {
             throw new RuntimeException("Execution Failed: {$stmt->error}");
         }
 
-        $newTicketId = $this->conn->insert_id;
+        $ticketId = $this->conn->insert_id;
 
         $itemSql = "INSERT INTO ticket_items(
                         ticket_id,
@@ -68,18 +72,18 @@ class TicketRepository {
 
         foreach ($ticket->getItems() as $item) {
             $itemStmt->bind_param("iisi", 
-                $newTicketId, 
+                $ticketId, 
                 $item['violation_id'], 
                 $item['name'], 
                 $item['fine']
             );
 
             if (!$itemStmt->execute()) {
-                throw new RuntimeException("Execution Failed: {$stmt->error}");
+                throw new RuntimeException("Execution Failed: {$itemStmt->error}");
             }
         }
 
-        return $newTicketId;
+        return $ticketId;
     }
 
     public function countPreviousOffenses(int $licenseId, int $violationId): int {
@@ -157,13 +161,14 @@ class TicketRepository {
             
             if (!isset($tickets[$tId])) {
                 $tickets[$tId] = [
-                    'id'                => $row['ticket_id'],
-                    'ref_number'        => $row['ref_number'],
-                    'date'              => (new DateTime($row['date_of_incident']))->format("F j, Y"),
-                    'place_of_incident' => $row['place_of_incident'],
-                    'notes'             => $row['notes'],
-                    'status'            => $row['status'],
-                    'total_fine'        => (int)$row['total_fine'],
+                    'id'               => $row['ticket_id'],
+                    'refNumber'        => $row['ref_number'],
+                    'dateOfIncident'   => (new DateTime($row['date_of_incident']))->format("F j, Y"),
+                    'placeOfIncident'  => $row['place_of_incident'],
+                    'notes'            => $row['notes'],
+                    'status'           => $row['status'],
+                    'totalFine'        => (int)$row['total_fine'],
+                    'createdAt'        => (new DateTime($row["created_at"]))->format("F j, Y g:i A"),
                     'violations'        => []
                 ];
             }
@@ -188,6 +193,21 @@ class TicketRepository {
         }
 
         return array_values($tickets);
+    }
+
+    public function hydrate(array $row): Ticket {
+        $ticket = new Ticket(
+            $this->licenseRepo->hydrate($row),
+            (int)$row['ref_number'],
+            new DateTime($row['date_of_incident']),
+            $row['place_of_incident'],
+            $row['notes'],
+            TicketStatusEnum::from($row['status']),
+            (int)$row['ticket_id']
+        );
+        $ticket->setCreatedAt($row['created_at']);
+        $ticket->setTotalFine((int)$row['total_fine']);
+        return $ticket;
     }
 }
 ?>

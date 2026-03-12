@@ -7,14 +7,14 @@ abstract class BaseController {
         return json_decode($json, true) ?? [];
     }
 
-    protected function sendResponse(mixed $data, int $code = 200): void {
+    protected function sendResponse(mixed $data, int $code = 200, string $message = ""): void {
         header('Content-Type: application/json');
         http_response_code($code);
-        
+
         $response = [
             "status" => ($code >= 200 && $code < 300) ? "success" : "error",
             "data" => ($code >= 200 && $code < 300) ? $data : null,
-            "message" => ($code >= 400) ? $data : null
+            "message" => ($code >= 400) ? $data : $message
         ];
 
         echo json_encode($response);

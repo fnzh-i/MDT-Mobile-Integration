@@ -19,10 +19,12 @@ if ($conn->connect_error) {
 $personRepo    = new \App\Repositories\PersonRepository($conn);
 $licenseRepo   = new \App\Repositories\LicenseRepository($conn, $personRepo);
 $vehicleRepo   = new \App\Repositories\VehicleRepository($conn, $licenseRepo);
-$ticketRepo    = new \App\Repositories\TicketRepository($conn);
+$ticketRepo    = new \App\Repositories\TicketRepository($conn, $licenseRepo);
 $violationRepo = new \App\Repositories\ViolationRepository($conn);
+$userRepo = new \App\Repositories\UserRepository($conn);
 
 $licenseService = new \App\Services\LicenseService($conn, $personRepo, $licenseRepo, $ticketRepo);
 $vehicleService = new \App\Services\VehicleService($conn, $vehicleRepo, $licenseRepo);
 $ticketService  = new \App\Services\TicketService($conn, $licenseRepo, $ticketRepo, $violationRepo);
+$userService = new \App\Services\UserService($conn, $userRepo);
 ?>

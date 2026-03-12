@@ -1,56 +1,55 @@
 <?php
 namespace App\Models;
 
-use App\Enums\LicenseTypeEnum;
-use App\Enums\LicenseStatusEnum;
-use App\Enums\LicenseExpiryEnum;
-use App\Enums\DLCodesEnum;
+use App\Enums\{LicenseTypeEnum, LicenseStatusEnum};
 use DateTime;
 
 class License {
+    private Person $person;
     private string $licenseNumber;
     private LicenseTypeEnum $licenseType;
     private LicenseStatusEnum $licenseStatus;
-    private array $dlCodes;
+    private array $dlCodes = [];
     private DateTime $issueDate;
     private DateTime $expiryDate;
-    private Person $person;
     private ?int $id;
 
-    public function __construct(string $licenseNumber,
+    public function __construct(Person $person,
+                                string $licenseNumber,
                                 LicenseTypeEnum $licenseType,
                                 LicenseStatusEnum $licenseStatus,
                                 array $dlCodes,
                                 DateTime $issueDate,
-                                LicenseExpiryEnum $expiry,
-                                Person $person,
+                                DateTime $expiryDate,
                                 ?int $id = null) {
 
+        $this->person = $person;
         $this->licenseNumber = $licenseNumber;
         $this->licenseType = $licenseType;
         $this->licenseStatus = $licenseStatus;
         $this->dlCodes = $dlCodes;
         $this->issueDate = $issueDate;
-        $this->expiryDate = (clone $issueDate)->modify("+{$expiry->value} years");
-        $this->person = $person;
+        $this->expiryDate = $expiryDate;
         $this->id = $id;
     }
 
-    public function getId(): int {return $this->id;}
+    public function getId(): ?int {return $this->id;}
+    public function getPerson(): Person {return $this->person;}
     public function getLicenseNumber(): string {return $this->licenseNumber;}
-    public function getLicenseType(): string {return $this->licenseType->value;}
-    public function getLicenseStatus(): string {return $this->licenseStatus->value;}
+    public function getLicenseType(): LicenseTypeEnum {return $this->licenseType;}
+    public function getLicenseStatus(): LicenseStatusEnum {return $this->licenseStatus;}
     public function getDLCodes(): array {return $this->dlCodes;}
     public function getDLCodesAsString(): string {
-        return implode(", ", array_map(fn($code) => $code->value, $this->dlCodes));
+        return implode(", ", $this->dlCodes);
     }
-    public static function parseDLCodes(string $codesString): array {
-        $codes = explode(", ", $codesString);
-        return array_map(fn($code) => DLCodesEnum::from($code), $codes);
+    public static function parseDLCodes(string $dlCodesString): array {
+        if (empty($dlCodesString)) {
+            return [];
+        }
+        return array_map('trim', explode(',', $dlCodesString));
     }
-    public function getIssueDate(): string {return $this->issueDate->format("Y-m-d");}
-    public function getExpiryDate(): string {return $this->expiryDate->format("Y-m-d");}
-    public function getPerson(): Person {return $this->person;}
+    public function getIssueDate(): DateTime {return $this->issueDate;}
+    public function getExpiryDate(): DateTime {return $this->expiryDate;}
 
     public function setLicenseType(LicenseTypeEnum $licenseType) {
         $this->licenseType = $licenseType;

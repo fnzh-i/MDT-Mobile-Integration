@@ -26,7 +26,7 @@ class TicketService {
     }
 
 
-    public function createTicket(CreateTicketRequest $request) {
+    public function createTicket(CreateTicketRequest $request): int {
         $this->conn->begin_transaction();
 
         try {
@@ -86,6 +86,8 @@ class TicketService {
             $ticketId = $this->ticketRepo->save($ticket);
 
             $this->conn->commit();
+
+            return $ticketId;
             
         } catch (Exception $e) {
             $this->conn->rollback();

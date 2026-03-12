@@ -20,11 +20,11 @@ class UserController extends BaseController {
         try {
             $requestDTO = new CreateUserRequest(
                 $data['first_name'],
+                $data['middle_name'] ?? null,
                 $data['last_name'],
                 $data['username'],
                 $data['password'],
-                UserRolesEnum::from(strtoupper($data['role'])),
-                $data['middle_name'] ?? null
+                UserRolesEnum::from(strtoupper($data['role']))
             );
 
             $userId = $this->userService->createUser($requestDTO);
@@ -44,17 +44,8 @@ class UserController extends BaseController {
         }
 
         try {
-            $user = $this->userService->loginUser($username, $password);
-            $this->sendResponse([
-                "message" => "Login successful",
-                "user" => [
-                    "id" => $user->getId(),
-                    "username" => $user->getUsername(),
-                    "role" => $user->getRole()->value,
-                    "firstName" => $user->getFirstName(),
-                    "lastName" => $user->getLastName()
-                ]
-            ]);
+            $response = $this->userService->loginUser($username, $password);
+            $this->sendResponse($response, 200, "Login Successful.");
         } catch (Throwable $e) {
             $this->sendResponse("Invalid credentials.", 401);
         }
