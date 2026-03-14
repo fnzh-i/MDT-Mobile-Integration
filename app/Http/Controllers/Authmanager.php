@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\DTOs\CreateLicenseRequest;
+use App\DTOs\CreateVehicleRequest;
 use App\Enums\LicenseTypeEnum;
 use App\Enums\LicenseStatusEnum;
+use App\Enums\RegStatusEnum;
 
 
 
@@ -110,36 +112,67 @@ class Authmanager extends Controller
         return view('create.create-license'); 
     }
 
-public function storeLicense(Request $request) {
-    $service = app(\App\Services\LicenseService::class);
+    public function storeLicense(Request $request) {
+        $service = app(\App\Services\LicenseService::class);
 
-    try {
-        $dto = new CreateLicenseRequest(
-            $request->license_number,
-            LicenseTypeEnum::from($request->license_type),
-            LicenseStatusEnum::Active,
-            $request->dl_codes ?? [], // Array from checkboxes
-            new \DateTime($request->issue_date ?? date('Y-m-d')),
-            (int)$request->expiry_option,
-            $request->first_name,
-            $request->middle_name,
-            $request->last_name,
-            $request->suffix,
-            new \DateTime($request->date_of_birth),
-            $request->gender,
-            $request->address,
-            $request->nationality,
-            $request->height,
-            $request->weight,
-            $request->eye_color,
-            $request->blood_type
-        );
+        try {
+            $dto = new CreateLicenseRequest(
+                $request->license_number,
+                LicenseTypeEnum::from($request->license_type),
+                LicenseStatusEnum::Active,
+                $request->dl_codes ?? [], // Array from checkboxes
+                new \DateTime($request->issue_date ?? date('Y-m-d')),
+                (int)$request->expiry_option,
+                $request->first_name,
+                $request->middle_name,
+                $request->last_name,
+                $request->suffix,
+                new \DateTime($request->date_of_birth),
+                $request->gender,
+                $request->address,
+                $request->nationality,
+                $request->height,
+                $request->weight,
+                $request->eye_color,
+                $request->blood_type
+            );
 
-        $licenseId = $service->createLicense($dto);
-        return redirect()->route('home')->with('status', 'License Created Successfully ID: ' . $licenseId);
+            $licenseId = $service->createLicense($dto);
+            return redirect()->route('home')->with('status', 'License Created Successfully ID: ' . $licenseId);
 
-    } catch (\Throwable $e) {
-        return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        } catch (\Throwable $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
     }
-}
+
+    public function showCreateVehicleForm() 
+    {
+        // The dot indicates the folder 'create' and the file 'create-vehicle'
+        return view('create.create-vehicle'); 
+    }
+
+    public function storeVehicle(Request $request){
+        $service = app(\App\Services\VehicleService::class);
+        try{
+            $dto = new CreateVehicleRequest(
+                $request->license_number,
+                $request->plate_number,
+                $request->mv_file_number,
+                $request->vin,
+                $request->make,
+                $request->model,
+                $request->year,
+                $request->color,
+                new \DateTime($request->issue_date ?? date('Y-m-d')),
+                RegStatusEnum::Registered,
+
+            );
+
+            $vehicleId = $service->createVehicle($dto);
+            return redirect()->route('home')->with('status', 'Vehicle Created Successfully ID: ' . $vehicleId);
+
+        } catch (\Throwable $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+    }
 }

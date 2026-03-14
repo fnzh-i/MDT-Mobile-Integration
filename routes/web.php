@@ -26,3 +26,6 @@ Route::get('/api/license/search', function () {
 
 Route::get('/license/create', [Authmanager::class, 'showCreateLicenseForm'])->name('license.create');
 Route::post('/license/store',[Authmanager::class, 'storeLicense'])->name('license.store');
+
+Route::get('/vehicle/create', [Authmanager::class, 'showCreateVehicleForm'])->name('vehicle.create');
+Route::post('/vehicle/store',[Authmanager::class, 'storeVehicle'])->name('vehicle.store');

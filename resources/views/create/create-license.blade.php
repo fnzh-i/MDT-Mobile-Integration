@@ -26,7 +26,7 @@
                     <div class="w-48 h-48 bg-gray-200 border-2 border-dashed border-gray-400 mx-auto flex items-center justify-center mb-4">
                         <span class="text-gray-500">PHOTO</span>
                     </div>
-                    <label class="block text-xs font-bold text-blue-800 uppercase">License No.</label>
+                    <label class="block text-xs font-bold text-blue-800 uppercase">License No. : </label>
                     <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" required>
                 </div>
 
@@ -41,12 +41,12 @@
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Nationality</label>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Nationality: </label>
                         <input type="text" name="nationality" value="Filipino" class="w-full border-b outline-none">
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Gender</label>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Gender: </label>
                         <select name="gender" class="w-full border-b outline-none">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -54,31 +54,31 @@
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Date of Birth</label>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Date of Birth: </label>
                         <input type="date" name="date_of_birth" class="w-full border-b outline-none" required>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Blood Type</label>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Blood Type: </label>
                         <input type="text" name="blood_type" placeholder="O+" class="w-full border-b outline-none">
                     </div>
 
                     <div class="col-span-2">
-                        <label class="text-xs font-bold text-gray-500 uppercase">Address</label>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Address: </label>
                         <input type="text" name="address" placeholder="Full Home Address" class="w-full border-b outline-none" required>
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-2 col-span-1 md:col-span-2">
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 uppercase">Height (cm)</label>
+                    <label class="block text-xs font-medium text-gray-600 uppercase">Height (cm): </label>
                     <input type="text" name="height" placeholder="170cm" class="w-full border rounded p-2 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 uppercase">Weight (kg)</label>
+                    <label class="block text-xs font-medium text-gray-600 uppercase">Weight (kg): </label>
                     <input type="text" name="weight" placeholder="60kg" class="w-full border rounded p-2 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 uppercase">Eye Color</label>
+                    <label class="block text-xs font-medium text-gray-600 uppercase">Eye Color: </label>
                     <input type="text" name="eye_color" placeholder="Brown" class="w-full border rounded p-2 outline-none">
                 </div>
             </div>
@@ -86,14 +86,14 @@
 
             <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 bg-blue-50 p-6 rounded-lg border border-blue-100">
                 <div>
-                    <label class="block text-sm font-bold text-blue-900">License Type</label>
+                    <label class="block text-sm font-bold text-blue-900">License Type: </label>
                     <select name="license_type" class="w-full p-2 rounded border">
                         <option value="Professional">Professional</option>
                         <option value="Non-Professional">Non-Professional</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-blue-900">DL Codes (Array)</label>
+                    <label class="block text-sm font-bold text-blue-900">DL Codes (Array): </label>
                     <div class="flex flex-wrap gap-2 text-xs">
                         @foreach(['A', 'A1', 'B', 'B1', 'B2', 'C', 'D'] as $code)
                             <label><input type="checkbox" name="dl_codes[]" value="{{$code}}"> {{$code}}</label>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-blue-900">Expiry Option (Years)</label>
+                    <label class="block text-sm font-bold text-blue-900">Expiry Option (Years): </label>
                     <select name="expiry_option" class="w-full p-2 rounded border">
                         <option value="5">5 Years</option>
                         <option value="10">10 Years</option>
