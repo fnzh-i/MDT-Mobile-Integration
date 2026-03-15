@@ -3,6 +3,7 @@ namespace App\Core\Controllers;
 
 use App\Services\VehicleService;
 use App\DTOs\CreateVehicleRequest;
+use App\Enums\RegExpiryEnum;
 use App\Enums\RegStatusEnum;
 use DateTime;
 use Throwable;
@@ -28,6 +29,7 @@ class VehicleController extends BaseController {
                 (int)$data['year'],
                 $data['color'],
                 new DateTime($data['issue_date']),
+                RegExpiryEnum::from((int)$data['expiry_option']),
                 RegStatusEnum::from($data['reg_status'])
             );
 
@@ -51,6 +53,15 @@ class VehicleController extends BaseController {
         try {
             $result = $this->vehicleService->searchVehicle($searchNumber);
             $this->sendResponse($result, 200, "Vehicle found.");
+        } catch (Throwable $e) {
+            $this->sendResponse($e->getMessage(), 404);
+        }
+    }
+
+    public function generateMVFileNumber(): void {
+        try {
+            $mvFileNumber = $this->vehicleService->generateMVFileNumber();
+            $this->sendResponse(["mv_file_number" => $mvFileNumber], 200, "MV file number generated.");
         } catch (Throwable $e) {
             $this->sendResponse($e->getMessage(), 404);
         }

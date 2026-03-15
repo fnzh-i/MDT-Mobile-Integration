@@ -1,9 +1,11 @@
 <?php
 namespace App\DTOs;
 
+use App\Enums\RegExpiryEnum;
 use App\Enums\RegStatusEnum;
 use DateTime;
 use InvalidArgumentException;
+use KitLoong\MigrationsGenerator\Support\Regex;
 
 class CreateVehicleRequest {
     private string $licenseNumber;
@@ -15,6 +17,7 @@ class CreateVehicleRequest {
     private int $year;
     private string $color;
     private DateTime $issueDate;
+    private RegExpiryEnum $expiryOption;
     private RegStatusEnum $regStatus;
     
 
@@ -27,6 +30,7 @@ class CreateVehicleRequest {
                                 int $year,
                                 string $color,
                                 DateTime $issueDate,
+                                RegExpiryEnum $expiryOption,
                                 RegStatusEnum $regStatus) {
 
 
@@ -60,6 +64,7 @@ class CreateVehicleRequest {
         $this->year = $year;
         $this->color = $color;
         $this->issueDate = $issueDate;
+        $this->expiryOption = $expiryOption;
         $this->regStatus = $regStatus;
     }
 
@@ -71,6 +76,7 @@ class CreateVehicleRequest {
     public function getYear(): int { return $this->year; }
     public function getColor(): string { return $this->color; }
     public function getIssueDate(): DateTime { return $this->issueDate; }
+    public function getExpiryOption(): RegExpiryEnum {return $this->expiryOption;}
     public function getRegStatus(): RegStatusEnum { return $this->regStatus; }
     public function getLicenseNumber(): string { return $this->licenseNumber; }
 }

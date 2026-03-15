@@ -31,7 +31,10 @@
                     <div class="col-span-2">
                         <label class="text-xs font-bold text-gray-500 uppercase">MV file Number, Plate Number, Vin Number</label>
                         <div class="flex gap-2">
-                            <input type="text" name="mv_file_number" placeholder="MV File Number" class="w-1/3 border-b focus:border-blue-500 outline-none" required>
+                            <button type="button" id="generate-mv-btn" class="bg-blue-800 text-white px-2 py-1 rounded text-xs hover:bg-blue-900">
+                                Generate
+                            </button>
+                            <input type="text" name="mv_file_number" placeholder="MV File Number" class="w-1/3 border-b focus:border-blue-500 outline-none" id="mv_file_number" required>
                             <input type="text" name="plate_number" placeholder="Plate Number" class="w-1/3 border-b focus:border-blue-500 outline-none" required>
                             <input type="text" name="vin" placeholder="Vin Number" class="w-1/3 border-b focus:border-blue-500 outline-none">
                         </div>
@@ -89,4 +92,22 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('generate-mv-btn').addEventListener('click', async function() {
+        try {
+            const response = await fetch('/vehicle/uniquemvfile');
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                document.getElementById('mv_file_number').value = data.data.mv_file_number;
+            } else {
+                alert('Failed to generate MV file number: ' + data.message);
+            }
+        } catch (error) {
+            alert('Something went wrong.');
+        }
+    });
+</script>
+
 @endsection
