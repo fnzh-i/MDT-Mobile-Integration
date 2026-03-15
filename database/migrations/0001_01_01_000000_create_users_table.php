@@ -3,6 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 
 return new class extends Migration
 {
@@ -45,6 +48,20 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        DB::table('users')->insert([
+            'id'=>1,
+            'first_name'=>'admin',
+            'middle_name'=>'',
+            'last_name'=>'admin',
+            'username'=>'admin',
+            'email'=>'admin@example.com',
+            'password'=>Hash::make('nimda'),
+            'role'=>'ADMIN',
+            'created_at'=>now(),
+            'updated_at'=>now(),
+
+        ]);
     }
 
     /**
