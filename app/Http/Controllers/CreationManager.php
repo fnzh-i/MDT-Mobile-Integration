@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\DTOs\CreateLicenseRequest;
 use App\DTOs\CreateVehicleRequest;
 use App\DTOs\CreateUserRequest;
+use App\DTOs\CreateTicketRequest;
 use App\Enums\{LicenseTypeEnum,
                LicenseStatusEnum,
                LicenseExpiryEnum,
@@ -152,6 +153,26 @@ class CreationManager extends Controller
                 "status" => "error",
                 "message" => $e->getMessage()
             ], 500);
+        }
+    }
+    
+    public function showCreateTicketForm(){
+        return view('create.create-ticket');
+    }
+    public function storeTicket(Request $request){
+        $service = app(\App\Services\TicketService::class);
+        try {
+            $dto = new CreateTicketRequest (
+                $request -> license_id,
+                $request -> violation_id,
+                $request -> date_of_incident,
+                $request -> place_of_incident,
+                $request -> notes,
+            );
+            $ticket_id = $service->createTicket($dto);
+            return redirect()->route('home')->with('status', 'Ticket Created Successfully ID: ' . $ticket_id);
+        } catch (Throwable $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
 }

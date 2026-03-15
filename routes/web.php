@@ -33,7 +33,10 @@ Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('ve
 
 // para sa unique mv file number generator sa create vehicle
 Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
+Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
+
 Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
 Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
 
-Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
+Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
+Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
