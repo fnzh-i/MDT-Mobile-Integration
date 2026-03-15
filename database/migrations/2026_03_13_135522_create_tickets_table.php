@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('notes', 100)->nullable();
             $table->enum('status', ['Unsettled', 'Settled']);
             $table->integer('total_fine');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 

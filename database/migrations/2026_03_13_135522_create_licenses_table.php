@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('dl_codes', 50);
             $table->date('issue_date');
             $table->date('expiry_date');
+            $table->timestamps();
         });
     }
 

@@ -33,8 +33,10 @@ class TicketRepository {
                     place_of_incident,
                     notes,
                     status,
-                    total_fine) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    total_fine, 
+                    created_at,
+                    updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         
         $stmt = $this->conn->prepare($sql);
 

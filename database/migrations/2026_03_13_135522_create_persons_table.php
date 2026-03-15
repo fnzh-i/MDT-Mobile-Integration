@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('weight', 50);
             $table->string('eye_color', 50);
             $table->string('blood_type', 50);
+            $table->timestamps();
         });
     }
 

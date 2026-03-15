@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('issue_date');
             $table->date('expiry_date');
             $table->enum('reg_status', ['Registered', 'Unregistered', 'Expired']);
+            $table->timestamps();
         });
     }
 

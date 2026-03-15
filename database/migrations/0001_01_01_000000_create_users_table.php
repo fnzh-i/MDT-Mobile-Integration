@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 
 return new class extends Migration
@@ -16,9 +14,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             // Standard Laravel ID
-            $table->id(); 
+            $table->id();
+            $table->string('lto_client_id', 50)->unique();
             
-            // Your Custom Fields
+            // Custom Fields
             $table->enum('role', ['ADMIN', 'SUPERVISOR', 'TEAMLEADER', 'ENFORCER', 'CIVILIAN'])->default('CIVILIAN');
             $table->string('first_name', 50);
             $table->string('middle_name', 50)->nullable();
@@ -30,10 +29,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps(); // Don't delete these; you'll regret it later!
+            $table->timestamps();
         });
 
-        // Keep these two for security and session management
+        // Security and session management
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -48,20 +47,6 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-
-        DB::table('users')->insert([
-            'id'=>1,
-            'first_name'=>'admin',
-            'middle_name'=>'',
-            'last_name'=>'admin',
-            'username'=>'admin',
-            'email'=>'admin@example.com',
-            'password'=>Hash::make('nimda'),
-            'role'=>'ADMIN',
-            'created_at'=>now(),
-            'updated_at'=>now(),
-
-        ]);
     }
 
     /**

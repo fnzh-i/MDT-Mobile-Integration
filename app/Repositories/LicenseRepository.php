@@ -35,8 +35,10 @@ class LicenseRepository {
             license_status,
             dl_codes,
             issue_date,
-            expiry_date
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            expiry_date,
+            created_at,
+            updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
         
