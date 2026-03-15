@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\DTOs\CreateLicenseRequest;
 use App\DTOs\CreateVehicleRequest;
-use App\Enums\LicenseTypeEnum;
-use App\Enums\LicenseStatusEnum;
-use App\Enums\RegStatusEnum;
+use App\Enums\{LicenseTypeEnum,
+               LicenseStatusEnum,
+               LicenseExpiryEnum,
+               RegExpiryEnum,
+               RegStatusEnum};
 
 
 
@@ -122,7 +124,7 @@ class Authmanager extends Controller
                 LicenseStatusEnum::Active,
                 $request->dl_codes ?? [], // Array from checkboxes
                 new \DateTime($request->issue_date ?? date('Y-m-d')),
-                (int)$request->expiry_option,
+                LicenseExpiryEnum::from((int)$request->expiry_option),
                 $request->first_name,
                 $request->middle_name,
                 $request->last_name,
@@ -164,6 +166,7 @@ class Authmanager extends Controller
                 $request->year,
                 $request->color,
                 new \DateTime($request->issue_date ?? date('Y-m-d')),
+                RegExpiryEnum::from((int)$request->expiry_option),
                 RegStatusEnum::Registered,
 
             );
@@ -173,6 +176,27 @@ class Authmanager extends Controller
 
         } catch (\Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+    }
+
+
+    // para sa unique mv file number generator sa create vehicle
+    public function createUniqueMVFile() {
+        $service = app(\App\Services\VehicleService::class);
+        
+        try {
+            $mvFileNumber = $service->generateMVFileNumber();
+            
+            return response()->json([
+                "status" => "success",
+                "data" => ["mv_file_number" => $mvFileNumber],
+                "message" => "MV file number generated."
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ], 500);
         }
     }
 }

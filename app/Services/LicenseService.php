@@ -51,7 +51,7 @@ class LicenseService {
             );
 
             $issueDate = $request->getIssueDate();
-            $expiryOption = $request->getExpiryOption();
+            $expiryOption = $request->getExpiryOption()->value;
             $expiryDate = (clone $issueDate)->modify("+$expiryOption years");
 
             $license = new LicenseEntity(

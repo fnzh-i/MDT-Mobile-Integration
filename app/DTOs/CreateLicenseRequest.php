@@ -1,7 +1,7 @@
 <?php
 namespace App\DTOs;
 
-use App\Enums\{LicenseTypeEnum, LicenseStatusEnum};
+use App\Enums\{LicenseExpiryEnum, LicenseTypeEnum, LicenseStatusEnum};
 use DateTime;
 use InvalidArgumentException;
 
@@ -11,7 +11,7 @@ class CreateLicenseRequest {
     private LicenseStatusEnum $licenseStatus;
     private array $dlCodes = [];
     private DateTime $issueDate;
-    private int $expiryOption;
+    private LicenseExpiryEnum $expiryOption;
 
     private string $firstName;
     private ?string $middleName;
@@ -31,7 +31,7 @@ class CreateLicenseRequest {
                                 LicenseStatusEnum $licenseStatus,
                                 array $dlCodes,
                                 DateTime $issueDate,
-                                int $expiryOption,
+                                LicenseExpiryEnum $expiryOption,
                                 string $firstName,
                                 ?string $middleName,
                                 string $lastName,
@@ -109,7 +109,7 @@ class CreateLicenseRequest {
     public function getLicenseStatus(): LicenseStatusEnum { return $this->licenseStatus; }
     public function getDLCodes(): array { return $this->dlCodes; }
     public function getIssueDate(): DateTime { return $this->issueDate; }
-    public function getExpiryOption(): int { return $this->expiryOption; }
+    public function getExpiryOption(): LicenseExpiryEnum { return $this->expiryOption; }
 
     public function getFirstName(): string { return $this->firstName; }
     public function getLastName(): string { return $this->lastName; }

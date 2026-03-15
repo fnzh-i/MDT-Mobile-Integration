@@ -5,7 +5,7 @@ use App\DTOs\{CreateLicenseRequest,
               CreateVehicleRequest,
               CreateTicketRequest,
               CreateUserRequest, LoginResponse};
-use App\Enums\{LicenseStatusEnum, LicenseTypeEnum, RegStatusEnum, UserRolesEnum};
+use App\Enums\{LicenseExpiryEnum, LicenseStatusEnum, LicenseTypeEnum, RegStatusEnum, UserRolesEnum};
 
  
 
@@ -16,7 +16,7 @@ use App\Enums\{LicenseStatusEnum, LicenseTypeEnum, RegStatusEnum, UserRolesEnum}
 //     LicenseStatusEnum::Active,
 //     array ("A", "A1", "B", "B1", "C", "D"),
 //     new DateTime("2025/6/12"),
-//     10,
+//     LicenseExpiryEnum::from(25),
 //     "Maria Clara",
 //     "",
 //     "Santos",
