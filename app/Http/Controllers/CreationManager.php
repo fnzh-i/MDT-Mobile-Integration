@@ -13,6 +13,9 @@ use App\Enums\{LicenseTypeEnum,
                RegExpiryEnum,
                RegStatusEnum,
                UserRolesEnum};
+use Throwable;
+use DateTime;
+
 class CreationManager extends Controller
 {
     public function showCreateLicenseForm() 
@@ -49,7 +52,7 @@ class CreationManager extends Controller
             $licenseId = $service->createLicense($dto);
             return redirect()->route('home')->with('status', 'License Created Successfully ID: ' . $licenseId);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
@@ -72,7 +75,7 @@ class CreationManager extends Controller
                 $request->model,
                 $request->year,
                 $request->color,
-                new \DateTime($request->issue_date ?? date('Y-m-d')),
+                new DateTime($request->issue_date ?? date('Y-m-d')),
                 RegExpiryEnum::from((int)$request->expiry_option),
                 RegStatusEnum::Registered,
 
@@ -81,7 +84,7 @@ class CreationManager extends Controller
             $vehicleId = $service->createVehicle($dto);
             return redirect()->route('home')->with('status', 'Vehicle Created Successfully ID: ' . $vehicleId);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
@@ -98,7 +101,7 @@ class CreationManager extends Controller
                 "data" => ["mv_file_number" => $mvFileNumber],
                 "message" => "MV file number generated."
             ], 200);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return response()->json([
                 "status" => "error",
                 "message" => $e->getMessage()
@@ -128,8 +131,27 @@ class CreationManager extends Controller
             $userId = $service->createUser($dto);
             return redirect()->route('home')->with('status', 'User Created Successfully ID: ' . $userId);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+    }
+
+    public function createUniqueLicenseNumber() {
+        $service = app(\App\Services\LicenseService::class);
+
+        try {
+            $licenseNumber = $service->generateLicenseNumber();
+
+            return response()->json([
+                "status" => "success",
+                "data" => ["license_number" => $licenseNumber],
+                "message" => "License number generated."
+            ], 200);
+        } catch (Throwable $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ], 500);
         }
     }
 }

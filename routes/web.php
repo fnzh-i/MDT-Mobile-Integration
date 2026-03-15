@@ -35,3 +35,5 @@ Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('ve
 Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
 Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
 Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
+
+Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');

@@ -175,19 +175,5 @@ class VehicleRepository {
 
         return $this->hydrate($row);
     }
-
-    public function getAllExistingMVFileNumbers(): array {
-        $sql = "SELECT mv_file_number FROM vehicles";
-
-        $result = $this->conn->query($sql);
-        
-        $mvFileNumbers = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $mvFileNumbers[] = $row['mv_file_number'];
-        }
-
-        return $mvFileNumbers;
-    }
 }
 ?>

@@ -60,5 +60,19 @@ class LicenseEntity {
     public function setPerson(PersonEntity $person) {
         $this->person = $person;
     }
+
+    public static function generateFormat(string $pattern): string {
+        $str = "";
+        for ($i = 0; $i < strlen($pattern); $i++) {
+            if ($pattern[$i] == 'L') {
+                $str .= chr(random_int(65, 90));
+            } elseif ($pattern[$i] == 'N') {
+                $str .= random_int(0, 9);
+            } else {
+                $str .= $pattern[$i];
+            }
+        }
+        return $str;
+    }
 }
 ?>
