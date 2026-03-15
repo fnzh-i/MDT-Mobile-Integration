@@ -12,8 +12,8 @@ use App\DTOs\CreateVehicleRequest;
 use App\Enums\LicenseTypeEnum;
 use App\Enums\LicenseStatusEnum;
 use App\Enums\RegStatusEnum;
-
-
+use App\DTOs\CreateUserRequest;
+use App\Enums\UserRolesEnum;
 
 class Authmanager extends Controller
 {
@@ -170,6 +170,34 @@ class Authmanager extends Controller
 
             $vehicleId = $service->createVehicle($dto);
             return redirect()->route('home')->with('status', 'Vehicle Created Successfully ID: ' . $vehicleId);
+
+        } catch (\Throwable $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+    }
+
+    public function showCreateUserForm() 
+    {
+        // The dot indicates the folder 'create' and the file 'create-vehicle'
+        return view('create.create-user'); 
+    }
+
+    public function storeUser(Request $request){
+        $service = app(\App\Services\UserService::class);
+        try{
+            $dto = new CreateUserRequest(
+                $request->first_name,
+                $request->middle_name ?? "",
+                $request->last_name,
+                $request->username,
+                $request->email,
+                $request->password,
+                UserRolesEnum::CIVILIAN,
+
+            );
+
+            $userId = $service->createUser($dto);
+            return redirect()->route('home')->with('status', 'User Created Successfully ID: ' . $userId);
 
         } catch (\Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
