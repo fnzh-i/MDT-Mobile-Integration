@@ -17,8 +17,8 @@ class ViolationRepository {
                        name,
                        is_penalty,
                        base_fine,
-                       2nd_fine,
-                       3rd_fine 
+                       fine_2nd,
+                       fine_3rd 
                 FROM violations_lookup 
                 WHERE violation_id = ? 
                 LIMIT 1";
@@ -49,8 +49,8 @@ class ViolationRepository {
             $row['name'],
             (bool)$row['is_penalty'],
             (int)$row['base_fine'],
-            (int)$row['2nd_fine'],
-            (int)$row['3rd_fine']
+            (int)$row['fine_2nd'],
+            (int)$row['fine_3rd']
         );
     }
 }

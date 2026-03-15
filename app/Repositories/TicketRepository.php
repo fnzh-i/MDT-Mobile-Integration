@@ -132,8 +132,8 @@ class TicketRepository {
                     ti.violation_id, 
                     vl.is_penalty,
                     vl.base_fine,
-                    vl.2nd_fine,
-                    vl.3rd_fine
+                    vl.fine_2nd,
+                    vl.fine_3rd
                 FROM tickets t
                 LEFT JOIN ticket_items ti
                 ON t.ticket_id = ti.ticket_id
@@ -180,9 +180,9 @@ class TicketRepository {
             if ($row['is_penalty'] == 1) {
                 if ($row['v_fine'] == $row['base_fine']) {
                     $level = "1st Offense";
-                } elseif ($row['v_fine'] == $row['2nd_fine']) {
+                } elseif ($row['v_fine'] == $row['fine_2nd']) {
                     $level = "2nd Offense";
-                } elseif ($row['v_fine'] == $row['3rd_fine']) {
+                } elseif ($row['v_fine'] == $row['fine_3rd']) {
                     $level = "3rd Offense";
                 }
             }
