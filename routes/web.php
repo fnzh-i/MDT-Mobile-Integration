@@ -30,5 +30,7 @@ Route::post('/license/store',[Authmanager::class, 'storeLicense'])->name('licens
 Route::get('/vehicle/create', [Authmanager::class, 'showCreateVehicleForm'])->name('vehicle.create');
 Route::post('/vehicle/store',[Authmanager::class, 'storeVehicle'])->name('vehicle.store');
 
+// para sa unique mv file number generator sa create vehicle
+Route::get('/vehicle/uniquemvfile', [Authmanager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
 Route::get('/user/create', [Authmanager::class, 'showCreateUserForm'])->name('user.create');
 Route::post('/user/store',[Authmanager::class, 'storeUser'])->name('user.store');

@@ -48,7 +48,8 @@ class VehicleService {
             }
 
             $issueDate = $request->getIssueDate();
-            $expiryDate = (clone $issueDate)->modify("+1 year");
+            $expiryOption = $request->getExpiryOption()->value;
+            $expiryDate = (clone $issueDate)->modify("+$expiryOption years");
 
             $vehicle = new VehicleEntity(
                 $plateNumber,
@@ -90,6 +91,12 @@ class VehicleService {
         }
 
         return new SearchVehicleResponse ($vehicle);
+    }
+
+    public function generateMVFileNumber(): string {
+        $existingMVFileNumbers = $this->vehicleRepo->getAllExistingMVFileNumbers();
+        $uniqueMVFileNumber = VehicleEntity::createUniqueMVFileNum($existingMVFileNumbers);
+        return $uniqueMVFileNumber;
     }
 }
 ?>
