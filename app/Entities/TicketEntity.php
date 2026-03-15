@@ -62,14 +62,8 @@ class TicketEntity {
         $this->createdAt = $createdAt;
     }
 
-    public static function createUniqueRefNum(array $existingRefNums): int {
-        $lookup = array_flip($existingRefNums);
-
-        do {
-            $num = random_int(1000000000, 9999999999);
-        } while (isset($lookup[$num]));
-
-        return $num;
+    public static function generateRandomRef(): int {
+        return random_int(1000000000, 9999999999);
     }
 
     public function addViolationItem(int $violationId,

@@ -27,7 +27,10 @@
                         <span class="text-gray-500">PHOTO</span>
                     </div>
                     <label class="block text-xs font-bold text-blue-800 uppercase">License No. : </label>
-                    <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" required>
+                    <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required>
+                    <button type="button" id="generate-ln-btn" class="bg-blue-800 text-white px-2 py-1 rounded text-xs hover:bg-blue-900">
+                        Generate
+                    </button>
                 </div>
 
                 <div class="md:col-span-2 grid grid-cols-2 gap-4">
@@ -117,4 +120,22 @@
         </div>
     </form>
 </div>
+
+
+<script>
+    document.getElementById('generate-ln-btn').addEventListener('click', async function() {
+        try {
+            const response = await fetch('/license/uniquelicensenum');
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                document.getElementById('license_number').value = data.data.license_number;
+            } else {
+                alert('Failed to generate license number: ' + data.message);
+            }
+        } catch (error) {
+            alert('Something went wrong.');
+        }
+    });
+</script>
 @endsection

@@ -97,5 +97,15 @@ class LicenseService {
 
         return new SearchLicenseResponse($license, $tickets);
     }
+
+    public function generateLicenseNumber(): string {
+        do {
+            $newLicenseNumber = LicenseEntity::generateFormat("LNN-NN-NNNNNN");
+            $alreadyExists = $this->licenseRepo->existsByLicenseNumber($newLicenseNumber);
+            
+        } while ($alreadyExists);
+
+        return $newLicenseNumber;
+    }
 }
 ?>

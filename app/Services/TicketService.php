@@ -37,9 +37,10 @@ class TicketService {
                 throw new Exception("License ID {$licenseId} not found.");
             }
 
-            $existingRefNumbers = $this->ticketRepo->getAllExistingRefNumbers();
-
-            $uniqueRefNumber = TicketEntity::createUniqueRefNum($existingRefNumbers);
+            do {
+                $uniqueRefNumber = TicketEntity::generateRandomRef();
+                $alreadyExists = $this->ticketRepo->existsByRefNumber($uniqueRefNumber);
+            } while ($alreadyExists);
 
             $ticket = new TicketEntity(
                 $license,

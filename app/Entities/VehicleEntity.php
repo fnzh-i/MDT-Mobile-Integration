@@ -65,15 +65,5 @@ class VehicleEntity {
     public function setRegStatus(RegStatusEnum $regStatus) {
         $this->regStatus = $regStatus;
     }
-
-    public static function createUniqueMVFileNum(array $existingMVFiles): string {
-        $lookup = array_flip($existingMVFiles);
-
-        do {
-            $str = sprintf("%04d-%07d", mt_rand(0, 9999), mt_rand(0, 9999999));;
-        } while (isset($lookup[$str]));
-
-        return $str;
-    }
 }
 ?>

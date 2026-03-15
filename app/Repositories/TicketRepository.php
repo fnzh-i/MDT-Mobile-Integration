@@ -109,18 +109,22 @@ class TicketRepository {
         return (int)$result->fetch_row()[0];
     }
 
-    public function getAllExistingRefNumbers(): array {
-        $sql = "SELECT ref_number FROM tickets";
+    public function existsByRefNumber(int $refNumber): bool {
+        $sql = "SELECT 1 FROM tickets WHERE ref_number = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
 
-        $result = $this->conn->query($sql);
-        
-        $refNumbers = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $refNumbers[] = (int)$row['ref_number'];
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
         }
 
-        return $refNumbers;
+        $stmt->bind_param("i", $refNumber);
+        
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        return $result->num_rows > 0;
     }
 
     public function getAllTickets(int $licenseId) {

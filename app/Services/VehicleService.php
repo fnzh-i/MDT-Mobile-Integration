@@ -94,9 +94,13 @@ class VehicleService {
     }
 
     public function generateMVFileNumber(): string {
-        $existingMVFileNumbers = $this->vehicleRepo->getAllExistingMVFileNumbers();
-        $uniqueMVFileNumber = VehicleEntity::createUniqueMVFileNum($existingMVFileNumbers);
-        return $uniqueMVFileNumber;
+        do {
+            $newMVFileNum = sprintf("%04d-%07d", mt_rand(0, 9999), mt_rand(0, 9999999));
+            $alreadyExists = $this->vehicleRepo->existsByMVFileNumber($newMVFileNum);
+            
+        } while ($alreadyExists);
+
+        return $newMVFileNum;
     }
 }
 ?>
