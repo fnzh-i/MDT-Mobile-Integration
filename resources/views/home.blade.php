@@ -48,6 +48,9 @@
                      <a href="{{ route('vehicle.create') }}" class="btn btn-success mb-3">
                         <i class="fas fa-plus"></i> Create New Vehicle
                     </a>
+                    <a href="{{ route('user.create') }}" class="btn btn-success mb-3">
+                        <i class="fas fa-plus"></i> Create New User
+                    </a>
 
                     <div id="search-error" class="alert alert-danger mt-3 d-none"></div>
                 </div>

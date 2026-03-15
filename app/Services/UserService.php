@@ -34,6 +34,7 @@ class UserService {
             ($request->getMiddleName() === "") ? null : $request->getMiddleName(),
             $request->getLastName(),
             $username,
+            $request->getEmail(),
             $hashedPassword,
             $request->getRole()
         );

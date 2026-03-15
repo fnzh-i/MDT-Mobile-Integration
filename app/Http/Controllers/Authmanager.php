@@ -13,7 +13,8 @@ use App\Enums\{LicenseTypeEnum,
                LicenseStatusEnum,
                LicenseExpiryEnum,
                RegExpiryEnum,
-               RegStatusEnum};
+               RegStatusEnum,
+               UserRolesEnum};
 
 
 
@@ -179,7 +180,6 @@ class Authmanager extends Controller
         }
     }
 
-
     // para sa unique mv file number generator sa create vehicle
     public function createUniqueMVFile() {
         $service = app(\App\Services\VehicleService::class);
@@ -197,6 +197,31 @@ class Authmanager extends Controller
                 "status" => "error",
                 "message" => $e->getMessage()
             ], 500);
+    public function showCreateUserForm() 
+    {
+        // The dot indicates the folder 'create' and the file 'create-vehicle'
+        return view('create.create-user'); 
+    }
+
+    public function storeUser(Request $request){
+        $service = app(\App\Services\UserService::class);
+        try{
+            $dto = new CreateUserRequest(
+                $request->first_name,
+                $request->middle_name ?? "",
+                $request->last_name,
+                $request->username,
+                $request->email,
+                $request->password,
+                UserRolesEnum::CIVILIAN,
+
+            );
+
+            $userId = $service->createUser($dto);
+            return redirect()->route('home')->with('status', 'User Created Successfully ID: ' . $userId);
+
+        } catch (\Throwable $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
 }

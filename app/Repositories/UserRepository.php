@@ -15,10 +15,11 @@ class UserRepository{
     }
 
     public function save(UserEntity $user): int {
-        $firstName = $user->getFirstName();
-        $middleName = $user->getMiddleName();
-        $lastName = $user->getLastName();
+        $first_name = $user->getFirstName();
+        $middle_name = $user->getMiddleName();
+        $last_name = $user->getLastName();
         $username = $user->getUsername();
+        $email = $user->getEmail();
         $password = $user->getPassword();
         $role = $user->getRole()->value;
 
@@ -28,8 +29,11 @@ class UserRepository{
             middle_name,
             last_name,
             username,
-            password
-        ) VALUES (?, ?, ?, ?, ?, ?)";
+            email,
+            password,
+            created_at, 
+            updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -38,12 +42,13 @@ class UserRepository{
         }
 
         $stmt->bind_param(
-            "ssssss",
+            "sssssss",
             $role,
-            $firstName,
-            $middleName,
-            $lastName,
+            $first_name,
+            $middle_name,
+            $last_name,
             $username,
+            $email,
             $password
         );
 
@@ -60,6 +65,7 @@ class UserRepository{
             $row["middle_name"] ?? null,
             $row["last_name"],
             $row["username"],
+            $row["email"],
             $row["password"],
             UserRolesEnum::from($row["role"]),
             (int)$row["user_id"]

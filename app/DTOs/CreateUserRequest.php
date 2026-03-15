@@ -6,26 +6,32 @@ use InvalidArgumentException;
 
 class CreateUserRequest {
     private string $username;
+    private string $email;
     private string $password;
-    private string $firstName;
-    private ?string $middleName;
-    private string $lastName;
+    private string $first_name;
+    private ?string $middle_name;
+    private string $last_name;
     private UserRolesEnum $role;
 
-    public function __construct(string $firstName,
-                                ?string $middleName,
-                                string $lastName,
+    public function __construct(string $first_name,
+                                ?string $middle_name,
+                                string $last_name,
                                 string $username,
+                                string $email,
                                 string $password,
                                 UserRolesEnum $role) {
 
-        $firstName = trim($firstName);
-        $lastName = trim($lastName);
+        $first_name = trim($first_name);
+        $last_name = trim($last_name);
         $username = trim($username);
 
-        if (empty($firstName)) throw new InvalidArgumentException("First name required.");
-        if (empty($lastName)) throw new InvalidArgumentException("Last name required.");
+        if (empty($first_name)) throw new InvalidArgumentException("First name required.");
+        if (empty($last_name)) throw new InvalidArgumentException("Last name required.");
         if (empty($username)) throw new InvalidArgumentException("Username required.");
+        if (empty($email)) throw new InvalidArgumentException("Email required.");
+        if (str_contains($email, " ")) {
+            throw new InvalidArgumentException("Email cannot have whitespaces.");
+        }
         if (str_contains($username, " ")) {
             throw new InvalidArgumentException("Username cannot have whitespaces.");
         }
@@ -36,18 +42,20 @@ class CreateUserRequest {
             throw new InvalidArgumentException("Password must be at least 8 characters long.");
         }
 
-        $this->firstName = $firstName;
-        $this->middleName = ($middleName === "" || $middleName === null) ? null: trim($middleName);
-        $this->lastName = $lastName;
+        $this->first_name = $first_name;
+        $this->middle_name = ($middle_name === "" || $middle_name === null) ? null: trim($middle_name);
+        $this->last_name = $last_name;
         $this->username = $username;
+        $this->email = $email;
         $this->password = $password;
         $this->role = $role;
     }
 
-    public function getFirstName(): string {return $this->firstName;}
-    public function getMiddleName(): ?string {return $this->middleName;}
-    public function getLastName(): string {return $this->lastName;}
+    public function getFirstName(): string {return $this->first_name;}
+    public function getMiddleName(): ?string {return $this->middle_name;}
+    public function getLastName(): string {return $this->last_name;}
     public function getUsername(): string {return $this->username;}
+    public function getEmail(): string {return $this->email;}
     public function getPassword(): string {return $this->password;}
     public function getRole(): UserRolesEnum {return $this->role;}
 }
