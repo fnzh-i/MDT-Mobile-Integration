@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Entities\ViolationEntity;
 use App\DTOs\CreateLicenseRequest;
 use App\DTOs\CreateVehicleRequest;
 use App\DTOs\CreateUserRequest;
@@ -16,6 +17,7 @@ use App\Enums\{LicenseTypeEnum,
                UserRolesEnum};
 use Throwable;
 use DateTime;
+use Carbon\Carbon;
 
 class CreationManager extends Controller
 {
@@ -163,9 +165,9 @@ class CreationManager extends Controller
         $service = app(\App\Services\TicketService::class);
         try {
             $dto = new CreateTicketRequest (
-                $request -> license_id,
-                $request -> violation_id,
-                $request -> date_of_incident,
+                (int)$request -> license_id,
+                (array)$request -> violation_id ?? [],
+                Carbon::parse($request->date_of_incident),
                 $request -> place_of_incident,
                 $request -> notes,
             );
