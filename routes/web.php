@@ -1,5 +1,6 @@
 <?php
 
+use App\Core\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\CreationManager;
@@ -22,6 +23,13 @@ Route::get('/api/license/search', function () {
     // Laravel resolves the Service from the CoreServiceProvider automatically
     $service = app(\App\Services\LicenseService::class);
     $controller = new LicenseController($service);
+    return $controller->search();
+});
+
+Route::get('/api/vehicle/search', function () {
+    // api for fetching vehicles from the CoreServiceProvider automatically
+    $service = app(\App\Services\VehicleService::class);
+    $controller = new VehicleController($service);
     return $controller->search();
 });
 

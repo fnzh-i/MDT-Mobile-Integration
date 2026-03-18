@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->integer('ticket_id', true);
             $table->integer('license_id')->nullable()->index('license_id');
+            $table->integer('lto_client_id')->nullable()->index('lto_client_id');
             $table->bigInteger('ref_number')->nullable()->unique('ref_number');
             $table->date('date_of_incident');
             $table->string('place_of_incident', 100);

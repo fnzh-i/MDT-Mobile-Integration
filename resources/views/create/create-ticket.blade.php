@@ -23,6 +23,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
                 <div class="text-center">
+                     <label class="text-xs font-bold text-gray-500 uppercase">License_ID: </label>
                     <input type="number" name="license_id" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required>
                 </div>
 

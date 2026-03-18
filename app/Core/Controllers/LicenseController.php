@@ -41,7 +41,7 @@ class LicenseController extends BaseController {
                 LicenseStatusEnum::from($data['license_status']),
                 $data['dl_codes'] ?? [],
                 new DateTime($data['issue_date']),
-                (int)$data['expiry_option'],
+                $data['expiry_option'],
                 $data['first_name'],
                 $data['middle_name'] ?? null,
                 $data['last_name'],
