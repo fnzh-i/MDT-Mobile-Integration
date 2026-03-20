@@ -9,10 +9,10 @@
             <span class="block sm:inline">{{ $errors->first('error') }}</span>
         </div>
     @endif
-    <form action="{{ route('ticket.store') }}" method="POST" class="max-w-4xl mx-auto">
+    <form action="{{ route('ticket.store') }}" method="POST" enctype="multipart/form-data"  class="max-w-4xl mx-auto">
         @csrf
         
-        <div class="bg-blue-800 text-white rounded-t-xl p-4 shadow-lg border-b-4 border-yellow-500">
+        <div class="bg-blue-800 text-black rounded-t-xl p-4 shadow-lg border-b-4 border-yellow-500">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-bold tracking-widest">REPUBLIC OF THE PHILIPPINES</h2>
                 <span class="text-sm font-semibold">TICKET FORM</span>
@@ -23,8 +23,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
                 <div class="text-center">
-                     <label class="text-xs font-bold text-gray-500 uppercase">License_ID: </label>
-                    <input type="number" name="license_id" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required>
+                     <label class="text-xs font-bold text-gray-500 uppercase">License Number: </label>
+                    <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required>
                 </div>
 
                 <div class="md:col-span-2 grid grid-cols-2 gap-4">
@@ -41,17 +41,22 @@
 
                     <div>
                         <label class="text-xs font-bold text-gray-500 uppercase">Place of Incident: </label>
-                        <input type="text" name="place_of_incident" placeholder="Malate, Manila City" class="w-full border-b outline-none">
+                        <input type="text" name="place_of_incident" placeholder="Enter place" class="w-full border-b outline-none">
                     </div>
 
                     <div class="col-span-2">
                         <label class="text-xs font-bold text-gray-500 uppercase">Violations: </label>
-                        <input type="number" name="violation_id[]" placeholder="Violation" class="w-full border-b outline-none" required>
+                        <input type="number" name="violation_id[]" placeholder="violation IDs array" class="w-full border-b outline-none" required>
                     </div>
 
                     <div class="col-span-2">
                         <label class="text-xs font-bold text-gray-500 uppercase">Notes: </label>
                         <input type="text" name="notes" placeholder="Full Incident" class="w-full border-b outline-none" required>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Proof Image: </label>
+                        <input type="file" name="proof_image" accept="image/*" class="w-full border-b outline-none py-2">
                     </div>
 
                     <div>
@@ -65,7 +70,7 @@
             </div>
 
             <div class="mt-8 flex justify-end">
-                <button type="submit" class="bg-blue-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg">
+                <button type="submit" class="bg-blue-800 text-black px-8 py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg">
                     ISSUE TICKET
                 </button>
             </div>

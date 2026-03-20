@@ -15,6 +15,7 @@ class TicketEntity {
     private ?int $id;
     private int $totalFine = 0;
     private ?string $createdAt = null;
+    private ?string $proofImage;
 
 
     public function __construct(LicenseEntity $license,
@@ -23,7 +24,8 @@ class TicketEntity {
                                 string $placeOfIncident,
                                 ?string $notes,
                                 TicketStatusEnum $status = TicketStatusEnum::Unsettled,
-                                ?int $id = null) {
+                                ?int $id = null,
+                                ?string $proofImage = null) {
 
         $this->license = $license;
         $this->refNumber = $refNumber;
@@ -32,6 +34,7 @@ class TicketEntity {
         $this->notes = $notes;
         $this->status = $status;
         $this->id = $id;
+        $this->proofImage = $proofImage;
     }
 
     public function getRefNumber(): int {return $this->refNumber;}
@@ -44,6 +47,7 @@ class TicketEntity {
     public function getTotalFine(): int {return $this->totalFine;}
     public function getId(): ?int {return $this->id;}
     public function getCreatedAt(): ?string {return $this->createdAt;}
+    public function getProofImage(): ?string {return $this->proofImage;}
 
     public function setStatus(TicketStatusEnum $status) {
         $this->status = $status;
