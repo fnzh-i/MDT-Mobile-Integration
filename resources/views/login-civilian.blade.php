@@ -23,7 +23,7 @@
                     <div class="mb-3">
                         <input type="text" id="email" name="email" class="input-custom @error('email') is-invalid @enderror" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required>
 
-                        @error('username')
+                        @error('email')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>

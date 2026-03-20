@@ -7,7 +7,8 @@ use App\Http\Controllers\CreationManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Core\Controllers\LicenseController;
-use App\Http\Controllers\SupportController; 
+use App\Http\Controllers\SupportController;
+use App\Http\Controllers\CivilianController; 
 
 
 Route::get('/', function () {
@@ -17,16 +18,24 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/register', [AuthManager::class, 'showRegisterForm'])->name('register');
+// Route::get('/register', [AuthManager::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthManager::class, 'Register']);
 
 
 Route::get('/login-civilian', function () {return view('login-civilian');})->name('login-civilian');
 Route::post('/login-civilian', [AuthManager::class, 'login']);
+
 Route::get('/register', function () { return view('register'); })->name('register');
 Route::post('/register', [AuthManager::class, 'register']);
 Route::post('/forgot-password', [AuthManager::class, 'forgotPassword'])->name('forgot-password');
 Route::post('/support/email', [SupportController::class, 'sendEmail'])->name('support.email');
+
+Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->name('civilian-dashboard');
+Route::get('/civilian/license', [CivilianController::class, 'license'])->name('civilian-license');
+Route::get('/civilian/vehicles', [CivilianController::class, 'vehicles'])->name('civilian-vehicle');
+Route::get('/civilian/violations', [CivilianController::class, 'violations'])->name('civilian-violations');
+Route::get('/civilian/settings', [CivilianController::class, 'settings'])->name('civilian-settings');
+Route::get('/civilian/support', [CivilianController::class, 'support'])->name('civilian-support');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/api/license/search', function () {
