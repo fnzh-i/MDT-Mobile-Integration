@@ -161,17 +161,27 @@ class CreationManager extends Controller
     public function showCreateTicketForm(){
         return view('create.create-ticket');
     }
-    public function storeTicket(Request $request){
+    public function storeTicket(Request $request) {
         $service = app(\App\Services\TicketService::class);
+        
+        // DAPAT MULTIPART YUNG ISESEND NG FRONTEND
+        $proofImage = null;
+        if ($request->hasFile('proof_image')) {
+            $proofImage = file_get_contents($request->file('proof_image')->getRealPath());
+        }
+
         try {
-            $dto = new CreateTicketRequest (
-                (int)$request -> license_id,
-                (array)$request -> violation_id ?? [],
-                Carbon::parse($request->date_of_incident),
-                $request -> place_of_incident,
-                $request -> notes,
+            $dto = new CreateTicketRequest(
+                $request->license_number,
+                (array)($request->violation_id ?? []),
+                \Carbon\Carbon::parse($request->date_of_incident),
+                $request->place_of_incident,
+                $request->notes,
+                $proofImage
             );
+
             $ticket_id = $service->createTicket($dto);
+
             return redirect()->route('home')->with('status', 'Ticket Created Successfully ID: ' . $ticket_id);
         } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();

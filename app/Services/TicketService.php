@@ -30,11 +30,11 @@ class TicketService {
         $this->conn->begin_transaction();
 
         try {
-            $licenseId = $request->getLicenseId();
-            $license = $this->licenseRepo->findById($licenseId);
+            $licenseNumber = $request->getLicenseNumber();
+            $license = $this->licenseRepo->findByLicenseNumber($licenseNumber);
             
             if ($license === null) {
-                throw new Exception("License ID {$licenseId} not found.");
+                throw new Exception("License Number {$licenseNumber} not found.");
             }
 
             do {
@@ -43,11 +43,12 @@ class TicketService {
             } while ($alreadyExists);
 
             $ticket = new TicketEntity(
-                $license,
-                $uniqueRefNumber,
-                $request->getDateOfIncident(),
-                $request->getPlaceOfIncident(),
-                $request->getNotes()
+                license: $license,
+                refNumber: $uniqueRefNumber,
+                dateOfIncident: $request->getDateOfIncident(),
+                placeOfIncident: $request->getPlaceOfIncident(),
+                notes: $request->getNotes(),
+                proofImage: $request->getProofImage()
             );
 
             $violationIds = $request->getViolationIds();

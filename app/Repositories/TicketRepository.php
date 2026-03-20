@@ -25,6 +25,7 @@ class TicketRepository {
         $notes = $ticket->getNotes();
         $status = $ticket->getStatus();
         $total = $ticket->getTotalFine();
+        $proofImage = $ticket->getProofImage();
 
         $sql = "INSERT INTO tickets(
                     license_id,
@@ -35,24 +36,33 @@ class TicketRepository {
                     status,
                     total_fine, 
                     created_at,
-                    updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+                    updated_at,
+                    proof_image) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)";
         
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             throw new RuntimeException("Prepare Failed: {$this->conn->error}");
         }
+
+        $null = null;
         
-        $stmt->bind_param("iissssi",
+        $stmt->bind_param("iissssib",
                           $licenseId,
                           $ref,
                           $date,
                           $place,
                           $notes,
                           $status,
-                          $total);
+                          $total,
+                          $null);
         
+
+        if ($proofImage !== null) {
+            $stmt->send_long_data(7, $proofImage);
+        }
+
         if (!$stmt->execute()) {
             throw new RuntimeException("Execution Failed: {$stmt->error}");
         }
@@ -174,6 +184,7 @@ class TicketRepository {
                     'notes'            => $row['notes'],
                     'status'           => $row['status'],
                     'totalFine'        => (int)$row['total_fine'],
+                    // 'proofImage' => $row['proof_image'] ? base64_encode($row['proof_image']) : null,  ;uncomment if kasama sila after license search, kaso sobrang habang mga strings
                     'createdAt'        => (new DateTime($row["created_at"]))->format("F j, Y g:i A"),
                     'violations'        => []
                 ];
@@ -209,7 +220,8 @@ class TicketRepository {
             $row['place_of_incident'],
             $row['notes'],
             TicketStatusEnum::from($row['status']),
-            (int)$row['ticket_id']
+            (int)$row['ticket_id'],
+            $row['proof_image'] ?? null
         );
         $ticket->setCreatedAt($row['created_at']);
         $ticket->setTotalFine((int)$row['total_fine']);

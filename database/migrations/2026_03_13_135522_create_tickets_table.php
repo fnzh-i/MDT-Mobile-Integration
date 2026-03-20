@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status', ['Unsettled', 'Settled']);
             $table->integer('total_fine');
             $table->timestamps();
+            $table->longBinary('proof_image')->nullable();
         });
     }
 
