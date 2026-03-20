@@ -6,7 +6,8 @@ use Exception;
 use App\DTOs\CreateTicketRequest;
 use App\Entities\TicketEntity;
 use App\Repositories\{LicenseRepository, TicketRepository, ViolationRepository};
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TicketService {
     private mysqli $conn;
@@ -94,6 +95,24 @@ class TicketService {
         } catch (Exception $e) {
             $this->conn->rollback();
             throw $e;
+        }
+    }
+    public function deleteTicket(int $id): bool {
+        try {
+            // Get ONLY the image path (No hydration = No "first_name" error)
+            $imagePath = $this->ticketRepo->getImagePath($id);
+
+            // Delete the file if it exists
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            // Delete from DB
+            return $this->ticketRepo->delete($id);
+
+        } catch (\Throwable $e) {
+            Log::error("Delete failed: " . $e->getMessage());
+            return false;
         }
     }
 }

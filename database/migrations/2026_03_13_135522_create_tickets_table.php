@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('notes', 100)->nullable();
             $table->enum('status', ['Unsettled', 'Settled']);
             $table->integer('total_fine');
-            $table->binary('proof_image')->nullable();
+            $table->string('proof_image')->nullable();
             $table->timestamps();
         });
     }

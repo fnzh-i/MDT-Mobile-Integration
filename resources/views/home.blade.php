@@ -76,6 +76,15 @@
 
                     <div id="search-error" class="alert alert-danger mt-3 d-none"></div>
                 </div>
+                <div class="mt-4 p-3 border rounded bg-light">
+                    <h6>Test Deletion Manually:</h6>
+                    <div class="input-group">
+                        <input type="number" id="test_ticket_id" class="form-control" placeholder="Enter Ticket ID to Delete">
+                        <button class="btn btn-danger" onclick="deleteTicket(document.getElementById('test_ticket_id').value)">
+                            Delete Ticket & File
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -166,6 +175,23 @@ function performVehicleSearch() {
             errorArea.classList.remove('d-none');
             errorArea.innerText = "Connection error. Please check your database/server.";
         });
+}
+function deleteTicket(ticketId) {
+    if (!confirm("Are you sure you want to delete this ticket and its image?")) return;
+
+    fetch(`/ticket/delete/${ticketId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload(); // Refresh to show the data is gone
+    })
+    .catch(err => alert("Error deleting ticket."));
 }
 </script>
 @endsection

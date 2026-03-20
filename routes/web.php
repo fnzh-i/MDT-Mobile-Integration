@@ -67,3 +67,4 @@ Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.sto
 
 Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
 Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
+Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');

@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Entities\ViolationEntity;
-use App\DTOs\CreateLicenseRequest;
-use App\DTOs\CreateVehicleRequest;
-use App\DTOs\CreateUserRequest;
-use App\DTOs\CreateTicketRequest;
+
+use App\DTOs\{CreateLicenseRequest,
+                CreateVehicleRequest,
+                CreateUserRequest,
+                CreateTicketRequest};
 use App\Enums\{LicenseTypeEnum,
-               LicenseStatusEnum,
-               LicenseExpiryEnum,
-               RegExpiryEnum,
-               RegStatusEnum,
-               UserRolesEnum};
+                LicenseStatusEnum,
+                LicenseExpiryEnum,
+                RegExpiryEnum,
+                RegStatusEnum,
+                UserRolesEnum};
+use \App\Services\TicketService;
 use Throwable;
 use DateTime;
 use Carbon\Carbon;
@@ -36,13 +36,13 @@ class CreationManager extends Controller
                 LicenseTypeEnum::from($request->license_type),
                 LicenseStatusEnum::Active,
                 $request->dl_codes ?? [], // Array from checkboxes
-                new \DateTime($request->issue_date ?? date('Y-m-d')),
+                new DateTime($request->issue_date ?? date('Y-m-d')),
                 LicenseExpiryEnum::from((int)$request->expiry_option),
                 $request->first_name,
                 $request->middle_name,
                 $request->last_name,
                 $request->suffix,
-                new \DateTime($request->date_of_birth),
+                new DateTime($request->date_of_birth),
                 $request->gender,
                 $request->address,
                 $request->nationality,
@@ -167,14 +167,15 @@ class CreationManager extends Controller
         // DAPAT MULTIPART YUNG ISESEND NG FRONTEND
         $proofImage = null;
         if ($request->hasFile('proof_image')) {
-            $proofImage = file_get_contents($request->file('proof_image')->getRealPath());
+            //$proofImage = file_get_contents($request->file('proof_image')->getRealPath());
+            $proofImage = $request->file('proof_image')->store('tickets', 'public');
         }
 
         try {
             $dto = new CreateTicketRequest(
                 $request->license_number,
                 (array)($request->violation_id ?? []),
-                \Carbon\Carbon::parse($request->date_of_incident),
+                Carbon::parse($request->date_of_incident),
                 $request->place_of_incident,
                 $request->notes,
                 $proofImage
@@ -184,7 +185,23 @@ class CreationManager extends Controller
 
             return redirect()->route('home')->with('status', 'Ticket Created Successfully ID: ' . $ticket_id);
         } catch (Throwable $e) {
+            if (isset($proofImage)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($proofImage);
+            }
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
+    }
+    public function destroy($id) {
+        $service = app(TicketService::class);
+        $success = $service->deleteTicket((int)$id);
+
+        if ($success) {
+            return response()->json(['status' => 'success', 'message' => 'Ticket and image deleted!']);
+        }
+        
+        return response()->json([
+        'status' => 'error', 
+        'message' => 'Check laravel.log for details.'
+    ], 500);
     }
 }

@@ -212,6 +212,62 @@ class TicketRepository {
         return array_values($tickets);
     }
 
+    public function findById(int $id): ?TicketEntity {
+        // We join the licenses table to get the name, address, etc.
+        $sql = "SELECT t.*, l.* FROM tickets t 
+                INNER JOIN licenses l ON t.license_id = l.license_id 
+                WHERE t.ticket_id = ? 
+                LIMIT 1";
+                
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            throw new \RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        if (!$row) {
+            return null;
+        }
+
+        // Now $row contains 'first_name', so hydrate won't crash!
+        return $this->hydrate($row);
+    }
+
+    public function getImagePath(int $id): ?string {
+        $sql = "SELECT proof_image FROM tickets WHERE ticket_id = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        
+        return $row ? $row['proof_image'] : null;
+    }
+
+    public function delete(int $id): bool {
+        // First delete items to maintain referential integrity (if no CASCADE)
+        $sqlItems = "DELETE FROM ticket_items WHERE ticket_id = ?";
+        $stmtItems = $this->conn->prepare($sqlItems);
+        if ($stmtItems) {
+            $stmtItems->bind_param("i", $id);
+            $stmtItems->execute();
+        }
+
+        $sqlTicket = "DELETE FROM tickets WHERE ticket_id = ?";
+        $stmtTicket = $this->conn->prepare($sqlTicket);
+        
+        if (!$stmtTicket) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmtTicket->bind_param("i", $id);
+        return $stmtTicket->execute();
+    }
+
     public function hydrate(array $row): TicketEntity {
         $ticket = new TicketEntity(
             $this->licenseRepo->hydrate($row),
