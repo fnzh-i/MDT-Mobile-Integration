@@ -18,7 +18,7 @@ class AdminUserSeeder extends Seeder
                 'middle_name' => null,
                 'last_name' => 'admin',
                 'email' => 'admin@example.com',
-                'password' => Hash::make('nimda'),
+                'password' => Hash::make('nimda12345'),
                 'role' => 'ADMIN',
             ]
         );
