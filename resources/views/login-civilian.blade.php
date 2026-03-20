@@ -21,7 +21,7 @@
                     @csrf
 
                     <div class="mb-3">
-                        <input type="text" id="username" name="username" class="input-custom @error('username') is-invalid @enderror" placeholder="Username" value="{{ old('username') }}" autocomplete="username" required>
+                        <input type="text" id="email" name="email" class="input-custom @error('email') is-invalid @enderror" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required>
 
                         @error('username')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
