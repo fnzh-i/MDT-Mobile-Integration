@@ -100,14 +100,34 @@
                     <h1 class="dash-title">Driver's License</h1>
 
                     <div class="section-card">
-                        <div class="section-card-accent"></div> {{-- Just Some Color --}}
+                        <div class="section-card-accent"></div>
                         <div class="section-card-inner">
-                            <div class="section-card-header">
-                                <h2 class="section-card-title">License Status</h2>
-                                <span class="status-dot dot-green"></span>
-                            </div>
-                            <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">Status:</span> <span class="status-green">Sample Status</span> </div>
+                            <div class="license-two-col">
+
+                                <div>
+                                    <h2 class="section-card-title mb-3">Personal Information</h2>
+                                    <div class="info-row"><span class="info-label">Last Name:</span> Sample Last Name</div>
+                                    <div class="info-row"><span class="info-label">First Name:</span> Sample First Name</div>
+                                    <div class="info-row"><span class="info-label">Middle Name:</span> Sample Middle Name</div>
+                                    <div class="info-row"><span class="info-label">Date of Birth:</span> Sample DOB</div>
+                                    <div class="info-row"><span class="info-label">Sex:</span> Sample Gender</div>
+                                    <div class="info-row"><span class="info-label">Address:</span> Sample Address</div>
+                                    <div class="info-row"><span class="info-label">Nationality:</span> Sample Nationality</div>
+                                    <div class="info-row"><span class="info-label">Height:</span> Sample Height</div>
+                                    <div class="info-row"><span class="info-label">Weight:</span> Sample Weight</div>
+                                    <div class="info-row"><span class="info-label">Eye Color:</span> Sample Eye Color</div>
+                                    <div class="info-row"><span class="info-label">Blood Type:</span> Sample Blood Type</div>
+                                    <div class="info-row"><span class="info-label">Conditions:</span> Sample Conditions</div>
+                                </div>
+
+                                <div>
+                                    <h2 class="section-card-title mb-3">License Status</h2>
+                                    <div class="info-row">
+                                        <span class="info-label">Status:</span>
+                                        <span class="status-green">Sample Status</span>
+                                        <span class="status-dot dot-green" style="margin-left: 3px;"></span>
+                                    </div>  
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -115,34 +135,20 @@
                     <div class="section-card">
                         <div class="section-card-accent"></div>
                         <div class="section-card-inner">
-                            <div class="section-card-header"> <h2 class="section-card-title">Personal Information</h2> </div>
-                            <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">Last Name:</span> <span class="info-value">Sample Last Name</span> </div>
-                                <div class="info-row"> <span class="info-label">First Name:</span> <span class="info-value">Sample First Name</span> </div>
-                                <div class="info-row"> <span class="info-label">Middle Name:</span> <span class="info-value">Sample Middle Name</span> </div>
-                                <div class="info-row"> <span class="info-label">Suffix:</span> <span class="info-value">Sample Suffix</span> </div>
-                                <div class="info-row"> <span class="info-label">Date of Birth:</span> <span class="info-value">Sample DOB</span> </div>
-                                <div class="info-row"> <span class="info-label">Gender:</span> <span class="info-value">Sample Gender</span> </div>
-                                <div class="info-row"> <span class="info-label">Address:</span> <span class="info-value">Sample Address</span> </div>
-                                <div class="info-row"> <span class="info-label">Nationality:</span> <span class="info-value">Sample Nationality</span> </div>
-                                <div class="info-row"> <span class="info-label">Height:</span> <span class="info-value">Sample Height</span> </div>
-                                <div class="info-row"> <span class="info-label">Weight:</span> <span class="info-value">Sample Weight</span> </div>
-                                <div class="info-row"> <span class="info-label">Eye Color:</span> <span class="info-value">Sample Eye Color</span> </div>
-                                <div class="info-row"> <span class="info-label">Blood Type:</span> <span class="info-value">Sample Blood Type</span> </div>
-                            </div>
-                        </div>
-                    </div>
+                            <h2 class="section-card-title mb-3">License Details</h2>
+                            <div class="license-two-col">
 
-                    <div class="section-card">
-                        <div class="section-card-accent"></div>
-                        <div class="section-card-inner">
-                            <div class="section-card-header"> <h2 class="section-card-title">License Details</h2></div>
-                            <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">License Number:</span> Sample License Number </div>
-                                <div class="info-row"> <span class="info-label">License Type:</span> Sample License Type </div>
-                                <div class="info-row"> <span class="info-label">Issue Date:</span> Sample Issue Date </div>
-                                <div class="info-row"> <span class="info-label">Expiry Date:</span> Sample Expiry Date </div>
-                                <div class="info-row"> <span class="info-label">Restrictions:</span> Sample Restrictions </div>
+                                <div>
+                                    <div class="info-row"><span class="info-label">License Number:</span> Sample License Number</div>
+                                    <div class="info-row"><span class="info-label">License Type:</span> Sample License Type</div>
+                                    <div class="info-row"><span class="info-label">Restrictions:</span> Sample Restrictions</div>
+                                </div>
+
+                                <div>
+                                    <div class="info-row"><span class="info-label">Issue Date:</span> Sample Issue Date</div>
+                                    <div class="info-row"><span class="info-label">Expiry Date:</span> Sample Expiry Date</div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -208,7 +214,8 @@
                                         <i class="bi bi-car-front"></i>
                                     </div>
                                     <div class="vehicle-card-info">
-                                        <div class="vehicle-info-text">Sample Make Sample Model</div>
+                                        <div class="vehicle-info-text">Sample Make</div>
+                                        <div class="vehicle-info-text">Sample Model</div>
                                         <div class="vehicle-info-text">Sample Plate Number</div>
                                         <div class="vehicle-info-text status-green">Sample Status</div>
                                     </div>

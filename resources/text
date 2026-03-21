@@ -1,0 +1,17 @@
+Put it inside the controller that handles the civilian dashboard, this will be the method that handles the vehicle section of the dashboard. It checks if a specific vehicle is being viewed and prepares the data accordingly before returning the view.
+    
+    public function vehicle(Request $request)
+    {
+        $selectedVehicle = null;
+        $vehicles        = collect();
+
+        if ($request->query('view')) {
+            $selectedVehicle = true; // placeholder until DB connected
+        }
+
+        return view('civilian-dashboard', [
+            'section'         => 'vehicle',
+            'vehicles'        => $vehicles,
+            'selectedVehicle' => $selectedVehicle,
+        ]);
+    }
