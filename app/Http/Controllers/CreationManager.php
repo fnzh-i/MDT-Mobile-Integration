@@ -66,9 +66,9 @@ class CreationManager extends Controller
         return view('create.create-vehicle'); 
     }
 
-    public function storeVehicle(Request $request){
+    public function storeVehicle(Request $request) {
         $service = app(\App\Services\VehicleService::class);
-        try{
+        try {
             $dto = new CreateVehicleRequest(
                 $request->license_number,
                 $request->plate_number,
@@ -81,14 +81,22 @@ class CreationManager extends Controller
                 new DateTime($request->issue_date ?? date('Y-m-d')),
                 RegExpiryEnum::from((int)$request->expiry_option),
                 RegStatusEnum::Registered,
-
             );
 
             $vehicleId = $service->createVehicle($dto);
-            return redirect()->route('home')->with('status', 'Vehicle Created Successfully ID: ' . $vehicleId);
+
+            // SUCCESS: Return JSON
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Vehicle Created Successfully ID: ' . $vehicleId
+            ]);
 
         } catch (Throwable $e) {
-            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+            // ERROR: Return JSON with 400 or 500 status
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 

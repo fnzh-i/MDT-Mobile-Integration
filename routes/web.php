@@ -38,12 +38,27 @@ Route::get('/civilian/settings', [CivilianController::class, 'settings'])->name(
 Route::get('/civilian/support', [CivilianController::class, 'support'])->name('civilian-support');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/api/license/search', function () {
-    // Laravel resolves the Service from the CoreServiceProvider automatically
-    $service = app(\App\Services\LicenseService::class);
-    $controller = new LicenseController($service);
-    return $controller->search();
+Route::get('/api/license/search', function (Request $request) {
+    try {
+        $service = app(\App\Services\LicenseService::class);
+        $controller = new LicenseController($service);
+        return $controller->search();
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });
+
+Route::get('/license/search', function () {
+    return view('license-search'); 
+})->name('license.search.page');
+
+Route::get('/vehicle/search', function () {
+    return view('vehicle-search'); 
+})->name('vehicle.search.page');
 
 Route::get('/api/vehicle/search', function () {
     // api for fetching vehicles from the CoreServiceProvider automatically

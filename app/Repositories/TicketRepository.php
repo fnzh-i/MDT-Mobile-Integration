@@ -184,8 +184,9 @@ class TicketRepository {
                     'notes'            => $row['notes'],
                     'status'           => $row['status'],
                     'totalFine'        => (int)$row['total_fine'],
-                    // 'proofImage' => $row['proof_image'] ? base64_encode($row['proof_image']) : null,  ;uncomment if kasama sila after license search, kaso sobrang habang mga strings
+                    'proof_image'      => $row['proof_image'],
                     'createdAt'        => (new DateTime($row["created_at"]))->format("F j, Y g:i A"),
+                    'updatedAt'        => (new DateTime($row["updated_at"]))->format("F j, Y g:i A"),
                     'violations'        => []
                 ];
             }

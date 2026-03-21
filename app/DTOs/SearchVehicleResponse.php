@@ -21,6 +21,7 @@ class SearchVehicleResponse implements JsonSerializable {
                 "id"           => $this->vehicle->getId(),
                 "plateNumber"  => $this->vehicle->getPlateNumber(),
                 "mvFileNumber" => $this->vehicle->getMVFileNumber(),
+                "vin"          => $this->vehicle->getVIN(),
                 "make"         => $this->vehicle->getMake(),
                 "model"        => $this->vehicle->getModel(),
                 "year"         => $this->vehicle->getYear(),

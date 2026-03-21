@@ -2,20 +2,13 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-
-    @if($errors->has('error'))
-        <div class="max-w-4xl mx-auto mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            <strong class="font-bold">Database Error:</strong>
-            <span class="block sm:inline">{{ $errors->first('error') }}</span>
-        </div>
-    @endif
-    <form action="{{ route('vehicle.store') }}" method="POST" class="max-w-4xl mx-auto">
+    <form id="vehicle-creation-form" action="{{ route('vehicle.store') }}" method="POST" class="max-w-4xl mx-auto">
         @csrf
         
         <div class="bg-blue-800 text-white rounded-t-xl p-4 shadow-lg border-b-4 border-yellow-500">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-bold tracking-widest">REPUBLIC OF THE PHILIPPINES</h2>
-                <span class="text-sm font-semibold">VEHICLE CREATION FORM</span>make, model, color
+                <span class="text-sm font-semibold">VEHICLE CREATION FORM</span>
             </div>
         </div>
 
@@ -94,19 +87,42 @@
 </div>
 
 <script>
+    // 1. MV File Generator
     document.getElementById('generate-mv-btn').addEventListener('click', async function() {
         try {
             const response = await fetch('/vehicle/uniquemvfile');
             const data = await response.json();
-
             if (data.status === 'success') {
                 document.getElementById('mv_file_number').value = data.data.mv_file_number;
-            } else {
-                alert('Failed to generate MV file number: ' + data.message);
             }
-        } catch (error) {
-            alert('Something went wrong.');
+        } catch (e) {
+            console.error(e);
         }
+    });
+
+    // 2. Form Submission
+    document.getElementById('vehicle-creation-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Server Error");
+            return data;
+        })
+        .then(data => {
+            alert("Vehicle Created Successfully!");
+            window.location.href = "{{ route('vehicle.search.page') }}";
+        })
+        .catch(err => {
+            alert(err.message);
+        });
     });
 </script>
 
