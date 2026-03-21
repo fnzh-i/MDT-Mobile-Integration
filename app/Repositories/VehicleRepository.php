@@ -40,8 +40,10 @@ class VehicleRepository {
             issue_date,
             expiry_date,
             reg_status,
-            license_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            license_id,
+            created_at,
+            updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
         
@@ -145,12 +147,11 @@ class VehicleRepository {
     }
 
     public function findByPlateOrMVFile(string $searchNumber): ?VehicleEntity {
-        $sql = "SELECT v.*, l.*, p.* 
-                FROM vehicles v
-                JOIN licenses l ON v.license_id = l.license_id
-                JOIN persons p ON l.person_id = p.person_id
-                WHERE v.plate_number = ? OR v.mv_file_number = ? 
-                LIMIT 1";
+        $sql = "SELECT l.*, p.*, v.* FROM vehicles v
+            JOIN licenses l ON v.license_id = l.license_id
+            JOIN persons p ON l.person_id = p.person_id
+            WHERE v.plate_number = ? OR v.mv_file_number = ? 
+            LIMIT 1";
 
         $stmt = $this->conn->prepare($sql);
 
