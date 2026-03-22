@@ -86,18 +86,24 @@ class AuthManager extends Controller
             if ($user instanceof User) {
                 $token = $user->createToken('mobile_token')->plainTextToken;
             }   
-                return redirect()->intended(route('civilian-dashboard'));
-                // return response()->json(
-                //     [
-                //     "status"=>"success",
-                //     "data"=> ['user'=>$user,'token'=>$token],
-                //     "message" => "User has been logged in"
-                //     ],200);
+                // return redirect()->intended(route('civilian-dashboard'));
+                return response()->json(
+                    [
+                    "status"=>"success",
+                    "data"=> ['user'=>$user,'token'=>$token],
+                    "message" => "User has been logged in"
+                    ],200);
             }
             return response()->json(
             [
                 "status"=>"error",
                 "message" => "Something went wrong"
                 ],200);
+    }
+    public function logout(Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login-civilian');
     }
 }
