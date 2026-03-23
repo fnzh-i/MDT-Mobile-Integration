@@ -212,4 +212,61 @@ class CreationManager extends Controller
         'message' => 'Check laravel.log for details.'
     ], 500);
     }
+
+
+    public function settle($id) {
+        $service = app(TicketService::class);
+
+        try {
+            if (!$id || (int)$id <= 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid Ticket ID provided.'
+                ], 400);
+            }
+
+            $service->settleTicket((int)$id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket #' . $id . ' has been marked as Settled.'
+            ]);
+
+        } catch (Throwable $e) {
+            $code = ($e->getMessage() === "Ticket not found.") ? 404 : 400;
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], $code);
+        }
+    }
+
+    public function unsettle($id) {
+        $service = app(TicketService::class);
+
+        try {
+            if (!$id || (int)$id <= 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid Ticket ID provided.'
+                ], 400);
+            }
+
+            $service->unsettleTicket((int)$id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket #' . $id . ' has been reverted to Unsettled.'
+            ]);
+
+        } catch (Throwable $e) {
+            $code = ($e->getMessage() === "Ticket not found.") ? 404 : 400;
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], $code);
+        }
+    }
 }

@@ -284,5 +284,34 @@ class TicketRepository {
         $ticket->setTotalFine((int)$row['total_fine']);
         return $ticket;
     }
+
+    public function findByIdOnly(int $id): ?array {
+        $sql = "SELECT * FROM tickets WHERE ticket_id = ? LIMIT 1";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        return $result->fetch_assoc() ?: null;
+    }
+
+    public function updateStatus(int $id, TicketStatusEnum $status): bool {
+        $statusValue = $status->value;
+        $sql = "UPDATE tickets SET status = ?, updated_at = NOW() WHERE ticket_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("si", $statusValue, $id);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Update Failed: {$stmt->error}");
+        }
+
+        return $stmt->affected_rows > 0;
+    }
 }
 ?>

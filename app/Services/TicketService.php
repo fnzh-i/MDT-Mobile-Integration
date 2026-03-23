@@ -8,6 +8,7 @@ use App\Entities\TicketEntity;
 use App\Repositories\{LicenseRepository, TicketRepository, ViolationRepository};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\TicketStatusEnum;
 
 class TicketService {
     private mysqli $conn;
@@ -113,6 +114,56 @@ class TicketService {
         } catch (\Throwable $e) {
             Log::error("Delete failed: " . $e->getMessage());
             return false;
+        }
+    }
+
+    // para ma settle yung ticket need lang muna yung ticket_id for now, bale resend nalang ng frontend yun
+    public function settleTicket(int $ticketId): void {
+        $this->conn->begin_transaction();
+
+        try {
+            $ticket = $this->ticketRepo->findByIdOnly($ticketId);
+            if (!$ticket) throw new Exception("Ticket not found.");
+
+   
+            if ($ticket['status'] === TicketStatusEnum::Settled->value) {
+                throw new Exception("Ticket is already settled.");
+            }
+
+            $updated = $this->ticketRepo->updateStatus($ticketId, TicketStatusEnum::Settled);
+
+            if (!$updated) {
+                throw new Exception("Ticket update failed.");
+            }
+
+            $this->conn->commit();
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            throw $e;
+        }
+    }
+
+    public function unsettleTicket(int $ticketId): void {
+        $this->conn->begin_transaction();
+
+        try {
+            $ticket = $this->ticketRepo->findByIdOnly($ticketId);
+            if (!$ticket) throw new \Exception("Ticket not found.");
+
+            if ($ticket['status'] !== TicketStatusEnum::Settled->value) {
+                throw new \Exception("Ticket is not in a Settled state.");
+            }
+
+            $updated = $this->ticketRepo->updateStatus($ticketId, TicketStatusEnum::Unsettled);
+
+            if (!$updated) {
+                throw new \Exception("Ticket update failed.");
+            }
+
+            $this->conn->commit();
+        } catch (\Exception $e) {
+            $this->conn->rollback();
+            throw $e;
         }
     }
 }

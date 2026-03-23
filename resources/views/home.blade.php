@@ -85,6 +85,23 @@
                         </button>
                     </div>
                 </div>
+
+               <div class="mt-4 p-3 border rounded bg-light">
+                    <h6>Test Settlement Manually:</h6>
+                    <div class="input-group">
+                        <input type="number" id="test_settle_id" class="form-control" placeholder="Ticket ID">
+                        
+                        <button class="btn btn-success" style="width: 100px;" 
+                                onclick="settleTicket(document.getElementById('test_settle_id').value)">
+                            Settle
+                        </button>
+                        
+                        <button class="btn btn-warning text-black" style="width: 100px;" 
+                                onclick="unsettleTicket(document.getElementById('test_settle_id').value)">
+                            Unsettle
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -192,6 +209,50 @@ function deleteTicket(ticketId) {
         location.reload(); // Refresh to show the data is gone
     })
     .catch(err => alert("Error deleting ticket."));
+}
+function settleTicket(ticketId) {
+    if (!ticketId) {
+        alert("Please enter a Ticket ID.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to mark this ticket as Settled?")) return;
+
+    fetch(`/ticket/settle/${ticketId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(err => alert("Error settling ticket."));
+}
+function unsettleTicket(ticketId) {
+    if (!ticketId) {
+        alert("Please enter a Ticket ID.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to Unsettle this ticket?")) return;
+
+    fetch(`/ticket/unsettle/${ticketId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(err => alert("Error unsettling ticket."));
 }
 </script>
 @endsection
