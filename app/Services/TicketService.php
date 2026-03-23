@@ -3,12 +3,13 @@ namespace App\Services;
 
 use mysqli;
 use Exception;
-use App\DTOs\CreateTicketRequest;
+use App\DTOs\{CreateTicketRequest, UpdateTicketRequest};
 use App\Entities\TicketEntity;
 use App\Repositories\{LicenseRepository, TicketRepository, ViolationRepository};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\TicketStatusEnum;
+use DateTime;
 
 class TicketService {
     private mysqli $conn;
@@ -148,20 +149,66 @@ class TicketService {
 
         try {
             $ticket = $this->ticketRepo->findByIdOnly($ticketId);
-            if (!$ticket) throw new \Exception("Ticket not found.");
+            if (!$ticket) throw new Exception("Ticket not found.");
 
             if ($ticket['status'] !== TicketStatusEnum::Settled->value) {
-                throw new \Exception("Ticket is not in a Settled state.");
+                throw new Exception("Ticket is not in a Settled state.");
             }
 
             $updated = $this->ticketRepo->updateStatus($ticketId, TicketStatusEnum::Unsettled);
 
             if (!$updated) {
-                throw new \Exception("Ticket update failed.");
+                throw new Exception("Ticket update failed.");
             }
 
             $this->conn->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            throw $e;
+        }
+    }
+
+    public function updateTicket(UpdateTicketRequest $request): void {
+        $this->conn->begin_transaction();
+
+        try {
+            $rawTicket = $this->ticketRepo->findByIdOnly($request->getTicketId());
+            if (!$rawTicket) throw new Exception("Ticket not found.");
+
+            $ticketId = (int)$rawTicket['ticket_id'];
+            $licenseId = (int)$rawTicket['license_id'];
+            
+            $newTotalFine = 0;
+            $itemsToSave = [];
+
+            foreach ($request->getViolationIds() as $vId) {
+                $violation = $this->violationRepo->findById($vId);
+                if (!$violation) throw new Exception("Violation ID {$vId} not found.");
+
+                $fine = $violation->getBaseFine();
+
+                if ($violation->isPenalty()) {
+                    $offenseCount = $this->ticketRepo->countPreviousOffenses($licenseId, $vId, $ticketId);
+
+                    if ($offenseCount === 1) {
+                        $fine = $violation->getSecondFine();
+                    } elseif ($offenseCount >= 2) {
+                        $fine = $violation->getThirdFine();
+                    }
+                }
+
+                $itemsToSave[] = [
+                    'violation_id' => $violation->getId(),
+                    'name'         => $violation->getName(),
+                    'fine'         => $fine
+                ];
+                $newTotalFine += $fine;
+            }
+
+            $this->ticketRepo->updateRaw($ticketId, $request->getPlaceOfIncident(), $request->getNotes(), $newTotalFine, $itemsToSave);
+
+            $this->conn->commit();
+        } catch (Exception $e) {
             $this->conn->rollback();
             throw $e;
         }

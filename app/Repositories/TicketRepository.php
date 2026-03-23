@@ -98,12 +98,17 @@ class TicketRepository {
         return $ticketId;
     }
 
-    public function countPreviousOffenses(int $licenseId, int $violationId): int {
+    public function countPreviousOffenses(int $licenseId, int $violationId, ?int $excludeTicketId = null): int {
         $sql = "SELECT COUNT(*)
                 FROM ticket_items ti 
                 JOIN tickets t
                 ON ti.ticket_id = t.ticket_id 
                 WHERE t.license_id = ? AND ti.violation_id = ?";
+
+        // If we are updating, don't count the ticket we're currently in
+        if ($excludeTicketId !== null) {
+            $sql .= " AND t.ticket_id != ?";
+        }
         
         $stmt = $this->conn->prepare($sql);
 
@@ -111,7 +116,11 @@ class TicketRepository {
             throw new RuntimeException("Prepare Failed: {$this->conn->error}");
         }
 
-        $stmt->bind_param("ii", $licenseId, $violationId);
+        if ($excludeTicketId !== null) {
+            $stmt->bind_param("iii", $licenseId, $violationId, $excludeTicketId);
+        } else {
+            $stmt->bind_param("ii", $licenseId, $violationId);
+        }
 
         if (!$stmt->execute()) {
             throw new RuntimeException("Execution Failed: {$stmt->error}");
@@ -312,6 +321,30 @@ class TicketRepository {
         }
 
         return $stmt->affected_rows > 0;
+    }
+
+    public function updateRaw(int $id, string $place, ?string $notes, int $total, array $items): void {
+        // Update the main tickets table
+        $stmt = $this->conn->prepare("UPDATE tickets SET place_of_incident = ?, notes = ?, total_fine = ?, updated_at = NOW() WHERE ticket_id = ?");
+        $stmt->bind_param("ssii", $place, $notes, $total, $id);
+        $stmt->execute();
+
+        // Delete old items
+        $this->conn->query("DELETE FROM ticket_items WHERE ticket_id = $id");
+
+        // Insert new items 
+        $itemSql = "INSERT INTO ticket_items(ticket_id, violation_id, name, fine) VALUES (?, ?, ?, ?)";
+        $itemStmt = $this->conn->prepare($itemSql);
+
+        foreach ($items as $item) {
+            $itemStmt->bind_param("iisi", 
+                $id, 
+                $item['violation_id'], 
+                $item['name'], 
+                $item['fine']
+            );
+            $itemStmt->execute();
+        }
     }
 }
 ?>

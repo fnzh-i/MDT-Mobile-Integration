@@ -94,8 +94,6 @@ Route::middleware(['auth'])->group(function (){
     Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
     Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
 });
-<<<<<<< Updated upstream
-=======
 
 Route::get('/license/search', function () {
     return view('license-search'); 
@@ -130,4 +128,12 @@ Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticke
 Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
 Route::post('/ticket/settle/{id}', [CreationManager::class, 'settle'])->name('ticket.settle');
 Route::post('/ticket/unsettle/{id}', [CreationManager::class, 'unsettle'])->name('ticket.unsettle');
->>>>>>> Stashed changes
+
+// may nasira ata ako sa login, etong dalawang routes para "mawala" yung error
+// --- PUBLIC ROUTES (No Middleware) ---
+Route::get('/login', function () { return view('auth.login'); })->name('login'); // <-- ADD THIS
+Route::post('/login', [AuthManager::class, 'login']);
+
+
+Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
+Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);

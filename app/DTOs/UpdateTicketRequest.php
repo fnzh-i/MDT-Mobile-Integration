@@ -1,4 +1,7 @@
 <?php
+namespace App\DTOs;
+use InvalidArgumentException;
+
 class UpdateTicketRequest {
     private int $ticketId;
     private array $violationIds = [];
