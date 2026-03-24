@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\DTOs\{CreateLicenseRequest,
                 CreateVehicleRequest,
                 CreateUserRequest,
-                CreateTicketRequest};
+                CreateTicketRequest,
+                UpdateTicketRequest};
 use App\Enums\{LicenseTypeEnum,
                 LicenseStatusEnum,
                 LicenseExpiryEnum,
@@ -211,5 +212,106 @@ class CreationManager extends Controller
         'status' => 'error', 
         'message' => 'Check laravel.log for details.'
     ], 500);
+    }
+
+
+    public function settle($id) {
+        $service = app(TicketService::class);
+
+        try {
+            if (!$id || (int)$id <= 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid Ticket ID provided.'
+                ], 400);
+            }
+
+            $service->settleTicket((int)$id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket #' . $id . ' has been marked as Settled.'
+            ]);
+
+        } catch (Throwable $e) {
+            $code = ($e->getMessage() === "Ticket not found.") ? 404 : 400;
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], $code);
+        }
+    }
+
+    public function unsettle($id) {
+        $service = app(TicketService::class);
+
+        try {
+            if (!$id || (int)$id <= 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid Ticket ID provided.'
+                ], 400);
+            }
+
+            $service->unsettleTicket((int)$id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket #' . $id . ' has been reverted to Unsettled.'
+            ]);
+
+        } catch (Throwable $e) {
+            $code = ($e->getMessage() === "Ticket not found.") ? 404 : 400;
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], $code);
+        }
+    }
+
+    public function update(Request $request, $id) {
+        $service = app(TicketService::class);
+
+        try {
+            if (!$id || (int)$id <= 0) {
+                return response()->json(['status' => 'error', 'message' => 'Invalid ID'], 400);
+            }
+
+            // REORDERED TO MATCH YOUR CONSTRUCTOR: 
+            // 1. int $ticketId
+            // 2. string $placeOfIncident
+            // 3. ?string $notes
+            // 4. array $violationIds
+            $updateRequest = new \App\DTOs\UpdateTicketRequest(
+                (int)$id,
+                $request->input('place_of_incident', ''), 
+                $request->input('notes'),
+                $request->input('violation_ids', [])
+            );
+
+            $service->updateTicket($updateRequest);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => "Ticket #{$id} updated."
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function getDetails($id) {
+        $repo = app(\App\Repositories\TicketRepository::class);
+        $ticket = $repo->findByIdOnly((int)$id);
+        
+        if (!$ticket) return response()->json(['message' => 'Not found'], 404);
+        
+        return response()->json($ticket);
     }
 }

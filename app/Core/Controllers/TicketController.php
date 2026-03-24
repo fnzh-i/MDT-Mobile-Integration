@@ -35,5 +35,26 @@ class TicketController extends BaseController {
             $this->sendResponse($e->getMessage(), 400);
         }
     }
+
+    public function settle(int $id): void {
+        try {
+            if ($id <= 0) {
+                $this->sendResponse("Invalid Ticket ID provided.", 400);
+                return;
+            }
+
+            $this->ticketService->settleTicket($id);
+            
+            $this->sendResponse(
+                ["ticket_id" => $id], 
+                200, 
+                "Ticket settled successfully."
+            );
+
+        } catch (Throwable $e) {
+            $code = ($e->getMessage() === "Ticket not found.") ? 404 : 400;
+            $this->sendResponse($e->getMessage(), $code);
+        }
+    }
 }
 ?>

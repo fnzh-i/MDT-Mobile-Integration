@@ -94,3 +94,46 @@ Route::middleware(['auth'])->group(function (){
     Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
     Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
 });
+
+Route::get('/license/search', function () {
+    return view('license-search'); 
+})->name('license.search.page');
+
+Route::get('/vehicle/search', function () {
+    return view('vehicle-search'); 
+})->name('vehicle.search.page');
+
+Route::get('/api/vehicle/search', function () {
+    // api for fetching vehicles from the CoreServiceProvider automatically
+    $service = app(\App\Services\VehicleService::class);
+    $controller = new VehicleController($service);
+    return $controller->search();
+});
+
+Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');
+Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
+
+Route::get('/vehicle/create', [CreationManager::class, 'showCreateVehicleForm'])->name('vehicle.create');
+Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
+
+// para sa unique mv file number generator sa create vehicle
+Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
+Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
+
+Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
+Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
+
+Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
+Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
+Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
+Route::post('/ticket/settle/{id}', [CreationManager::class, 'settle'])->name('ticket.settle');
+Route::post('/ticket/unsettle/{id}', [CreationManager::class, 'unsettle'])->name('ticket.unsettle');
+
+// may nasira ata ako sa login, etong dalawang routes para "mawala" yung error
+// --- PUBLIC ROUTES (No Middleware) ---
+Route::get('/login', function () { return view('auth.login'); })->name('login'); // <-- ADD THIS
+Route::post('/login', [AuthManager::class, 'login']);
+
+
+Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
+Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);

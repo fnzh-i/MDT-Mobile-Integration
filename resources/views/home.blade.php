@@ -85,6 +85,61 @@
                         </button>
                     </div>
                 </div>
+
+               <div class="mt-4 p-3 border rounded bg-light">
+                    <h6>Test Settlement Manually:</h6>
+                    <div class="input-group">
+                        <input type="number" id="test_settle_id" class="form-control" placeholder="Ticket ID">
+                        
+                        <button class="btn btn-success" style="width: 100px;" 
+                                onclick="settleTicket(document.getElementById('test_settle_id').value)">
+                            Settle
+                        </button>
+                        
+                        <button class="btn btn-warning text-black" style="width: 100px;" 
+                                onclick="unsettleTicket(document.getElementById('test_settle_id').value)">
+                            Unsettle
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 border rounded bg-light">
+                    <h6>Update Ticket Manually:</h6>
+                    <div class="input-group">
+                        <input type="number" id="update_search_id" class="form-control" placeholder="Enter Ticket ID to Update">
+                        <button class="btn btn-info text-white" onclick="openUpdateModal(document.getElementById('update_search_id').value)">
+                            Search & Update Ticket
+                        </button>
+                    </div>
+                </div>
+
+                <div id="updateTicketModal" class="d-none" style="position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Edit Ticket #<span id="display_ticket_id"></span></h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Place of Incident</label>
+                                    <input type="text" id="modal_place" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea id="modal_notes" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Violation ID</label>
+                                    <input type="number" id="modal_violation_id" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('updateTicketModal').classList.add('d-none')">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="submitTicketUpdate()">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -192,6 +247,99 @@ function deleteTicket(ticketId) {
         location.reload(); // Refresh to show the data is gone
     })
     .catch(err => alert("Error deleting ticket."));
+}
+function settleTicket(ticketId) {
+    if (!ticketId) {
+        alert("Please enter a Ticket ID.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to mark this ticket as Settled?")) return;
+
+    fetch(`/ticket/settle/${ticketId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(err => alert("Error settling ticket."));
+}
+function unsettleTicket(ticketId) {
+    if (!ticketId) {
+        alert("Please enter a Ticket ID.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to Unsettle this ticket?")) return;
+
+    fetch(`/ticket/unsettle/${ticketId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(err => alert("Error unsettling ticket."));
+}
+
+
+function openUpdateModal(ticketId) {
+    if (!ticketId) return alert("Please enter a Ticket ID.");
+
+    fetch(`/ticket/details/${ticketId}`) 
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) throw new Error(data.message);
+
+            // Fill the fields
+            document.getElementById('display_ticket_id').innerText = data.ticket_id;
+            document.getElementById('modal_place').value = data.place_of_incident;
+            document.getElementById('modal_notes').value = data.notes || '';
+            
+            // Show the "Popout" by removing the hidden class
+            document.getElementById('updateTicketModal').classList.remove('d-none');
+        })
+        .catch(err => alert("Error: " + err.message));
+}
+
+function submitTicketUpdate() {
+    const id = document.getElementById('display_ticket_id').innerText;
+    const vId = document.getElementById('modal_violation_id').value;
+
+    if (!vId) return alert("Violation ID is required.");
+
+    const payload = {
+        place_of_incident: document.getElementById('modal_place').value,
+        notes: document.getElementById('modal_notes').value,
+        violation_ids: [parseInt(vId)]
+    };
+
+    fetch(`/ticket/update/${id}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.status === 'success') location.reload();
+    })
+    .catch(err => alert("Update failed."));
 }
 </script>
 @endsection
