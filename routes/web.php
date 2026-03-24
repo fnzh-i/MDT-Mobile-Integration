@@ -16,14 +16,17 @@ use App\Http\Controllers\HomeController;
 // Route::get('/register', [AuthManager::class, 'showRegisterForm'])->name('register');
 
 // --- PUBLIC ROUTES (No Middleware) ---
-Route::post('/login', [AuthManager::class, 'login']);
+Route::get('/login', function () { return view('auth.login'); })->name('login');
+Route::post('/login', [AuthManager::class, 'Login']);
+
+Route::get('/login-civilian', function () {return view('login-civilian');})->name('login-civilian');
+Route::post('/login-civilian', [AuthManager::class, 'LoginCivilian']);
+
+Route::post('/api/login', [AuthManager::class, 'ApiLogin']);
 
 Route::post('/register', [AuthManager::class, 'Register']);
-Route::get('/login-civilian', function () {return view('login-civilian');})->name('login-civilian');
-Route::post('/login-civilian', [AuthManager::class, 'login']);
-
 Route::get('/register', function () { return view('register'); })->name('register');
-Route::post('/register', [AuthManager::class, 'register']);
+
 Route::post('/forgot-password', [AuthManager::class, 'forgotPassword'])->name('forgot-password');
 Route::post('/support/email', [SupportController::class, 'sendEmail'])->name('support.email');
 Route::post('/logout', [AuthManager::class, 'logout'])->name('logout');
@@ -93,47 +96,7 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
     Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
     Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
+
+    Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
+    Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);
 });
-
-Route::get('/license/search', function () {
-    return view('license-search'); 
-})->name('license.search.page');
-
-Route::get('/vehicle/search', function () {
-    return view('vehicle-search'); 
-})->name('vehicle.search.page');
-
-Route::get('/api/vehicle/search', function () {
-    // api for fetching vehicles from the CoreServiceProvider automatically
-    $service = app(\App\Services\VehicleService::class);
-    $controller = new VehicleController($service);
-    return $controller->search();
-});
-
-Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');
-Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
-
-Route::get('/vehicle/create', [CreationManager::class, 'showCreateVehicleForm'])->name('vehicle.create');
-Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
-
-// para sa unique mv file number generator sa create vehicle
-Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
-Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
-
-Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
-Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
-
-Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
-Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
-Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
-Route::post('/ticket/settle/{id}', [CreationManager::class, 'settle'])->name('ticket.settle');
-Route::post('/ticket/unsettle/{id}', [CreationManager::class, 'unsettle'])->name('ticket.unsettle');
-
-// may nasira ata ako sa login, etong dalawang routes para "mawala" yung error
-// --- PUBLIC ROUTES (No Middleware) ---
-Route::get('/login', function () { return view('auth.login'); })->name('login'); // <-- ADD THIS
-Route::post('/login', [AuthManager::class, 'login']);
-
-
-Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
-Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);

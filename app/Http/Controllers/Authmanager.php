@@ -58,6 +58,90 @@ class AuthManager extends Controller
             "message" => "Something went wrong"
         ], 500);
     }
+        function ApiLogin (Request $request){
+        $validate = Validator::make($request->all(),
+        [
+            'email' => "required",
+            'password' => "required|min:8",
+
+        ]);
+
+        if ($validate->fails()){
+            return response()->json(
+                [
+                    "status"=>"error",
+                    "message" => $validate->errors()->getMessages()
+                    ],200);
+        }
+        $validated = $validate -> validated();
+
+        if(Auth::attempt(
+            [
+                'email' => $validated['email'], 
+                'password' => $validated['password']
+            ])
+            ) {
+            $user = Auth::user();
+
+            if ($user instanceof User) {
+                $token = $user->createToken('mobile_token')->plainTextToken;
+            }   
+                // return redirect()->intended(route('home'));
+                return response()->json(
+                    [
+                    "status"=>"success",
+                    "data"=> ['user'=>$user,'token'=>$token],
+                    "message" => "User has been logged in"
+                    ],200);
+            }
+            return response()->json(
+            [
+                "status"=>"error",
+                "message" => "Something went wrong"
+                ],200);
+    }
+    function LoginCivilian (Request $request){
+        $validate = Validator::make($request->all(),
+        [
+            'email' => "required",
+            'password' => "required|min:8",
+
+        ]);
+
+        if ($validate->fails()){
+            return response()->json(
+                [
+                    "status"=>"error",
+                    "message" => $validate->errors()->getMessages()
+                    ],200);
+        }
+        $validated = $validate -> validated();
+
+        if(Auth::attempt(
+            [
+                'email' => $validated['email'], 
+                'password' => $validated['password']
+            ])
+            ) {
+            $user = Auth::user();
+
+            if ($user instanceof User) {
+                $token = $user->createToken('mobile_token')->plainTextToken;
+            }   
+                return redirect()->intended(route('civilian-dashboard'));
+                // return response()->json(
+                //     [
+                //     "status"=>"success",
+                //     "data"=> ['user'=>$user,'token'=>$token],
+                //     "message" => "User has been logged in"
+                //     ],200);
+            }
+            return response()->json(
+            [
+                "status"=>"error",
+                "message" => "Something went wrong"
+                ],200);
+    }
     function Login (Request $request){
         $validate = Validator::make($request->all(),
         [
@@ -86,13 +170,13 @@ class AuthManager extends Controller
             if ($user instanceof User) {
                 $token = $user->createToken('mobile_token')->plainTextToken;
             }   
-                // return redirect()->intended(route('civilian-dashboard'));
-                return response()->json(
-                    [
-                    "status"=>"success",
-                    "data"=> ['user'=>$user,'token'=>$token],
-                    "message" => "User has been logged in"
-                    ],200);
+                return redirect()->intended(route('home'));
+                // return response()->json(
+                //     [
+                //     "status"=>"success",
+                //     "data"=> ['user'=>$user,'token'=>$token],
+                //     "message" => "User has been logged in"
+                //     ],200);
             }
             return response()->json(
             [
@@ -100,7 +184,7 @@ class AuthManager extends Controller
                 "message" => "Something went wrong"
                 ],200);
     }
-    public function logout(Request $request) {
+    public function Logout(Request $request) {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

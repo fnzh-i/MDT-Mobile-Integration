@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +20,7 @@
                 <h1 class="form-title">LOGIN</h1>
                 <p class="form-subtitle">Welcome to the MDT System.<br>Please login to continue.</p>
 
-                <form action="{{ route('login-civilian') }}" method="post">
+                <form action="{{ route('login-civilian') }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
@@ -198,3 +201,4 @@
     <script src="{{ asset('js/login-civilian.js') }}"></script>
 </body>
 </html>
+@endsection
