@@ -22,7 +22,7 @@ Route::post('/login', [AuthManager::class, 'Login']);
 Route::get('/login-civilian', function () {return view('login-civilian');})->name('login-civilian');
 Route::post('/login-civilian', [AuthManager::class, 'LoginCivilian']);
 
-Route::post('/api/login', [AuthManager::class, 'ApiLogin']);
+Route::post('apilogin', [AuthManager::class, 'ApiLogin']);
 
 Route::post('/register', [AuthManager::class, 'Register']);
 Route::get('/register', function () { return view('register'); })->name('register');

@@ -58,7 +58,7 @@ class AuthManager extends Controller
             "message" => "Something went wrong"
         ], 500);
     }
-        function ApiLogin (Request $request){
+    function ApiLogin (Request $request){
         $validate = Validator::make($request->all(),
         [
             'email' => "required",
