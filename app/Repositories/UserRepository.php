@@ -115,6 +115,7 @@ class UserRepository{
         $result = $stmt->get_result();
         return $result->num_rows > 0;
     }
+    
     public function existsByUsername(string $username): bool {
         $sql = "SELECT 1 FROM users WHERE username = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);

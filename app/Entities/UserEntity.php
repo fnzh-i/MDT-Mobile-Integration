@@ -52,12 +52,10 @@ class UserEntity {
     public function setEmail(string $email) {$this->email = $email;}
     public function setPassword(string $password) {$this->password = $password;}
 
-        public static function generateFormat(string $pattern): string {
+    public static function generateFormat(string $pattern): string {
         $str = "";
         for ($i = 0; $i < strlen($pattern); $i++) {
             if ($pattern[$i] == 'N') {
-                $str .= chr(random_int(65, 90));
-            } elseif ($pattern[$i] == 'N') {
                 $str .= random_int(0, 9);
             } else {
                 $str .= $pattern[$i];

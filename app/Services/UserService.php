@@ -31,7 +31,11 @@ class UserService {
         $plainPassword = $request->getPassword();
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
+        // nakalimutan mo lang to pre, needed sya sa UserEntity constructor
+        $newClientNumber = $this->generateClientNumber();
+
         $user = new UserEntity(
+            $newClientNumber,
             $request->getFirstName(),
             ($request->getMiddleName() === "") ? null : $request->getMiddleName(),
             $request->getLastName(),
@@ -72,32 +76,35 @@ class UserService {
             throw new Exception("Database update failed.");
         }
     }
+
     public function generateClientNumber(): string {
         do {
-            $newLicenseNumber = UserEntity::generateFormat("NNN-NN-NNNNNN");
+            $newClientNumber = UserEntity::generateFormat("NN-NNNNNN-NNNNNNN");
             $alreadyExists = $this->userRepo->existsByClientNumber($newClientNumber);
             
         } while ($alreadyExists);
 
-        return $newLicenseNumber;
+        return $newClientNumber;
     }
-    public function existsByClientNumber(string $clientNumber): bool {
-        $sql = "SELECT 1 FROM licenses WHERE license_number = ? LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
+
+
+    // public function existsByClientNumber(string $clientNumber): bool {
+    //     $sql = "SELECT 1 FROM licenses WHERE license_number = ? LIMIT 1";
+    //     $stmt = $this->conn->prepare($sql);
         
-        if (!$stmt) {
-            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
-        }
+    //     if (!$stmt) {
+    //         throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+    //     }
 
-        $stmt->bind_param("s", $clientNumber);
+    //     $stmt->bind_param("s", $clientNumber);
 
-        if (!$stmt->execute()) {
-            throw new RuntimeException("Execution Failed: {$stmt->error}");
-        }
+    //     if (!$stmt->execute()) {
+    //         throw new RuntimeException("Execution Failed: {$stmt->error}");
+    //     }
 
-        $result = $stmt->get_result();
-        return $result->num_rows > 0;
-    }
+    //     $result = $stmt->get_result();
+    //     return $result->num_rows > 0;
+    // }
 
 }
 ?>
