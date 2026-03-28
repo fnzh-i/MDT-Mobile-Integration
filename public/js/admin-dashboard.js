@@ -74,3 +74,37 @@ window.addEventListener('load', () => { //sample
     const t = document.getElementById('ticketChart');
     if (t) new Chart(t, { type: 'bar', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], datasets: [{ data: [3,8,5,14,9,11,6], backgroundColor: '#064789', borderRadius: 4 }] }, options: opts });
 });
+
+document.getElementById('generate-client-num-btn')?.addEventListener('click', () => {
+    fetch('/admin/generate-user-number')
+        .then(res => {
+            if (!res.ok) throw new Error('Check route prefix');
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById('clientNumber').value = data.clientNumber;
+        })
+        .catch(err => console.error('Gen Error:', err));
+});
+document.getElementById('generate-ln-btn')?.addEventListener('click', () => {
+    fetch('/admin/generate-license-number')
+        .then(res => {
+            if (!res.ok) throw new Error('Route not found');
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById('licenseNumber').value = data.licenseNumber;
+        })
+        .catch(err => console.error('License Gen Error:', err));
+});
+document.getElementById('generate-mvfile-btn')?.addEventListener('click', () => {
+    fetch('/admin/generate-mvfile-number')
+        .then(res => {
+            if (!res.ok) throw new Error('Route not found');
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById('mvFileNumber').value = data.mvFileNumber;
+        })
+        .catch(err => console.error('License Gen Error:', err));
+});

@@ -2,10 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\{LicenseService,
+                  UserService,
+                  VehicleService};
 use Illuminate\Http\Request;
+
 
 class AdminController extends Controller
 {
+    protected $userService;
+    protected $licenseService;
+    protected $vehicleService;
+
+    public function __construct(UserService $userService,
+                                LicenseService $licenseService,
+                                VehicleService $vehicleService)
+    {
+        $this->userService = $userService;
+        $this->licenseService = $licenseService;
+        $this->vehicleService = $vehicleService;
+    }
+    public function generateLicenseNumber()
+    {
+        $number = $this->licenseService->generateLicenseNumber();
+
+        return response()->json([
+            'licenseNumber' => $number
+        ]);
+    }
+    public function generateUserClientNumber()
+    {
+        $number = $this->userService->generateClientNumber();
+
+        return response()->json([
+            'clientNumber' => $number
+        ]);
+    }
+    public function generateMVFileNumber(){
+        $number = $this->vehicleService->generateMVFileNumber();
+
+        return response()->json([
+            'mvFileNumber' => $number
+        ]);
+    }
     public function index()
     {
 

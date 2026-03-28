@@ -83,12 +83,15 @@ Route::middleware(['auth'])->group(function (){
         // Create Routes
         Route::get('/create-users', [AdminController::class, 'createUsers'])->name('admin-create-users');
         Route::post('/create-user',[CreationManager::class, 'storeUser'])->name('user.store');
+        Route::get('/generate-user-number', [AdminController::class, 'generateUserClientNumber'])->name('admin.generate.user.number');
 
         Route::get('/create-license', [AdminController::class, 'createLicense'])->name('admin-create-license');
         Route::post('/create-license',[CreationManager::class, 'storeLicense'])->name('license.store');
+        Route::get('/generate-license-number', [AdminController::class, 'generateLicenseNumber'])->name('admin.generate.license.number');
 
         Route::get('/create-vehicle', [AdminController::class, 'createVehicles'])->name('admin-create-vehicle');
         Route::post('/create-vehicle',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
+        Route::get('/generate-mvfile-number', [AdminController::class, 'generateMVFileNumber'])->name('admin.generate.mvfile.number');
 
         // Search Routes
         Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('admin-search-users');

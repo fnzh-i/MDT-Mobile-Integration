@@ -161,8 +161,8 @@
                                 <div class="form-field-label">Client number</div>
                             </div>
                             <div class="form-row-3">
-                                <input type="text" name="clientNumber" placeholder="001-XX-XXXXXX" class="form-input" id="clientNumber" required>
-                                <button type="button" id="generate-ln-btn" class="btn-form-submit">
+                                <input type="text" name="clientNumber" placeholder="001-XX-XXXXXX" class="form-input" id="clientNumber" required readonly>
+                                <button type="button" id="generate-client-num-btn" class="btn-form-submit">
                                     Generate
                                 </button>
                             </div>
@@ -173,7 +173,7 @@
                                 <input type="text" name="first_name" class="form-input" placeholder="First Name" required>
                                 <input type="text" name="middle_name" class="form-input" placeholder="Middle Name">
                                 <input type="text" name="last_name" class="form-input" placeholder="Last Name" required>
-                                <input type="text" name="suffix" class="form-input" placeholder="Suffix" required>
+                                <input type="text" name="suffix" class="form-input" placeholder="Suffix">
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Username</div>
@@ -198,8 +198,9 @@
                             @csrf
                             <div class="form-section">
                                 <div class="form-field-label">License Number</div>
-                                <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="form-input" required>
+                                <input type="text" id="licenseNumber" name="license_number" placeholder="D01-XX-XXXXXX" class="form-input" required readonly>
                                 <div class="input-group-append">
+
                                     <!-- <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required> -->
                                     <button type="button" id="generate-ln-btn" class="btn-form-submit">
                                         Generate
@@ -290,12 +291,15 @@
                             <div class="form-row-2">
                                 <div class="">
                                     <div class="form-field-label">MV File Number</div>
-                                    <input type="text" name="mv_file_number" class="form-input" placeholder="MV File Number" required>
+                                    <input type="text" id="mvFileNumber" name="mv_file_number" class="form-input" placeholder="MV File Number" required readonly>
                                 </div>
-                                <div class="">
-                                    <div class="form-field-label">VIN</div>
-                                    <input type="text" name="vin" class="form-input" placeholder="VIN" required>
-                                </div>
+                                <button type="button" id="generate-mvfile-btn" class="btn-form-submit">
+                                        Generate
+                                </button>
+                            </div>
+                            <div class="">
+                                <div class="form-field-label">VIN</div>
+                                <input type="text" name="vin" class="form-input" placeholder="VIN" required>
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Issue Date</div>

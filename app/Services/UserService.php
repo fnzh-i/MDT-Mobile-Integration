@@ -28,14 +28,16 @@ class UserService {
             throw new Exception("Username {$username} is already taken.");
         }
 
+        $providedClientNumber = $request->getClientNumber(); 
+        if ($this->userRepo->existsByClientNumber($providedClientNumber)) {
+            throw new Exception("Client number {$providedClientNumber} already exists.");
+        }
+
         $plainPassword = $request->getPassword();
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
-        // nakalimutan mo lang to pre, needed sya sa UserEntity constructor
-        $newClientNumber = $this->generateClientNumber();
-
         $user = new UserEntity(
-            $newClientNumber,
+            $providedClientNumber,
             $request->getFirstName(),
             ($request->getMiddleName() === "") ? null : $request->getMiddleName(),
             $request->getLastName(),
