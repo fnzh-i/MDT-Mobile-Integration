@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function (){
         return view('welcome');
     });
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/admin-dashboard',[AdminController::class, 'index'])->name('admin-dashboard');
     Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->name('civilian-dashboard');
     
@@ -82,18 +82,18 @@ Route::middleware(['auth'])->group(function (){
 
         // Create Routes
         Route::get('/create-users', [AdminController::class, 'createUsers'])->name('admin-create-users');
-        Route::post('/create-users',[CreationManager::class, 'storeUser'])->name('user.store');
+        Route::post('/create-user',[CreationManager::class, 'storeUser'])->name('user.store');
 
         Route::get('/create-license', [AdminController::class, 'createLicense'])->name('admin-create-license');
-        Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
+        Route::post('/create-license',[CreationManager::class, 'storeLicense'])->name('license.store');
 
         Route::get('/create-vehicle', [AdminController::class, 'createVehicles'])->name('admin-create-vehicle');
-        Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
+        Route::post('/create-vehicle',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
 
         // Search Routes
         Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('admin-search-users');
-        Route::get('/search-license', [AdminController::class, 'searchLicense'])->name('admin-search-license');
-        Route::get('/search-vehicle', [AdminController::class, 'searchVehicles'])->name('admin-search-vehicle');
+        Route::get('/search-licenses', [AdminController::class, 'searchLicense'])->name('admin-search-license');
+        Route::get('/search-vehicles', [AdminController::class, 'searchVehicles'])->name('admin-search-vehicle');
 
         // for ticket
         Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');

@@ -4,7 +4,7 @@ namespace App\Entities;
 use App\Enums\UserRolesEnum;
 
 class UserEntity {
-    private string $clientNumber;
+    private string $client_number;
     private string $username;
     private string $email;
     private string $password;
@@ -14,7 +14,7 @@ class UserEntity {
     private UserRolesEnum $role;
     private ?int $id;
 
-    public function __construct(string $clientNumber,
+    public function __construct(string $client_number,
                                 string $first_name,
                                 ?string $middle_name,
                                 string $last_name,
@@ -24,7 +24,7 @@ class UserEntity {
                                 UserRolesEnum $role,
                                 ?int $id = null) {
 
-        $this->clientNumber = $clientNumber;
+        $this->client_number = $client_number;
         $this->first_name = $first_name;
         $this->middle_name = $middle_name;
         $this->last_name = $last_name;
@@ -35,7 +35,7 @@ class UserEntity {
         $this->id = $id;
     }
 
-    public function getClientNumber(): string {return $this->clientNumber;}
+    public function getClientNumber(): string {return $this->client_number;}
     public function getFirstName(): string {return $this->first_name;}
     public function getMiddleName(): ?string {return $this->middle_name;}
     public function getLastName(): string {return $this->last_name;}
@@ -44,7 +44,7 @@ class UserEntity {
     public function getPassword(): string {return $this->password;}
     public function getRole(): UserRolesEnum {return $this->role;}
     public function getId(): ?int {return $this->id;}
-    public function setClientNumber(string $clientNumber) {$this->clientNumber = $clientNumber; }
+    public function setClientNumber(string $client_number) {$this->client_number = $client_number; }
     public function setFirstName(string $first_name) {$this->first_name = $first_name;}
     public function setMiddleName(?string $middle_name) {$this->middle_name = $middle_name;}
     public function setLastName(string $last_name) {$this->last_name = $last_name;}

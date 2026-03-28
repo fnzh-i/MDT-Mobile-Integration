@@ -19,11 +19,12 @@ class UserController extends BaseController {
 
         try {
             $requestDTO = new CreateUserRequest(
-                $data['clientNumber'],
+                $data['client_number'],
                 $data['first_name'],
                 $data['middle_name'] ?? null,
                 $data['last_name'],
                 $data['username'],
+                $data['email'],
                 $data['password'],
                 UserRolesEnum::from(strtoupper($data['role']))
             );

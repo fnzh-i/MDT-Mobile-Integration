@@ -17,15 +17,15 @@ class AdminController extends Controller
     }
     public function createVehicles()
     {
-        return view('admin-dashboard', ['section' => 'create-vehicles']);
+        return view('admin-dashboard', ['section' => 'create-vehicle']);
     }
     public function createUsers()
     {
-        return view('admin-dashboard', ['section' => 'create-users']);
+        return view('admin-dashboard', ['section' => 'create-user']);
     }
     public function searchLicense()
     {
-        return view('admin-dashboard', ['section' => 'search-license']);
+        return view('admin-dashboard', ['section' => 'search-licenses']);
     }
     public function searchVehicles()
     {

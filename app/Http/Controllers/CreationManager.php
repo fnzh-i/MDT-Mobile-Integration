@@ -130,6 +130,7 @@ class CreationManager extends Controller
         $service = app(\App\Services\UserService::class);
         try{
             $dto = new CreateUserRequest(
+                $request->clientNumber,
                 $request->first_name,
                 $request->middle_name ?? "",
                 $request->last_name,

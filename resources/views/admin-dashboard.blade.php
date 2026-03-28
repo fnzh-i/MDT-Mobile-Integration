@@ -55,8 +55,7 @@
                         <strong class="font-bold">Database Error:</strong>
                         <span class="block sm:inline">{{ $errors->first('error') }}</span>
                     </div>
-
-                @elsesif ($section === 'dashboard')
+                @elseif ($section === 'dashboard')
                     <h1 class="dash-title">Admin Dashboard</h1>
                     <p class="dash-sub">Administrative tools and Management actions</p>
                     
@@ -143,7 +142,7 @@
                         </div>
                     </div>
 
-                @elseif ($section === 'create-users')
+                @elseif ($section === 'create-user')
                     <div class="form-card">
                         <h2 class="form-card-title">Create New User</h2>
                         <form action="{{ route('user.store') }}" method="POST">
@@ -195,11 +194,24 @@
                 @elseif ($section === 'create-license')
                     <div class="form-card">
                         <h2 class="form-card-title">Create New License</h2>
-                        <form action="{{ route('admin-create-license') }}" method="POST">
+                        <form action="{{ route('license.store') }}" method="POST">
                             @csrf
                             <div class="form-section">
                                 <div class="form-field-label">License Number</div>
-                                <input type="text" name="license_number" class="form-input" required>
+                                <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="form-input" required>
+                                <div class="input-group-append">
+                                    <!-- <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required> -->
+                                    <button type="button" id="generate-ln-btn" class="btn-form-submit">
+                                        Generate
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-field-label">License Type: </label>
+                                <select name="license_type" class="w-full p-2 rounded border">
+                                    <option value="Professional">Professional</option>
+                                    <option value="Non-Professional">Non-Professional</option>
+                                </select>
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Role</div>
@@ -208,7 +220,6 @@
                                     <label for="" class="radio-option"> <input type="Radio" name="license_status" value="Suspended"> Suspended </label>
                                     <label for="" class="radio-option"> <input type="Radio" name="license_status" value="Revoked"> Revoked </label>
                                     <label for="" class="radio-option"> <input type="Radio" name="license_status" value="Expired"> Expired </label>
-                                    <label for="" class="radio-option"> <input type="Radio" name="license_status" value="Unregistered"> Unregistered </label>
                                 </div>
                             </div>
                             <div class="form-section">
@@ -266,7 +277,7 @@
                 @elseif ($section === 'create-vehicle')
                     <div class="form-card">
                         <h2 class="form-card-title">Create New Vehicle</h2>
-                        <form action="{{ route('admin-create-vehicle') }}" method="POST">
+                        <form action="{{ route('vehicle.store') }}" method="POST">
                             @csrf
                             <div class="form-section">
                                 <div class="form-field-label">License Number</div>

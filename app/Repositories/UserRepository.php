@@ -15,7 +15,7 @@ class UserRepository{
     }
 
     public function save(UserEntity $user): int {
-        $clientNumber = $user->getClientNumber();
+        $lto_client_id = $user->getClientNumber();
         $first_name = $user->getFirstName();
         $middle_name = $user->getMiddleName();
         $last_name = $user->getLastName();
@@ -25,7 +25,7 @@ class UserRepository{
         $role = $user->getRole()->value;
 
         $sql = "INSERT INTO users(
-            clientNumber,
+            lto_client_id,
             role,
             first_name,
             middle_name,
@@ -45,7 +45,7 @@ class UserRepository{
 
         $stmt->bind_param(
             "ssssssss",
-            $clientNumber,
+            $lto_client_id,
             $role,
             $first_name,
             $middle_name,
@@ -64,7 +64,7 @@ class UserRepository{
 
     public function hydrate(array $row): UserEntity {
         return new UserEntity(
-            $row["clientNumber"],
+            $row["client_number"],
             $row["first_name"],
             $row["middle_name"] ?? null,
             $row["last_name"],
@@ -98,7 +98,7 @@ class UserRepository{
         return $this->hydrate($row);
     }
 
-    public function existsByClientNumber(string $clientNumber): bool {
+    public function existsByClientNumber(string $client_number): bool {
         $sql = "SELECT 1 FROM users WHERE lto_client_id = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         
@@ -106,7 +106,7 @@ class UserRepository{
             throw new RuntimeException("Prepare Failed: {$this->conn->error}");
         }
 
-        $stmt->bind_param("s", $clientNumber);
+        $stmt->bind_param("s", $client_number);
 
         if (!$stmt->execute()) {
             throw new RuntimeException("Execution Failed: {$stmt->error}");
