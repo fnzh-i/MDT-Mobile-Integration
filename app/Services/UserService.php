@@ -3,9 +3,11 @@ namespace App\Services;
 
 use mysqli;
 use Exception;
+use RuntimeException;
 use App\Entities\UserEntity;
 use App\DTOs\CreateUserRequest;
 use App\DTOs\LoginResponse;
+use App\Entities\PersonEntity;
 use App\Repositories\UserRepository;
 
 class UserService {
@@ -70,5 +72,32 @@ class UserService {
             throw new Exception("Database update failed.");
         }
     }
+    public function generateClientNumber(): string {
+        do {
+            $newLicenseNumber = UserEntity::generateFormat("NNN-NN-NNNNNN");
+            $alreadyExists = $this->userRepo->existsByClientNumber($newClientNumber);
+            
+        } while ($alreadyExists);
+
+        return $newLicenseNumber;
+    }
+    public function existsByClientNumber(string $clientNumber): bool {
+        $sql = "SELECT 1 FROM licenses WHERE license_number = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("s", $clientNumber);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        return $result->num_rows > 0;
+    }
+
 }
 ?>

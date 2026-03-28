@@ -170,7 +170,7 @@ class AuthManager extends Controller
             if ($user instanceof User) {
                 $token = $user->createToken('mobile_token')->plainTextToken;
             }   
-                return redirect()->intended(route('home'));
+                return redirect()->intended(route('admin-dashboard'));
                 // return response()->json(
                 //     [
                 //     "status"=>"success",

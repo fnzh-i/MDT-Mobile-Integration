@@ -7,6 +7,7 @@ use App\Http\Controllers\CreationManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Core\Controllers\LicenseController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\CivilianController; 
 use App\Http\Controllers\HomeController;
@@ -39,6 +40,7 @@ Route::middleware(['auth'])->group(function (){
     });
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/admin-dashboard',[AdminController::class, 'index'])->name('admin-dashboard');
     Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->name('civilian-dashboard');
     
     Route::prefix('civilian')->group(function(){ // Civilian manager routes
@@ -70,33 +72,60 @@ Route::middleware(['auth'])->group(function (){
         return $controller->search();
     });
 
-    Route::get('/license/search', function () {
-        return view('license-search'); 
-    })->name('license.search.page');
+    Route::get('/license/search', function () { return view('license-search'); })->name('license.search.page');
 
-    Route::get('/vehicle/search', function () {
-        return view('vehicle-search'); 
-    })->name('vehicle.search.page');
+    Route::get('/vehicle/search', function () { return view('vehicle-search'); })->name('vehicle.search.page');
 
+    Route::prefix('admin')->group(function () {
+        // The main dashboard
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('admin-dashboard');
 
+        // Create Routes
+        Route::get('/create-users', [AdminController::class, 'createUsers'])->name('admin-create-users');
+        Route::post('/create-users',[CreationManager::class, 'storeUser'])->name('user.store');
 
-    Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');
-    Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
+        Route::get('/create-license', [AdminController::class, 'createLicense'])->name('admin-create-license');
+        Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
 
-    Route::get('/vehicle/create', [CreationManager::class, 'showCreateVehicleForm'])->name('vehicle.create');
-    Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
+        Route::get('/create-vehicle', [AdminController::class, 'createVehicles'])->name('admin-create-vehicle');
+        Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
 
-    // para sa unique mv file number generator sa create vehicle
-    Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
-    Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
+        // Search Routes
+        Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('admin-search-users');
+        Route::get('/search-license', [AdminController::class, 'searchLicense'])->name('admin-search-license');
+        Route::get('/search-vehicle', [AdminController::class, 'searchVehicles'])->name('admin-search-vehicle');
 
-    Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
-    Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
+        // for ticket
+        Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
+        Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);
 
-    Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
-    Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
-    Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
+        // for settings
+        Route::get('/settings', [AdminController::class, 'settings'])->name('admin-settings');
+        
+        // for authorization
+        // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
+    });
 
-    Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
-    Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);
+    // Route::prefix('admin')->group(function(){
+    //     Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');
+    //     Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
+
+    //     Route::get('/vehicle/create', [CreationManager::class, 'showCreateVehicleForm'])->name('vehicle.create');
+    //     Route::post('/vehicle/store',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
+
+    //     // para sa unique mv file number generator sa create vehicle
+    //     Route::get('/vehicle/uniquemvfile', [CreationManager::class, 'createUniqueMVFile'])->name('vehicle.uniquemvfile');
+    //     Route::get('/license/uniquelicensenum', [CreationManager::class, 'createUniqueLicenseNumber'])->name('license.uniquelicensenum');
+
+    //     Route::get('/user/create', [CreationManager::class, 'showCreateUserForm'])->name('user.create');
+    //     Route::post('/user/store',[CreationManager::class, 'storeUser'])->name('user.store');
+
+    //     Route::get('/ticket/create', [CreationManager::class, 'showCreateTicketForm'])->name('ticket.create');
+    //     Route::post('/ticket/store',[CreationManager::class,'storeTicket'])->name('ticket.store');
+    //     Route::post('/ticket/delete/{id}', [CreationManager::class, 'destroy'])->name('ticket.destroy');
+
+    //     Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
+    //     Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);
+    // });
+ 
 });

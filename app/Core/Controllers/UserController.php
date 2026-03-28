@@ -19,6 +19,7 @@ class UserController extends BaseController {
 
         try {
             $requestDTO = new CreateUserRequest(
+                $data['clientNumber'],
                 $data['first_name'],
                 $data['middle_name'] ?? null,
                 $data['last_name'],

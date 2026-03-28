@@ -1,3 +1,7 @@
+@extends('layouts.app')
+
+@section('content')
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,13 +45,18 @@
                     <a href="{{ route('admin-search-users') }}" class="nav-link {{ $section === 'search-users' ? 'active' : '' }}"> <i class="bi bi-person-lines-fill me-2"></i> Search & Edit Users </a>
                     <a href="{{ route('admin-search-license') }}" class="nav-link {{ $section === 'search-license' ? 'active' : '' }}"> <i class="bi bi-search me-2"></i> Search & Edit License </a>
                     <a href="{{ route('admin-search-vehicle') }}" class="nav-link {{ $section === 'search-vehicle' ? 'active' : '' }}"> <i class="bi bi-truck me-2"></i> Search & Edit Vehicle </a>
-                    <a href="{{ route('admin-authorize') }}" class="nav-link {{ $section === 'authorize' ? 'active' : '' }}"> <i class="bi bi-shield-check me-2"></i> Authorize Users </a>
                     <a href="{{ route('admin-settings') }}" class="nav-link {{ $section === 'settings' ? 'active' : '' }}"> <i class="bi bi-gear me-2"></i> Settings </a>
 
             </aside>
 
             <main class="main" id="main">
-                @if ($section === 'dashboard')
+                @if($errors->has('error'))
+                    <div class="max-w-4xl mx-auto mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                        <strong class="font-bold">Database Error:</strong>
+                        <span class="block sm:inline">{{ $errors->first('error') }}</span>
+                    </div>
+
+                @elsesif ($section === 'dashboard')
                     <h1 class="dash-title">Admin Dashboard</h1>
                     <p class="dash-sub">Administrative tools and Management actions</p>
                     
@@ -137,7 +146,7 @@
                 @elseif ($section === 'create-users')
                     <div class="form-card">
                         <h2 class="form-card-title">Create New User</h2>
-                        <form action="{{ route('admin-create-users') }}" method="POST">
+                        <form action="{{ route('user.store') }}" method="POST">
                             @csrf
                             <div class="form-section">
                                 <div class="form-field-label">Role</div>
@@ -148,6 +157,18 @@
                                     <label for="" class="radio-option"> <input type="radio" name="role" value="SUPERVISOR"> Supervisor </label>
                                     <label for="" class="radio-option"> <input type="radio" name="role" value="ADMIN"> Admin </label>
                                 </div>
+                            </div>
+                            <div class="form-section">
+                                <div class="form-field-label">Client number</div>
+                            </div>
+                            <div class="form-row-3">
+                                <input type="text" name="clientNumber" placeholder="001-XX-XXXXXX" class="form-input" id="clientNumber" required>
+                                <button type="button" id="generate-ln-btn" class="btn-form-submit">
+                                    Generate
+                                </button>
+                            </div>
+                            <div class="form-section">
+                                <div class="form-field-label">Full Name</div>
                             </div>
                             <div class="form-row-4">
                                 <input type="text" name="first_name" class="form-input" placeholder="First Name" required>
@@ -528,3 +549,4 @@
 
 </body>
 </html>
+@endsection

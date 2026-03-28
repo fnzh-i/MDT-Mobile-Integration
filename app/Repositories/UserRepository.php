@@ -15,6 +15,7 @@ class UserRepository{
     }
 
     public function save(UserEntity $user): int {
+        $clientNumber = $user->getClientNumber();
         $first_name = $user->getFirstName();
         $middle_name = $user->getMiddleName();
         $last_name = $user->getLastName();
@@ -24,6 +25,7 @@ class UserRepository{
         $role = $user->getRole()->value;
 
         $sql = "INSERT INTO users(
+            clientNumber,
             role,
             first_name,
             middle_name,
@@ -33,7 +35,7 @@ class UserRepository{
             password,
             created_at, 
             updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -42,7 +44,8 @@ class UserRepository{
         }
 
         $stmt->bind_param(
-            "sssssss",
+            "ssssssss",
+            $clientNumber,
             $role,
             $first_name,
             $middle_name,
@@ -61,6 +64,7 @@ class UserRepository{
 
     public function hydrate(array $row): UserEntity {
         return new UserEntity(
+            $row["clientNumber"],
             $row["first_name"],
             $row["middle_name"] ?? null,
             $row["last_name"],
@@ -94,6 +98,23 @@ class UserRepository{
         return $this->hydrate($row);
     }
 
+    public function existsByClientNumber(string $clientNumber): bool {
+        $sql = "SELECT 1 FROM users WHERE lto_client_id = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("s", $clientNumber);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        return $result->num_rows > 0;
+    }
     public function existsByUsername(string $username): bool {
         $sql = "SELECT 1 FROM users WHERE username = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);
