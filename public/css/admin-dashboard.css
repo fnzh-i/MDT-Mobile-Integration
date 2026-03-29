@@ -119,6 +119,7 @@ body { font-family: 'Inter', sans-serif; background: #EBF2FA; }
 .empty-state { text-align: center; padding: 60px 20px; }
 .empty-state-icon { font-size: 4rem; color: #d0daea; display: block; margin-bottom: 16px; }
 .empty-state-text { font-size: 1rem; color: #9aaec8; font-weight: 600; }
+.hidden { display: none; }
 
 @media (max-width: 960px) {
     .stat-cards-row { grid-template-columns: repeat(2,1fr); }

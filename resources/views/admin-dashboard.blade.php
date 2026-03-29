@@ -293,7 +293,9 @@
                                     <option value="Amber">Amber</option>
                                     <option value="Violet">Violet</option>
                                     <option value="Red/Violet">Red/Violet</option>
+                                    <option value="Other">Other (Specify)</option>
                                 </select>
+                                <input type="text" id="otherEyeColor" name="other_eye_color" class="form-input mt-2 hidden" placeholder="Enter eye color..." style="display: none;"">
                             </div>
                             <button type="submit" class="btn-form-submit">Create License</button>
                         </form>

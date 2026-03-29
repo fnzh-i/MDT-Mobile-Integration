@@ -108,3 +108,30 @@ document.getElementById('generate-mvfile-btn')?.addEventListener('click', () => 
         })
         .catch(err => console.error('License Gen Error:', err));
 });
+
+// this still needs to be connected
+function toggleEyeColorInput() {
+    const select = document.getElementById('eyeColorSelect');
+    const otherInput = document.getElementById('otherEyeColor');
+    
+    if (select && otherInput) {
+        if (select.value === 'other') {
+            otherInput.style.display = 'block';
+            otherInput.required = true;
+            select.removeAttribute('name');
+            otherInput.setAttribute('name', 'eye_color');
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.required = false;
+            select.setAttribute('name', 'eye_color');
+            otherInput.removeAttribute('name');
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Make sure the eye color select exists
+    if (document.getElementById('eyeColorSelect')) {
+        toggleEyeColorInput(); // Initialize state
+    }
+});
