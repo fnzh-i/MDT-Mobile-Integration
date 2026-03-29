@@ -209,7 +209,8 @@
                             </div>
                             <div class="form-section">
                                 <label class="form-field-label">License Type: </label>
-                                <select name="license_type" class="w-full p-2 rounded border">
+                                <select name="license_type" class="w-full p-2 rounded border" required>
+                                    <option value="" disabled selected>Select License Type</option>
                                     <option value="Professional">Professional</option>
                                     <option value="Non-Professional">Non-Professional</option>
                                 </select>
@@ -265,12 +266,34 @@
                             </div>
                             <div class="form-row-2">
                                 <input type="text" name="nationality" class="form-input" placeholder="Nationality" required>
-                                <input type="text" name="blood_type" class="form-input" placeholder="Blood Type">
+                                <select name="blood_type" class="w-full p-2 rounded border">
+                                    <option value="" disabled selected>Select Blood Type</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
                             </div>
                             <div class="form-row-3">
                                 <input type="number" name="height" class="form-input" placeholder="Height (cm)" step="0.01" required>
                                 <input type="number" name="weight" class="form-input" placeholder="Weight (kg)" step="0.01" required>
-                                <input type="text" name="eye_color" class="form-input" placeholder="Eye Color" required>
+                                <select name="eye_color" class="w-full p-2 rounded border" required>
+                                    <option value="" disabled selected>Select Eye Color</option>
+                                    <option value="Black">Black</option>
+                                    <option value="Brown">Brown</option>
+                                    <option value="Dark Brown">Dark Brown</option>
+                                    <option value="Hazel">Hazel</option>
+                                    <option value="Green">Green</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Gray">Gray</option>
+                                    <option value="Amber">Amber</option>
+                                    <option value="Violet">Violet</option>
+                                    <option value="Red/Violet">Red/Violet</option>
+                                </select>
                             </div>
                             <button type="submit" class="btn-form-submit">Create License</button>
                         </form>
