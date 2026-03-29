@@ -309,7 +309,10 @@
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Plate Number</div>
-                                <input type="text" name="plate_number" class="form-input" placeholder="Plate Number" required>
+                                <input type="text" id="plateNumber" name="plate_number" class="form-input" placeholder="Plate Number" required>
+                                <button type="button" id="generate-plate-btn" class="btn-form-submit">
+                                        Generate
+                                </button>
                             </div>
                             <div class="form-row-2">
                                 <div class="">

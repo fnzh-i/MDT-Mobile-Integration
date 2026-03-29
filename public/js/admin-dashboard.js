@@ -84,7 +84,7 @@ document.getElementById('generate-client-num-btn')?.addEventListener('click', ()
         .then(data => {
             document.getElementById('clientNumber').value = data.clientNumber;
         })
-        .catch(err => console.error('Gen Error:', err));
+        .catch(err => console.error('Client Gen Error:', err));
 });
 document.getElementById('generate-ln-btn')?.addEventListener('click', () => {
     fetch('/admin/generate-license-number')
@@ -106,5 +106,16 @@ document.getElementById('generate-mvfile-btn')?.addEventListener('click', () => 
         .then(data => {
             document.getElementById('mvFileNumber').value = data.mvFileNumber;
         })
-        .catch(err => console.error('License Gen Error:', err));
+        .catch(err => console.error('MV File Gen Error:', err));
+});
+document.getElementById('generate-plate-btn')?.addEventListener('click', () => {
+    fetch('/admin/generate-plate-number')
+        .then(res => {
+            if (!res.ok) throw new Error('Route not found');
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById('plateNumber').value = data.plateNumber;
+        })
+        .catch(err => console.error('Plate Gen Error:', err));
 });

@@ -6,7 +6,8 @@ use mysqli;
 use Exception;
 use InvalidArgumentException;
 use App\DTOs\SearchVehicleResponse;
-use App\Entities\VehicleEntity;
+use App\Entities\{VehicleEntity,
+                  LicenseEntity};
 use App\Repositories\{VehicleRepository, LicenseRepository};
 
 class VehicleService {
@@ -101,6 +102,16 @@ class VehicleService {
         } while ($alreadyExists);
 
         return $newMVFileNum;
+    }
+
+    public function generatePlateNumber(): string {
+        do {
+            $newPlateNumber = LicenseEntity::generateFormat("LLL NNNN");
+            $alreadyExists = $this->vehicleRepo->existsByPlateNumber($newPlateNumber);
+            
+        } while ($alreadyExists);
+
+        return $newPlateNumber;
     }
 }
 ?>

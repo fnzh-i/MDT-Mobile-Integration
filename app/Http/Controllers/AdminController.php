@@ -22,6 +22,7 @@ class AdminController extends Controller
         $this->licenseService = $licenseService;
         $this->vehicleService = $vehicleService;
     }
+    
     public function generateLicenseNumber()
     {
         $number = $this->licenseService->generateLicenseNumber();
@@ -43,6 +44,14 @@ class AdminController extends Controller
 
         return response()->json([
             'mvFileNumber' => $number
+        ]);
+    }
+    public function generatePlateNumber()
+    {
+        $number = $this->vehicleService->generatePlateNumber();
+
+        return response()->json([
+            'plateNumber' => $number
         ]);
     }
     public function index()

@@ -92,6 +92,7 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/create-vehicle', [AdminController::class, 'createVehicles'])->name('admin-create-vehicle');
         Route::post('/create-vehicle',[CreationManager::class, 'storeVehicle'])->name('vehicle.store');
         Route::get('/generate-mvfile-number', [AdminController::class, 'generateMVFileNumber'])->name('admin.generate.mvfile.number');
+        Route::get('/generate-plate-number', [AdminController::class, 'generatePlateNumber'])->name('admin.generate.plate.number');
 
         // Search Routes
         Route::get('/search-users', [AdminController::class, 'searchUsers'])->name('admin-search-users');
