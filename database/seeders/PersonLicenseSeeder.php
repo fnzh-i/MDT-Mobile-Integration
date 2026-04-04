@@ -126,7 +126,7 @@ class PersonLicenseSeeder extends Seeder
                 'license_number' => $entry['license_no'],
                 'license_type'   => $entry['type'],
                 'license_status' => 'Active',
-                'dl_codes'       => json_encode(["A", "B"]),
+                'dl_codes'       => implode(', ', ['A','A1','B','B1','C','D']),
                 'issue_date'     => '2025-06-12',
                 'expiry_date'    => Carbon::parse('2025-06-12')->addYears(10),
                 'created_at'     => now(),

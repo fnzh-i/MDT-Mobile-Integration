@@ -3,9 +3,11 @@ namespace App\Services;
 
 use mysqli;
 use Exception;
+use RuntimeException;
 use App\Entities\UserEntity;
 use App\DTOs\CreateUserRequest;
 use App\DTOs\LoginResponse;
+use App\Entities\PersonEntity;
 use App\Repositories\UserRepository;
 
 class UserService {
@@ -26,10 +28,16 @@ class UserService {
             throw new Exception("Username {$username} is already taken.");
         }
 
+        $providedClientNumber = $request->getClientNumber(); 
+        if ($this->userRepo->existsByClientNumber($providedClientNumber)) {
+            throw new Exception("Client number {$providedClientNumber} already exists.");
+        }
+
         $plainPassword = $request->getPassword();
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
         $user = new UserEntity(
+            $providedClientNumber,
             $request->getFirstName(),
             ($request->getMiddleName() === "") ? null : $request->getMiddleName(),
             $request->getLastName(),
@@ -70,5 +78,35 @@ class UserService {
             throw new Exception("Database update failed.");
         }
     }
+
+    public function generateClientNumber(): string {
+        do {
+            $newClientNumber = UserEntity::generateFormat("NN-NNNNNN-NNNNNNN");
+            $alreadyExists = $this->userRepo->existsByClientNumber($newClientNumber);
+            
+        } while ($alreadyExists);
+
+        return $newClientNumber;
+    }
+
+
+    // public function existsByClientNumber(string $clientNumber): bool {
+    //     $sql = "SELECT 1 FROM licenses WHERE license_number = ? LIMIT 1";
+    //     $stmt = $this->conn->prepare($sql);
+        
+    //     if (!$stmt) {
+    //         throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+    //     }
+
+    //     $stmt->bind_param("s", $clientNumber);
+
+    //     if (!$stmt->execute()) {
+    //         throw new RuntimeException("Execution Failed: {$stmt->error}");
+    //     }
+
+    //     $result = $stmt->get_result();
+    //     return $result->num_rows > 0;
+    // }
+
 }
 ?>
