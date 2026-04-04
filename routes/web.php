@@ -77,8 +77,6 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/vehicle/search', function () { return view('vehicle-search'); })->name('vehicle.search.page');
 
     Route::prefix('admin')->group(function () {
-        // The main dashboard
-        Route::get('/dashboard', [AdminController::class, 'index'])->name('admin-dashboard');
 
         // Create Routes
         Route::get('/create-users', [AdminController::class, 'createUsers'])->name('admin-create-users');
