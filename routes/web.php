@@ -11,7 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\CivilianController; 
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\SupervisorController;
 
 // Auth::routes(['register' => false]);
 // Route::get('/register', [AuthManager::class, 'showRegisterForm'])->name('register');
@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function (){
     // Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/admin-dashboard',[AdminController::class, 'index'])->name('admin-dashboard');
     Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->name('civilian-dashboard');
+    Route::get('/supervisor-dashboard', [SupervisorController::class, 'index'])->name('supervisor-dashboard');
     
     Route::prefix('civilian')->group(function(){ // Civilian manager routes
         Route::get('/license', [CivilianController::class, 'license'])->name('civilian-license');
@@ -107,7 +108,11 @@ Route::middleware(['auth'])->group(function (){
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
     });
-
+    Route:: prefix('supervisor')->group(function(){
+        Route::get('/vehicle-lookup', [SupervisorController::class, 'searchVehicles'])->name('supervisor-vehicle-lookup');
+        Route::get('/license-lookup', [SupervisorController::class, 'searchLicenses'])->name('supervisor-license-lookup');
+        Route::get('/settings', [SupervisorController::class, 'settings'])->name('supervisor-settings');
+    });
     // Route::prefix('admin')->group(function(){
     //     Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');
     //     Route::post('/license/store',[CreationManager::class, 'storeLicense'])->name('license.store');
