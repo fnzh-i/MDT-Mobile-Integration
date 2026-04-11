@@ -1,0 +1,32 @@
+# Version Control
+.git
+.gitignore
+
+# Dependencies
+node_modules
+/vendor
+
+# Laravel Specific
+.env
+.env.*
+! .env.example
+/storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/debugbar/
+
+# Build Assets
+/public/build
+/public/hot
+/public/storage
+
+# IDEs and OS Junk
+.DS_Store
+.idea
+.vscode
+.fleet
+.nova
+.zed
+*.log
+Thumbs.db

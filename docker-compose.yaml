@@ -1,0 +1,35 @@
+services:
+  backend:
+    image: fnzh/mdt_docker_app:1.0
+    build: .
+    volumes:
+      - .:/var/www
+    ports:
+      - "8080:8000" # Maps Mac port 8080 to Laravel's 8000
+    depends_on:
+      - db
+
+  vite:
+    image: node:25.6.0
+    working_dir: /backend
+    volumes:
+      - .:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+  
+  db:
+    image: mariadb:10.4
+    restart: always
+    environment:
+      MYSQL_DATABASE: mdt-mobile-app
+      MYSQL_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes" # Needed if password is blank
+      MYSQL_ROOT_PASSWORD: ""
+    volumes:
+      - db_data:/var/lib/mysql # This persists your data
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
