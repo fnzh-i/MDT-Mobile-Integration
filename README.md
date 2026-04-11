@@ -13,6 +13,7 @@ This platform optimizes civilian data management by bridging a powerful Laravel 
 **Database:** MariaDB (MySQL Compatible)
 
 **Mobile Handling:** Retrofit (Android/Kotlin) with real-time data synchronization
+
 ---
 
 ## 🐳 Docker Setup (Quick Start)
