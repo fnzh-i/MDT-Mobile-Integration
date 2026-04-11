@@ -13,7 +13,7 @@ services:
     image: node:25.6.0
     working_dir: /backend
     volumes:
-      - .:/app
+      - .:/backend
     ports:
       - "5173:5173"
     command: sh -c "npm install && npm run dev -- --host"
@@ -22,7 +22,7 @@ services:
     image: mariadb:10.4
     restart: always
     environment:
-      MYSQL_DATABASE: mdt-mobile-app
+      MYSQL_DATABASE: mdt_mobile_app
       MYSQL_USER: root
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes" # Needed if password is blank
       MYSQL_ROOT_PASSWORD: ""
