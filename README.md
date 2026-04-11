@@ -4,13 +4,42 @@ This platform optimizes civilian data management by bridging a powerful Laravel 
 🔗 Repository: https://github.com/fnzh-i/MDT-Mobile-Integration
 
 ## 🚀 Tech Stack
-Backend: Laravel 11 (PHP)
+**Backend:** Laravel 11 (PHP 8.2+)
 
-API: RESTful API with Sanctum/Passport Authentication
+**Environment:** Docker & Docker Compose (MariaDB, PHP-FPM, Vite)
 
-Database: MySQL
+**API:** RESTful API with Laravel Sanctum Authentication
 
-Mobile Handling: Asynchronous Fetch/Axios for real-time data synchronization
+**Database:** MariaDB (MySQL Compatible)
+
+**Mobile Handling:** Retrofit (Android/Kotlin) with real-time data synchronization
+---
+
+## 🐳 Docker Setup (Quick Start)
+The project is fully containerized. To get started, ensure you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed.
+
+1. **Clone and Enter:**
+   ```bash
+   git clone https://github.com/fnzh-i/MDT-Mobile-Integration
+   cd MDT-Mobile-Integration
+   ```
+
+2. **Initialize Environment:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Build and Run:**
+   ```bash
+   docker-compose up -d --build
+   ```
+
+4. **Run Migrations & Seeders:**
+   ```bash
+   docker-compose exec backend php artisan migrate --seed
+   ```
+   *Your API is now live at `http://localhost:8080`*
+
 ---
 
 ## 🧩 Project Status
@@ -42,6 +71,13 @@ Mobile Handling: Asynchronous Fetch/Axios for real-time data synchronization
 
 🔌 **API Usage**
 To fetch civilian data within the mobile application, the system utilizes a GET request to the Laravel backend:
+
+---
+
+## 🔌 API Connectivity
+When connecting from a mobile device to the Dockerized backend:
+- **Android Emulator:** Use `http://[YOUR_MAC_IP]:8080/api/`
+- **Physical Device:** Use `http://[YOUR_MAC_IP]:8080/api/`
 
 ---
 
