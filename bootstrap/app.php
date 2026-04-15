@@ -12,7 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // handles the cookies for the web frontend (Sanctum)
+        $middleware->statefulApi();
+
+        // nickname 'auth.firebase'
+        $middleware->alias([
+            'auth.firebase' => \App\Http\Middleware\FirebaseAuth::class,
+        ]);
+
         $middleware->validateCsrfTokens(except: [
             'api/*', 
         ]);
