@@ -159,12 +159,12 @@
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Client number</div>
-                            </div>
-                            <div class="form-row-3">
-                                <input type="text" name="clientNumber" placeholder="001-XX-XXXXXX" class="form-input" id="clientNumber" required readonly>
-                                <button type="button" id="generate-client-num-btn" class="btn-form-submit">
-                                    Generate
-                                </button>
+                                <div class="input-btn-row">
+                                    <input type="text" name="clientNumber" placeholder="001-XX-XXXXXX" class="form-input input-readonly-gray" id="clientNumber" required readonly>
+                                    <button type="button" id="generate-client-num-btn" class="btn-form-submit">
+                                        Generate
+                                    </button>
+                                </div>
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Full Name</div>
@@ -198,10 +198,8 @@
                             @csrf
                             <div class="form-section">
                                 <div class="form-field-label">License Number</div>
-                                <input type="text" id="licenseNumber" name="license_number" placeholder="D01-XX-XXXXXX" class="form-input" required readonly>
-                                <div class="input-group-append">
-
-                                    <!-- <input type="text" name="license_number" placeholder="D01-XX-XXXXXX" class="text-center w-full font-mono text-lg border-b-2 border-blue-800 focus:outline-none" id="license_number" required> -->
+                                <div class="input-btn-row">
+                                <input type="text" id="licenseNumber" name="license_number" placeholder="D01-XX-XXXXXX" class="form-input input-readonly-gray" required readonly>
                                     <button type="button" id="generate-ln-btn" class="btn-form-submit">
                                         Generate
                                     </button>
@@ -226,7 +224,7 @@
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Issue Date</div>
-                                <input type="date" name="issue_date" class="form-input" required>
+                                <input type="date" name="issue_date" class="form-input input-readonly-gray" required>
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Expiry Option</div>
@@ -316,18 +314,16 @@
                                         Generate
                                 </button>
                             </div>
-                            <div class="form-row-2">
-                                <div class="">
-                                    <div class="form-field-label">MV File Number</div>
-                                    <input type="text" id="mvFileNumber" name="mv_file_number" class="form-input" placeholder="MV File Number" required readonly>
+                            <div class="form-section">
+                                <div class="form-field-label">MV File Number</div>
+                                <div class="input-btn-row">
+                                    <input type="text" id="mvFileNumber" name="mv_file_number" class="form-input input-readonly-gray" placeholder="MV File Number" required readonly>
+                                    <button type="button" id="generate-mvfile-btn" class="btn-form-submit">Generate</button>
                                 </div>
-                                <button type="button" id="generate-mvfile-btn" class="btn-form-submit">
-                                        Generate
-                                </button>
                             </div>
                             <div class="">
                                 <div class="form-field-label">VIN</div>
-                                <input type="text" name="vin" class="form-input" placeholder="VIN" required>
+                                <input type="text" name="vin" class="form-input input-readonly-gray" placeholder="VIN" required>
                             </div>
                             <div class="form-section">
                                 <div class="form-field-label">Issue Date</div>

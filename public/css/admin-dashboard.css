@@ -71,6 +71,11 @@ body { font-family: 'Inter', sans-serif; background: #EBF2FA; }
 .btn-form-submit { display: inline-block; padding: 0.65rem 1.8rem; font-size: 0.9rem; font-weight: 700; font-family: 'Inter', sans-serif; color: #fff; background: #064789; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; transition: background 0.2s; text-decoration: none; }
 .btn-form-submit:hover { background: #053a72; color: #fff; }
 
+.input-readonly-gray { background: #e9ecef !important; color: #495057; }
+.input-btn-row { display: flex; align-items: center; gap: 10px; }
+.input-btn-row .form-input { flex: 1; min-width: 0; }
+.input-btn-row .btn-form-submit { margin-top: 0; flex-shrink: 0; }
+
 .search-card { background: #fff; border: 2px solid #064789; border-radius: 14px; padding: 28px 32px; max-width: 700px; margin: 0 auto; }
 .search-card-title { font-size: 1.2rem; font-weight: 700; color: #064789; margin-bottom: 20px; }
 .search-input { display: block; width: 100%; padding: 0.65rem 1rem; font-size: 0.9rem; font-family: 'Inter', sans-serif; color: #1a2b45; background: #fff; border: 1.5px solid #064789; border-radius: 10px; outline: none; margin-bottom: 14px; transition: box-shadow 0.2s; }
