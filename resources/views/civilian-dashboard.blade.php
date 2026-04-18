@@ -100,7 +100,6 @@
                     <h1 class="dash-title">Driver's License</h1>
 
                     <div class="section-card">
-                        <div class="section-card-accent"></div> {{-- Just Some Color --}}
                         <div class="section-card-inner">
                             <div class="section-card-header">
                                 <h2 class="section-card-title">License Status</h2>
@@ -113,7 +112,6 @@
                     </div>
 
                     <div class="section-card">
-                        <div class="section-card-accent"></div>
                         <div class="section-card-inner">
                             <div class="section-card-header"> <h2 class="section-card-title">Personal Information</h2> </div>
                             <div class="section-card-body">
@@ -134,7 +132,6 @@
                     </div>
 
                     <div class="section-card">
-                        <div class="section-card-accent"></div>
                         <div class="section-card-inner">
                             <div class="section-card-header"> <h2 class="section-card-title">License Details</h2></div>
                             <div class="section-card-body">
@@ -152,7 +149,6 @@
 
                     @if ($selectedVehicle) {{-- To get this working adjust the controller --}}
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <div class="section-card-header">
                                     <h2 class="section-card-title">Vehicle Information</h2>
@@ -172,7 +168,6 @@
                         </div>
 
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <div class="section-card-header">
                                     <h2 class="section-card-title">Registered Owner</h2>
