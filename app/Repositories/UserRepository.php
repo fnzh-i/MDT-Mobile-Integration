@@ -152,7 +152,7 @@ class UserRepository{
     }
 
     public function searchByUsernameOrEmail(string $query): ?UserEntity {
-        $sql = "SELECT user_id as user_id, lto_client_id as client_number, first_name, middle_name, last_name, username, email, password, role FROM users WHERE username = ? OR email = ? LIMIT 1";
+        $sql = "SELECT id as user_id, lto_client_id as client_number, first_name, middle_name, last_name, username, email, password, role FROM users WHERE username = ? OR email = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
