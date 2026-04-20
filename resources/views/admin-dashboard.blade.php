@@ -39,7 +39,7 @@
                 </div>
                 <nav>
                     <a href="{{ route('admin-dashboard') }}" class="nav-link {{ $section === 'dashboard' ? 'active' : '' }}"> <i class="bi bi-speedometer2 me-2"></i> Dashboard </a>
-                    <a href="{{ route('admin-create-users') }}" class="nav-link {{ $section === 'create-users' ? 'active' : '' }}"> <i class="bi bi-person-plus me-2"></i> Create Users </a>
+                    <a href="{{ route('admin-create-users') }}" class="nav-link {{ $section === 'create-user' ? 'active' : '' }}"> <i class="bi bi-person-plus me-2"></i> Create Users </a>
                     <a href="{{ route('admin-create-license') }}" class="nav-link {{ $section === 'create-license' ? 'active' : '' }}"> <i class="bi bi-card-heading me-2"></i> Create License </a>
                     <a href="{{ route('admin-create-vehicle') }}" class="nav-link {{ $section === 'create-vehicle' ? 'active' : '' }}"> <i class="bi bi-car-front me-2"></i> Create Vehicle </a>
                     <a href="{{ route('admin-search-users') }}" class="nav-link {{ $section === 'search-users' ? 'active' : '' }}"> <i class="bi bi-person-lines-fill me-2"></i> Search & Edit Users </a>
@@ -365,7 +365,7 @@
                                             <th>First Name</th>
                                             <th>Middle Name</th>
                                             <th>Last Name</th>
-                                            <th>Suffix</th>
+                                            <th>Username</th>
                                             <th>Email</th>
                                             <th>Password</th>
                                             <th>Action</th>
@@ -373,20 +373,20 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td> <input type="text" class="tbl-input" value="Sample User"> </td> {{--value="{{ $searchedUser->id }}"--}}
-                                            <td> <input type="text" class="tbl-input" value="Sample Role" id="edit_role"> </td> {{--value="{{ $searchedUser->role }}" --}}
-                                            <td> <input type="text" class="tbl-input" value="Sample First Name" id="edit_first"> </td> {{--value="{{ $searchedUser->first_name }}" --}}
-                                            <td> <input type="text" class="tbl-input" value="Sample Middle Name" id="edit_middle"> </td> {{--value="{{ $searchedUser->middle_name }}"--}}
-                                            <td> <input type="text" class="tbl-input" value="Sample Last Name" id="edit_last"> </td> {{--value="{{ $searchedUser->last_name }}"--}}
-                                            <td> <input type="text" class="tbl-input" value="Sample Suffix" id="edit_suffix"> </td> {{--value="{{ $searchedUser->suffix }}" --}}
-                                            <td> <input type="text" class="tbl-input" value="Sample Email" id="edit_email"> </td> {{--value="{{ $searchedUser->email }}" --}}
-                                            <td> <input type="text" class="tbl-input" placeholder="••••••••" value="Sample Password" id="edit_password"> </td> {{--value="{{ $searchedUser->password }}" --}}
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->id }}" readonly> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->role }}" id="edit_role"> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->firstName }}" id="edit_first"> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->middleName ?? '' }}" id="edit_middle"> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->lastName }}" id="edit_last"> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->username }}" id="edit_username"> </td>
+                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->email }}" id="edit_email"> </td>
+                                            <td> <input type="text" class="tbl-input" placeholder="••••••••" type="password" value="{{ $searchedUser->password }}" id="edit_password"> </td>
                                             <td class="action-cell">
-                                                <form action="{{ route('admin-update-user', $searchedUser->id) }}" method="POST" style="display: inline">
+                                                <form action="{{ route('admin-update-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
                                                     @csrf @method('PUT')
                                                     <button type="submit" class="btn-update">Update</button>
                                                 </form>
-                                                <form action="{{ route('admin-archive-user', $searchedUser->id) }}" method="POST" style="display: inline">
+                                                <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
                                                     @csrf @method('PATCH')
                                                     <button type="submit" class="btn-archive" onclick="return confirm('Archive this user?')">Archive</button>
                                                 </form>
@@ -418,21 +418,21 @@
                             <div class="result-table-wrap">
                                 <table class="result-table">
                                     <tbody>
-                                        <tr> <td class="result-label">License Number</td> <td>Sample License Number</td> </tr> {{--{{ $searchedLicense->license_number }}--}}
-                                        <tr> <td class="result-label">Status</td> <td>Sampel Status</td> </tr> {{--<span class="{{ $searchedLicense->license_status === 'Active' ? 'status-green' : 'status-red' }}">{{ $searchedLicense->license_status }}</span>--}}
-                                        <tr> <td class="result-label">Type</td> <td>Sample License Type</td></tr> {{--{{ $searchedLicense->license_type }}--}}
-                                        <tr> <td class="result-label">Issue Date</td> <td>Sample Issue Date</td> </tr> {{--{{ \Carbon\Carbon::parse($searchedLicense->issue_date)->format('M-d-Y') }}--}}
-                                        <tr> <td class="result-label">Expiry Date</td> <td>Sample Expiry Date</td> </tr> {{--{{ \Carbon\Carbon::parse($searchedLicense->expiry_date)->format('M-d-Y') }}--}}
-                                        <tr> <td class="result-label">DL Codes</td> <td>Sample DL Codes</td> </tr> {{-- @php $codes = is_string($searchedLicense->dl_codes) ? json_decode($searchedLicense->dl_codes, true) : $searchedLicense->dl_codes; @endphp {{ is_array($codes) ? implode(', ', $codes) : $searchedLicense->dl_codes }}--}}
-                                        <tr> <td class="result-label">Name</td> <td>Sample First + Last Name</td> </tr> {{--{{ $searchedLicense->person->first_name }} {{ $searchedLicense->person->last_name }}--}}
-                                        <tr> <td class="result-label">Birthday</td> <td>Sample birthday</td> </tr> {{--{{ \Carbon\Carbon::parse($searchedLicense->person->date_of_birth)->format('M-d-Y') }}--}}
-                                        <tr> <td class="result-label">Gender</td> <td>Sample Gender</td> </tr> {{--{{ $searchedLicense->person->gender }--}}
-                                        <tr> <td class="result-label">Address</td> <td>Sample Address</td> </tr> {{--{{ $searchedLicense->person->address }}--}}
-                                        <tr> <td class="result-label">Nationality</td> <td>Sample Nationality</td> </tr> {{--{{ $searchedLicense->person->nationality }}--}}
-                                        <tr> <td class="result-label">Height</td> <td>Sample Height</td> </tr> {{--{{ $searchedLicense->person->height }}--}}
-                                        <tr> <td class="result-label">Weight</td> <td>SAmple Weight</td> </tr> {{--{{ $searchedLicense->person->weight }}--}}
-                                        <tr> <td class="result-label">Eye Color</td> <td>Sample Eye Color</td> </tr> {{--{{ $searchedLicense->person->eye_color }}--}}
-                                        <tr> <td class="result-label">Blood Type</td> <td>Sample Blood Type</td> </tr> {{--{{ $searchedLicense->person->blood_type }}--}}
+                                        <tr> <td class="result-label">License Number</td> <td>{{ $searchedLicense->licenseNumber }}</td> </tr>
+                                        <tr> <td class="result-label">Status</td> <td><span class="{{ $searchedLicense->status === 'Active' ? 'status-green' : 'status-red' }}">{{ $searchedLicense->status }}</span></td> </tr>
+                                        <tr> <td class="result-label">Type</td> <td>{{ $searchedLicense->type }}</td></tr>
+                                        <tr> <td class="result-label">Issue Date</td> <td>{{ $searchedLicense->issueDate }}</td> </tr>
+                                        <tr> <td class="result-label">Expiry Date</td> <td>{{ $searchedLicense->expiryDate }}</td> </tr>
+                                        <tr> <td class="result-label">DL Codes</td> <td>{{ $searchedLicense->dlCodes }}</td> </tr>
+                                        <tr> <td class="result-label">Name</td> <td>{{ $searchedLicense->firstName }} {{ $searchedLicense->lastName }}</td> </tr>
+                                        <tr> <td class="result-label">Birthday</td> <td>{{ $searchedLicense->dateOfBirth }}</td> </tr>
+                                        <tr> <td class="result-label">Gender</td> <td>{{ $searchedLicense->gender }}</td> </tr>
+                                        <tr> <td class="result-label">Address</td> <td>{{ $searchedLicense->address }}</td> </tr>
+                                        <tr> <td class="result-label">Nationality</td> <td>{{ $searchedLicense->nationality }}</td> </tr>
+                                        <tr> <td class="result-label">Height</td> <td>{{ $searchedLicense->height }}</td> </tr>
+                                        <tr> <td class="result-label">Weight</td> <td>{{ $searchedLicense->weight }}</td> </tr>
+                                        <tr> <td class="result-label">Eye Color</td> <td>{{ $searchedLicense->eyeColor }}</td> </tr>
+                                        <tr> <td class="result-label">Blood Type</td> <td>{{ $searchedLicense->bloodType }}</td> </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -443,7 +443,7 @@
                                 </form>
                                 <form action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" method="POST" style="display: inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this vehicle registration?')">Revoke</button>
+                                    <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this license?')">Revoke</button>
                                 </form>
                             </div>
                         </div>
@@ -468,16 +468,16 @@
                             <div class="result-table-wrap">
                                 <table class="result-table">
                                     <tbody>
-                                        <tr> <td class="result-label">Plate Number</td> <td>Sample Plate Number</td> </tr> {{--{{ $searchedVehicle->plate_number }}--}}
-                                        <tr> <td class="result-label">MV File Number</td> <td>Sample MV File Number</td> </tr> {{--{{ $searchedVehicle->mv_file_number }}--}}
-                                        <tr> <td class="result-label">VIN</td> <td>Sample VIN</td> </tr> {{--{{ $searchedVehicle->vin }}--}}
-                                        <tr> <td class="result-label">Brand</td> <td>Sample Brand</td> </tr> {{--{{ $searchedVehicle->make }}--}}
-                                        <tr> <td class="result-label">Model</td> <td>Sample Model</td> </tr> {{--{{ $searchedVehicle->model }}--}}
-                                        <tr> <td class="result-label">Color</td> <td>Sample Color</td> </tr> {{--{{ $searchedVehicle->color }}--}}
-                                        <tr> <td class="result-label">Year</td> <td>Sample Year</td> </tr> {{--{ $searchedVehicle->year }}--}}
-                                        <tr> <td class="result-label">Registration Expiry</td> <td>Sample Registration Expiry</td> </tr> {{--{{ \Carbon\Carbon::parse($searchedVehicle->expiry_date)->format('M-d-Y') }}--}}
-                                        <tr> <td class="result-label">Status</td> <td>Sample Status</td> </tr> {{--<span class="{{ $searchedVehicle->reg_status === 'Registered' ? 'status-green' : 'status-red' }}">{{ $searchedVehicle->reg_status }}</span>--}}
-                                        <tr> <td class="result-label">License Number</td> <td>Sample License Number</td> </tr> {{--{{ $searchedVehicle->license->license_number ?? '—' }}--}}
+                                        <tr> <td class="result-label">Plate Number</td> <td>{{ $searchedVehicle->plateNumber }}</td> </tr>
+                                        <tr> <td class="result-label">MV File Number</td> <td>{{ $searchedVehicle->mvFileNumber }}</td> </tr>
+                                        <tr> <td class="result-label">VIN</td> <td>{{ $searchedVehicle->vin }}</td> </tr>
+                                        <tr> <td class="result-label">Brand</td> <td>{{ $searchedVehicle->make }}</td> </tr>
+                                        <tr> <td class="result-label">Model</td> <td>{{ $searchedVehicle->model }}</td> </tr>
+                                        <tr> <td class="result-label">Color</td> <td>{{ $searchedVehicle->color }}</td> </tr>
+                                        <tr> <td class="result-label">Year</td> <td>{{ $searchedVehicle->year }}</td> </tr>
+                                        <tr> <td class="result-label">Registration Expiry</td> <td>{{ $searchedVehicle->expiryDate }}</td> </tr>
+                                        <tr> <td class="result-label">Status</td> <td><span class="{{ $searchedVehicle->regStatus === 'Registered' ? 'status-green' : 'status-red' }}">{{ $searchedVehicle->regStatus }}</span></td> </tr>
+                                        <tr> <td class="result-label">License Number</td> <td>{{ $searchedVehicle->licenseNumber ?? '—' }}</td> </tr>
                                     </tbody>
                                 </table>
                             </div>

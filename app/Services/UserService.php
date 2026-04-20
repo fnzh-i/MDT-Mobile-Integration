@@ -7,6 +7,7 @@ use RuntimeException;
 use App\Entities\UserEntity;
 use App\DTOs\CreateUserRequest;
 use App\DTOs\LoginResponse;
+use App\DTOs\SearchUserResponse;
 use App\Entities\PersonEntity;
 use App\Repositories\UserRepository;
 
@@ -87,6 +88,16 @@ class UserService {
         } while ($alreadyExists);
 
         return $newClientNumber;
+    }
+
+    public function searchUser(string $query): SearchUserResponse {
+        $user = $this->userRepo->searchByUsernameOrEmail($query);
+
+        if (!$user) {
+            throw new Exception("User not found.");
+        }
+
+        return new SearchUserResponse($user);
     }
 
 

@@ -150,5 +150,27 @@ class UserRepository{
 
         return $stmt->affected_rows > 0;
     }
+
+    public function searchByUsernameOrEmail(string $query): ?UserEntity {
+        $sql = "SELECT user_id as user_id, lto_client_id as client_number, first_name, middle_name, last_name, username, email, password, role FROM users WHERE username = ? OR email = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("ss", $query, $query);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        if (!$row) return null;
+
+        return $this->hydrate($row);
+    }
 }
 ?>

@@ -98,9 +98,19 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/search-licenses', [AdminController::class, 'searchLicense'])->name('admin-search-license');
         Route::get('/search-vehicles', [AdminController::class, 'searchVehicles'])->name('admin-search-vehicle');
 
+        // Update and Revoke Routes
+        Route::put('/vehicle/update/{id}', [AdminController::class, 'updateVehicle'])->name('admin-update-vehicle');
+        Route::patch('/vehicle/revoke/{id}', [AdminController::class, 'revokeVehicle'])->name('admin-revoke-vehicle');
+        Route::put('/license/update/{id}', [AdminController::class, 'updateLicense'])->name('admin-update-license');
+        Route::patch('/license/revoke/{id}', [AdminController::class, 'revokeLicense'])->name('admin-revoke-license');
+        Route::put('/user/update/{id}', [AdminController::class, 'updateUser'])->name('admin-update-user');
+        Route::patch('/user/archive/{id}', [AdminController::class, 'archiveUser'])->name('admin-archive-user');
+
         // for ticket
         Route::post('/ticket/update/{id}', [CreationManager::class, 'update'])->name('ticket.update');
         Route::get('/ticket/details/{id}', [CreationManager::class, 'getDetails']);
+
+        // for update and revoke
 
         // for settings
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin-settings');
