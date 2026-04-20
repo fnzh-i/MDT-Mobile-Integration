@@ -255,8 +255,8 @@
                             <div class="form-row-2">
                                 <input type="date" name="date_of_birth" class="form-input" required>
                                 <div class="radio-row">
-                                    <label for="" class="radio-option"> <input type="radio" name="gender" value="male"> Male </label>
-                                    <label for="" class="radio-option"> <input type="radio" name="gender" value="female"> Female </label>
+                                    <label for="" class="radio-option"> <input type="radio" name="gender" value="Male" required> Male </label>
+                                    <label for="" class="radio-option"> <input type="radio" name="gender" value="Female" required> Female </label>
                                 </div>
                             </div>
                             <div class="form-section">
@@ -264,7 +264,7 @@
                             </div>
                             <div class="form-row-2">
                                 <input type="text" name="nationality" class="form-input" placeholder="Nationality" required>
-                                <select name="blood_type" class="w-full p-2 rounded border">
+                                <select name="blood_type" class="w-full p-2 rounded border" required>
                                     <option value="" disabled selected>Select Blood Type</option>
                                     <option value="A+">A+</option>
                                     <option value="A-">A-</option>

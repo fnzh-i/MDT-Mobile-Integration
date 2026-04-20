@@ -54,7 +54,7 @@ class CreationManager extends Controller
             );
 
             $licenseId = $service->createLicense($dto);
-            return redirect()->route('home')->with('status', 'License Created Successfully ID: ' . $licenseId);
+            return redirect()->route('admin-dashboard')->with('status', 'License Created Successfully ID: ' . $licenseId);
 
         } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
@@ -142,7 +142,7 @@ class CreationManager extends Controller
             );
 
             $userId = $service->createUser($dto);
-            return redirect()->route('home')->with('status', 'User Created Successfully ID: ' . $userId);
+            return redirect()->route('admin-dashboard')->with('status', 'User Created Successfully ID: ' . $userId);
 
         } catch (Throwable $e) {
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
@@ -193,7 +193,7 @@ class CreationManager extends Controller
 
             $ticket_id = $service->createTicket($dto);
 
-            return redirect()->route('home')->with('status', 'Ticket Created Successfully ID: ' . $ticket_id);
+            return redirect()->route('admin-dashboard')->with('status', 'Ticket Created Successfully ID: ' . $ticket_id);
         } catch (Throwable $e) {
             if (isset($proofImage)) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($proofImage);

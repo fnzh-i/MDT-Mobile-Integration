@@ -50,7 +50,8 @@
 
                     <div>
                         <label class="text-xs font-bold text-gray-500 uppercase">Gender: </label>
-                        <select name="gender" class="w-full border-b outline-none">
+                        <select name="gender" class="w-full border-b outline-none" required>
+                            <option value="" disabled selected>Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
@@ -63,7 +64,7 @@
 
                     <div>
                         <label class="text-xs font-bold text-gray-500 uppercase">Blood Type: </label>
-                        <input type="text" name="blood_type" placeholder="O+" class="w-full border-b outline-none">
+                        <input type="text" name="blood_type" placeholder="O+" class="w-full border-b outline-none" required>
                     </div>
 
                     <div class="col-span-2">
@@ -74,15 +75,15 @@
                 <div class="grid grid-cols-3 gap-2 col-span-1 md:col-span-2">
                 <div>
                     <label class="block text-xs font-medium text-gray-600 uppercase">Height (cm): </label>
-                    <input type="text" name="height" placeholder="170cm" class="w-full border rounded p-2 outline-none">
+                    <input type="text" name="height" placeholder="170cm" class="w-full border rounded p-2 outline-none" required>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 uppercase">Weight (kg): </label>
-                    <input type="text" name="weight" placeholder="60kg" class="w-full border rounded p-2 outline-none">
+                    <input type="text" name="weight" placeholder="60kg" class="w-full border rounded p-2 outline-none" required>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 uppercase">Eye Color: </label>
-                    <input type="text" name="eye_color" placeholder="Brown" class="w-full border rounded p-2 outline-none">
+                    <input type="text" name="eye_color" placeholder="Brown" class="w-full border rounded p-2 outline-none" required>
                 </div>
             </div>
             </div>
