@@ -48,7 +48,6 @@ body { font-family: 'Inter', sans-serif; background: #EBF2FA; }
 .btn-lookup-search:hover { background: #053a72; }
 
 .section-card { display: flex; background: #fff; border: 2px solid #064789; border-radius: 14px; overflow: hidden; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; }
-.section-card-accent { width: 8px; background: #dc3545; flex-shrink: 0; }
 .section-card-inner { flex: 1; padding: 20px 26px; min-width: 0; }
 .section-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .section-card-title { font-size: 1.05rem; font-weight: 700; color: #064789; margin: 0; }

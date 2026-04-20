@@ -78,7 +78,6 @@
 
                     @if (request('query'))
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <h2 class="section-card-title mb-3">Vehicle Information</h2>
                                 <div class="info-row">
@@ -97,7 +96,6 @@
                         </div>
 
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <h2 class="section-card-title mb-3">Registered Owner</h2>
                                 <div class="info-row"><span class="info-label">Name:</span> Sample Name</div>
@@ -123,7 +121,6 @@
 
                     @if (request('query'))
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <div class="section-card-header">
                                     <h2 class="section-card-title">License Status</h2>
@@ -137,7 +134,6 @@
                         </div>
 
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <h2 class="section-card-title mb-3">Personal Information</h2>
                                 <div class="info-row"><span class="info-label">Last Name:</span> Sample Last Name</div>
@@ -156,7 +152,6 @@
                         </div>
 
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <h2 class="section-card-title mb-3">License Details</h2>
                                 <div class="info-row"><span class="info-label">License Number:</span> Sample License Number</div>
@@ -168,7 +163,6 @@
                         </div>
 
                         <div class="section-card">
-                            <div class="section-card-accent"></div>
                             <div class="section-card-inner">
                                 <h2 class="section-card-title mb-3">Violation History</h2>
                                 <div class="violation-scroll-wrapper">

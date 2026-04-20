@@ -294,12 +294,6 @@ body {
     margin-right: auto;
 }
 
-.section-card-accent {
-    width: 8px;
-    background: #dc3545;
-    flex-shrink: 0;
-}
-
 .section-card-inner {
     flex: 1;
     padding: 18px 22px;
