@@ -198,6 +198,29 @@ class LicenseRepository {
         return $this->hydrate($row);
     }
 
+    public function findByPersonId(int $personId): ?LicenseEntity {
+        $sql = "SELECT * FROM licenses WHERE person_id = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("i", $personId);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        if (!$row) return null;
+
+        return $this->hydrate($row);
+    }
+
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM licenses";
         $result = $this->conn->query($sql);

@@ -25,13 +25,14 @@
             </div>
         </div>
 
-        <div class="body-area">
-            <div class="overlay" id="overlay"></div>
-            <aside class="sidebar" id="sidebar">
+<div class="shell">
+    <div class="body-area">
+        <div class="overlay" id="overlay"></div>
+        <aside class="sidebar" id="sidebar">
                 <div class="user-block">
                     <div class="user-avatar"> <i class="bi bi-person"></i> </div>
                     <div class="user-role"> Civilian </div>
-                    <div class="user-name"> Sample User </div>
+                    <div class="user-name"> {{ $userName ?? 'User' }} </div>
                 </div>
                 <nav>
                     <a href="{{ route('civilian-dashboard') }}" class="nav-link {{ $section === 'dashboard' ? 'active' : '' }}"> <i class="bi bi-speedometer2 me-2"></i> Dashboard </a>
@@ -43,6 +44,20 @@
             </aside>
 
             <main class="main" id="main">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if($errors->has('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong> {{ $errors->first('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 @if ($section === 'dashboard')
                     <h1 class="dash-title">Civilian Dashboard</h1>
                     <p class="dash-sub">Select a category type to display data</p>
@@ -54,10 +69,10 @@
                                 <span class="card-label">Driver's License</span>
                             </div>
                             <div class="card-body-custom">
-                                <div class="card-detail"> <span class="detail-label">Name:</span> Sample Name </div>
-                                <div class="card-detail"> <span class="detail-label">License Number:</span> Sample License Number </div>
-                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">Sample Status</span> </div>
-                                <div class="card-detail"> <span class="detail-label">Expiry Date:</span> Sample Expiry Date</div>
+                                <div class="card-detail"> <span class="detail-label">Name:</span> {{ $licenseData->firstName ?? 'N/A' }} {{ $licenseData->lastName ?? '' }} </div>
+                                <div class="card-detail"> <span class="detail-label">License Number:</span> {{ $licenseData->licenseNumber ?? 'N/A' }} </div>
+                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">{{ $licenseData->status ?? 'N/A' }}</span> </div>
+                                <div class="card-detail"> <span class="detail-label">Expiry Date:</span> {{ $licenseData->expiryDate ?? 'N/A' }}</div>
                             </div>
                             <div class="card-footer-custom">
                                 <a href="{{ route('civilian-license') }}" class="btn-card">View Full License Details</a>
@@ -70,10 +85,10 @@
                                 <span class="card-label">Registered Vehicles</span>
                             </div>
                             <div class="card-body-custom">
-                                <div class="card-detail"> <span class="detail-label">Model:</span> Sample Model </div>
-                                <div class="card-detail"> <span class="detail-label">Plate Number:</span> Sample Plate Number </div>
-                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">Sample Status</span> </div>
-                                <div class="card-detail"> <span class="detail-label">Registration Expiry:</span> Sample Registration Expiry </div>
+                                <div class="card-detail"> <span class="detail-label">Model:</span> {{ $vehicleData->make ?? 'N/A' }} {{ $vehicleData->model ?? '' }} </div>
+                                <div class="card-detail"> <span class="detail-label">Plate Number:</span> {{ $vehicleData->plateNumber ?? 'N/A' }} </div>
+                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">{{ $vehicleData->status ?? 'N/A' }}</span> </div>
+                                <div class="card-detail"> <span class="detail-label">Registration Expiry:</span> {{ $vehicleData->regExpiryDate ?? 'N/A' }} </div>
                             </div> 
                             <div class="card-footer-custom">
                                 <a href="{{ route('civilian-vehicle') }}" class="btn-card">View All Vehicles</a> 
@@ -86,9 +101,9 @@
                                 <span class="card-label">Ticket Violations</span>
                             </div>
                             <div class="card-body-custom">
-                                <div class="card-detail"> <span class="status-red fw-bold">Sample Violation</span> </div>
-                                <div class="card-detail"> <span class="detail-label">Issued:</span> Sample Issued Date </div>
-                                <div class="card-detail"> <span class="detail-label">Fined:</span> Sample Fine Amount </div>
+                                <div class="card-detail"> <span class="status-red fw-bold">{{ count($violations ?? []) }} Violations</span> </div>
+                                <div class="card-detail"> <span class="detail-label">View</span> Your traffic violations </div>
+                                <div class="card-detail"> <span class="detail-label">Stay</span> Updated on status </div>
                             </div>
                             <div class="card-footer-custom">
                                 <a href="{{ route('civilian-violations') }}" class="btn-card">View All Violations</a>
@@ -106,7 +121,7 @@
                                 <span class="status-dot dot-green"></span>
                             </div>
                             <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">Status:</span> <span class="status-green">Sample Status</span> </div>
+                                <div class="info-row"> <span class="info-label">Status:</span> <span class="status-green">{{ $licenseData->status ?? 'N/A' }}</span> </div>
                             </div>
                         </div>
                     </div>
@@ -115,18 +130,18 @@
                         <div class="section-card-inner">
                             <div class="section-card-header"> <h2 class="section-card-title">Personal Information</h2> </div>
                             <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">Last Name:</span> <span class="info-value">Sample Last Name</span> </div>
-                                <div class="info-row"> <span class="info-label">First Name:</span> <span class="info-value">Sample First Name</span> </div>
-                                <div class="info-row"> <span class="info-label">Middle Name:</span> <span class="info-value">Sample Middle Name</span> </div>
-                                <div class="info-row"> <span class="info-label">Suffix:</span> <span class="info-value">Sample Suffix</span> </div>
-                                <div class="info-row"> <span class="info-label">Date of Birth:</span> <span class="info-value">Sample DOB</span> </div>
-                                <div class="info-row"> <span class="info-label">Gender:</span> <span class="info-value">Sample Gender</span> </div>
-                                <div class="info-row"> <span class="info-label">Address:</span> <span class="info-value">Sample Address</span> </div>
-                                <div class="info-row"> <span class="info-label">Nationality:</span> <span class="info-value">Sample Nationality</span> </div>
-                                <div class="info-row"> <span class="info-label">Height:</span> <span class="info-value">Sample Height</span> </div>
-                                <div class="info-row"> <span class="info-label">Weight:</span> <span class="info-value">Sample Weight</span> </div>
-                                <div class="info-row"> <span class="info-label">Eye Color:</span> <span class="info-value">Sample Eye Color</span> </div>
-                                <div class="info-row"> <span class="info-label">Blood Type:</span> <span class="info-value">Sample Blood Type</span> </div>
+                                <div class="info-row"> <span class="info-label">Last Name:</span> <span class="info-value">{{ $licenseData->lastName ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">First Name:</span> <span class="info-value">{{ $licenseData->firstName ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Middle Name:</span> <span class="info-value">{{ $licenseData->middleName ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Suffix:</span> <span class="info-value">{{ $licenseData->suffix ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Date of Birth:</span> <span class="info-value">{{ $licenseData->dateOfBirth ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Gender:</span> <span class="info-value">{{ $licenseData->gender ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Address:</span> <span class="info-value">{{ $licenseData->address ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Nationality:</span> <span class="info-value">{{ $licenseData->nationality ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Height:</span> <span class="info-value">{{ $licenseData->height ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Weight:</span> <span class="info-value">{{ $licenseData->weight ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Eye Color:</span> <span class="info-value">{{ $licenseData->eyeColor ?? 'N/A' }}</span> </div>
+                                <div class="info-row"> <span class="info-label">Blood Type:</span> <span class="info-value">{{ $licenseData->bloodType ?? 'N/A' }}</span> </div>
                             </div>
                         </div>
                     </div>
@@ -135,11 +150,11 @@
                         <div class="section-card-inner">
                             <div class="section-card-header"> <h2 class="section-card-title">License Details</h2></div>
                             <div class="section-card-body">
-                                <div class="info-row"> <span class="info-label">License Number:</span> Sample License Number </div>
-                                <div class="info-row"> <span class="info-label">License Type:</span> Sample License Type </div>
-                                <div class="info-row"> <span class="info-label">Issue Date:</span> Sample Issue Date </div>
-                                <div class="info-row"> <span class="info-label">Expiry Date:</span> Sample Expiry Date </div>
-                                <div class="info-row"> <span class="info-label">Restrictions:</span> Sample Restrictions </div>
+                                <div class="info-row"> <span class="info-label">License Number:</span> {{ $licenseData->licenseNumber ?? 'N/A' }} </div>
+                                <div class="info-row"> <span class="info-label">License Type:</span> {{ $licenseData->licenseType ?? 'N/A' }} </div>
+                                <div class="info-row"> <span class="info-label">Issue Date:</span> {{ $licenseData->issueDate ?? 'N/A' }} </div>
+                                <div class="info-row"> <span class="info-label">Expiry Date:</span> {{ $licenseData->expiryDate ?? 'N/A' }} </div>
+                                <div class="info-row"> <span class="info-label">Restrictions:</span> {{ $licenseData->dlCodes ?? 'N/A' }} </div>
                             </div>
                         </div>
                     </div>
@@ -147,22 +162,22 @@
                  @elseif ($section === 'vehicle')
                     <h1 class="dash-title">Vehicle Search</h1>
 
-                    @if ($selectedVehicle) {{-- To get this working adjust the controller --}}
+                    @if ($selectedVehicle)
                         <div class="section-card">
                             <div class="section-card-inner">
                                 <div class="section-card-header">
                                     <h2 class="section-card-title">Vehicle Information</h2>
                                 </div>
                                 <div class="section-card-body">
-                                    <div class="info-row"><span class="info-label">Status:</span> <span class="status-green">Sample Status</span></div>
-                                    <div class="info-row"><span class="info-label">MV File Number:</span> Sample MV File Number</div>
-                                    <div class="info-row"><span class="info-label">Model:</span> Sample Model</div>
-                                    <div class="info-row"><span class="info-label">Color:</span> Sample Color</div>
-                                    <div class="info-row"><span class="info-label">Registration Expiry:</span> Sample Expiry Date</div>
-                                    <div class="info-row"><span class="info-label">Plate Number:</span> Sample Plate Number</div>
-                                    <div class="info-row"><span class="info-label">Make:</span> Sample Make</div>
-                                    <div class="info-row"><span class="info-label">Year:</span> Sample Year</div>
-                                    <div class="info-row"><span class="info-label">VIN:</span> Sample VIN</div>
+                                    <div class="info-row"><span class="info-label">Status:</span> <span class="status-green">{{ $selectedVehicle->status ?? 'N/A' }}</span></div>
+                                    <div class="info-row"><span class="info-label">MV File Number:</span> {{ $selectedVehicle->mvFileNumber ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Model:</span> {{ $selectedVehicle->model ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Color:</span> {{ $selectedVehicle->color ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Registration Expiry:</span> {{ $selectedVehicle->expiryDate ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Plate Number:</span> {{ $selectedVehicle->plateNumber ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Make:</span> {{ $selectedVehicle->make ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Year:</span> {{ $selectedVehicle->year ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">VIN:</span> {{ $selectedVehicle->vin ?? 'N/A' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -173,9 +188,8 @@
                                     <h2 class="section-card-title">Registered Owner</h2>
                                 </div>
                                 <div class="section-card-body">
-                                    <div class="info-row"><span class="info-label">Name:</span> Sample Name</div>
-                                    <div class="info-row"><span class="info-label">License Number:</span> Sample License Number</div>
-                                    <div class="info-row"><span class="info-label">Address:</span> Sample Address</div>
+                                    <div class="info-row"><span class="info-label">Name:</span> {{ $selectedVehicle->ownerName ?? 'N/A' }}</div>
+                                    <div class="info-row"><span class="info-label">Address:</span> {{ $selectedVehicle->ownerAddress ?? 'N/A' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -197,19 +211,23 @@
                         </form>
 
                         <div class="vehicles-grid">
-                            <div class="vehicle-card">
-                                <div class="vehicle-card-top">
-                                    <div class="vehicle-card-icon">
-                                        <i class="bi bi-car-front"></i>
+                            @forelse($vehicles as $vehicle)
+                                <div class="vehicle-card">
+                                    <div class="vehicle-card-top">
+                                        <div class="vehicle-card-icon">
+                                            <i class="bi bi-car-front"></i>
+                                        </div>
+                                        <div class="vehicle-card-info">
+                                            <div class="vehicle-info-text">{{ $vehicle->make }} {{ $vehicle->model }}</div>
+                                            <div class="vehicle-info-text">{{ $vehicle->plateNumber }}</div>
+                                            <div class="vehicle-info-text status-green">{{ $vehicle->status }}</div>
+                                        </div>
                                     </div>
-                                    <div class="vehicle-card-info">
-                                        <div class="vehicle-info-text">Sample Make Sample Model</div>
-                                        <div class="vehicle-info-text">Sample Plate Number</div>
-                                        <div class="vehicle-info-text status-green">Sample Status</div>
-                                    </div>
+                                    <a href="{{ route('civilian-vehicle') }}?plate={{ $vehicle->plateNumber }}" class="btn-card">View Full Details</a>
                                 </div>
-                                <a href="{{ route('civilian-vehicle') }}?view=1" class="btn-card">View Full Details</a>
-                            </div>
+                            @empty
+                                <p class="text-center">No vehicles found</p>
+                            @endforelse
                         </div>
                     @endif
 
@@ -218,21 +236,17 @@
                     <p class="dash-sub">View All of the Violations</p>
 
                     <div class="violations-grid">
-                        <div class="violation-card">
-                            <div class="info-row violation-offence"> Sample Offence </div>
-                            <div class="info-row"> <span class="info-label">Date:</span> Sample Date </div>
-                            <div class="info-row"> <span class="info-label">Place:</span> Sample Place </div>
-                            <div class="info-row"> <span class="info-label">Note:</span> Sample Note </div>
-                            <div class="info-label"> <span class="info-label">Fine:</span> Sample Fine </div>
-                        </div>
-
-                        <div class="violation-card">
-                            <div class="info-row violation-offence"> Sample Offence </div>
-                            <div class="info-row"> <span class="info-label">Date:</span> Sample Date </div>
-                            <div class="info-row"> <span class="info-label">Place:</span> Sample Place </div>
-                            <div class="info-row"> <span class="info-label">Note:</span> Sample Note </div>
-                            <div class="info-label"> <span class="info-label">Fine:</span> Sample Fine </div>
-                        </div>
+                        @forelse($violations as $violation)
+                            <div class="violation-card">
+                                <div class="info-row violation-offence"> {{ $violation->offence }} </div>
+                                <div class="info-row"> <span class="info-label">Date:</span> {{ $violation->date }} </div>
+                                <div class="info-row"> <span class="info-label">Place:</span> {{ $violation->place }} </div>
+                                <div class="info-row"> <span class="info-label">Note:</span> {{ $violation->notes }} </div>
+                                <div class="info-label"> <span class="info-label">Fine:</span> {{ $violation->fine }} </div>
+                            </div>
+                        @empty
+                            <p class="text-center">No violations found</p>
+                        @endforelse
                     </div>
 
                   @elseif ($section === 'settings')
@@ -250,7 +264,7 @@
                             <li>Contact administrative support</li>
                         </ul>
 
-                        <form action="{{ route('civilian-support') }}" method="POST"> {{-- Add Route--}}
+                        <form action="{{ route('civilian-support-submit') }}" method="POST">
                             @csrf
                             <div class="settings-field">
                                 <label for="support_category" class="settings-label">Support Category</label>
@@ -276,8 +290,3 @@
             </main>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/civilian-dashboard.js') }}"></script>
-</body>
-</html>

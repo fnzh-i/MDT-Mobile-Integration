@@ -347,6 +347,31 @@ class TicketRepository {
         }
     }
 
+    public function findByLtoClientId(string $ltoClientId): array {
+        $sql = "SELECT * FROM tickets WHERE lto_client_id = (SELECT id FROM users WHERE lto_client_id = ?) ORDER BY date_of_incident DESC";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("s", $ltoClientId);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        $tickets = [];
+        
+        while ($row = $result->fetch_assoc()) {
+            $tickets[] = $this->hydrate($row);
+        }
+        
+        $stmt->close();
+        return $tickets;
+    }
+
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM tickets";
         $result = $this->conn->query($sql);

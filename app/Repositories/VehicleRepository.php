@@ -177,6 +177,31 @@ class VehicleRepository {
         return $this->hydrate($row);
     }
 
+    public function findByLicenseId(int $licenseId): array {
+        $sql = "SELECT * FROM vehicles WHERE license_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("i", $licenseId);
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        $vehicles = [];
+        
+        while ($row = $result->fetch_assoc()) {
+            $vehicles[] = $this->hydrate($row);
+        }
+        
+        $stmt->close();
+        return $vehicles;
+    }
+
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM vehicles";
         $result = $this->conn->query($sql);

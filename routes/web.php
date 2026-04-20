@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/violations', [CivilianController::class, 'violations'])->name('civilian-violations');
         Route::get('/settings', [CivilianController::class, 'settings'])->name('civilian-settings');
         Route::get('/support', [CivilianController::class, 'support'])->name('civilian-support');
+        Route::post('/support', [CivilianController::class, 'submitSupport'])->name('civilian-support-submit');
     });
 
     Route::get('/api/license/search', function (Request $request) {
