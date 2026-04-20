@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Services\{LicenseService,
                   UserService,
                   VehicleService};
+use App\Repositories\{UserRepository,
+                      LicenseRepository,
+                      VehicleRepository,
+                      TicketRepository};
 use Illuminate\Http\Request;
 
 
@@ -13,14 +17,26 @@ class AdminController extends Controller
     protected $userService;
     protected $licenseService;
     protected $vehicleService;
+    protected $userRepository;
+    protected $licenseRepository;
+    protected $vehicleRepository;
+    protected $ticketRepository;
 
     public function __construct(UserService $userService,
                                 LicenseService $licenseService,
-                                VehicleService $vehicleService)
+                                VehicleService $vehicleService,
+                                UserRepository $userRepository,
+                                LicenseRepository $licenseRepository,
+                                VehicleRepository $vehicleRepository,
+                                TicketRepository $ticketRepository)
     {
         $this->userService = $userService;
         $this->licenseService = $licenseService;
         $this->vehicleService = $vehicleService;
+        $this->userRepository = $userRepository;
+        $this->licenseRepository = $licenseRepository;
+        $this->vehicleRepository = $vehicleRepository;
+        $this->ticketRepository = $ticketRepository;
     }
     
     public function generateLicenseNumber()
@@ -56,8 +72,18 @@ class AdminController extends Controller
     }
     public function index()
     {
+        $totalUsers = $this->userRepository->count();
+        $totalLicenses = $this->licenseRepository->count();
+        $totalVehicles = $this->vehicleRepository->count();
+        $totalTickets = $this->ticketRepository->count();
 
-        return view('admin-dashboard', ['section' => 'dashboard']);
+        return view('admin-dashboard', [
+            'section' => 'dashboard',
+            'totalUsers' => $totalUsers,
+            'totalLicenses' => $totalLicenses,
+            'totalVehicles' => $totalVehicles,
+            'totalTickets' => $totalTickets,
+        ]);
     }
     public function createLicense()
     {

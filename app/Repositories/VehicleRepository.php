@@ -176,5 +176,17 @@ class VehicleRepository {
 
         return $this->hydrate($row);
     }
+
+    public function count(): int {
+        $sql = "SELECT COUNT(*) as total FROM vehicles";
+        $result = $this->conn->query($sql);
+        
+        if (!$result) {
+            throw new RuntimeException("Query Failed: {$this->conn->error}");
+        }
+        
+        $row = $result->fetch_assoc();
+        return (int)($row['total'] ?? 0);
+    }
 }
 ?>
