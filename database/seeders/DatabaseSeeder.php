@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             PersonLicenseSeeder::class,
             VehicleSeeder::class,
             ViolationsSeeder::class,
-            TicketSeeder::class
+            TicketSeeder::class,
+            SupportTicketSeeder::class,
         ]);
     }
 }

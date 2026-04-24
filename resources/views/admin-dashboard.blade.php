@@ -41,6 +41,7 @@
                     <a href="{{ route('admin-search-users') }}" class="nav-link {{ $section === 'search-users' ? 'active' : '' }}"> <i class="bi bi-person-lines-fill me-2"></i> Search & Edit Users </a>
                     <a href="{{ route('admin-search-license') }}" class="nav-link {{ $section === 'search-license' ? 'active' : '' }}"> <i class="bi bi-search me-2"></i> Search & Edit License </a>
                     <a href="{{ route('admin-search-vehicle') }}" class="nav-link {{ $section === 'search-vehicle' ? 'active' : '' }}"> <i class="bi bi-truck me-2"></i> Search & Edit Vehicle </a>
+                    <a href="{{ route('admin-support-tickets') }}" class="nav-link {{ $section === 'support-tickets' ? 'active' : '' }}"> <i class="bi bi-chat-left-quote me-2"></i> Support Tickets </a>
                     <a href="{{ route('admin-settings') }}" class="nav-link {{ $section === 'settings' ? 'active' : '' }}"> <i class="bi bi-gear me-2"></i> Settings </a>
 
             </aside>
@@ -580,6 +581,150 @@
                             <button type="submit" class="btn-form-submit">Save Changes</button>
                         </form>
                     </div>
+                @elseif ($section === 'support-tickets')
+                    <h1 class="dash-title">Support Tickets</h1>
+                    <p class="dash-sub">Manage and respond to user support requests</p>
+
+                    <div class="support-tickets-container">
+                        @if(count($tickets ?? []) > 0)
+                            <table class="tickets-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket ID</th>
+                                        <th>User</th>
+                                        <th>Category</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Submitted</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($tickets as $ticket)
+                                        <tr>
+                                            <td>#{{ $ticket->getId() ?? 'N/A' }}</td>
+                                            <td>
+                                                <strong>{{ $ticket->getUsername() ?? 'N/A' }}</strong><br>
+                                                <small>{{ $ticket->getUserEmail() ?? 'N/A' }}</small>
+                                            </td>
+                                            <td>{{ ucfirst(str_replace('_', ' ', $ticket->getCategory() ?? 'N/A')) }}</td>
+                                            <td>
+                                                <div class="ticket-message-preview">
+                                                    {{ substr($ticket->getMessage() ?? '', 0, 50) }}{{ strlen($ticket->getMessage() ?? '') > 50 ? '...' : '' }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge status-{{ strtolower($ticket->getStatus() ?? 'Open') }}">
+                                                    {{ $ticket->getStatus() ?? 'Open' }}
+                                                </span>
+                                            </td>
+                                            <td>{{ null !== $ticket->getCreatedAt() ? date('M d, Y', strtotime($ticket->getCreatedAt())) : 'N/A' }}</td>
+                                            <td>
+                                                <button class="btn-view-ticket" onclick="showTicketDetails('{{ $ticket->getId() ?? 0 }}')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>No support tickets at this time</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Ticket Details Modal (can be expanded) -->
+                    <style>
+                        .support-tickets-container {
+                            background: white;
+                            border-radius: 8px;
+                            padding: 20px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .tickets-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        .tickets-table thead {
+                            background-color: #f8f9fa;
+                            border-bottom: 2px solid #dee2e6;
+                        }
+                        .tickets-table th {
+                            padding: 12px;
+                            text-align: left;
+                            font-weight: 600;
+                            color: #333;
+                        }
+                        .tickets-table td {
+                            padding: 12px;
+                            border-bottom: 1px solid #dee2e6;
+                        }
+                        .tickets-table tbody tr:hover {
+                            background-color: #f8f9fa;
+                        }
+                        .ticket-message-preview {
+                            max-width: 200px;
+                            word-break: break-word;
+                        }
+                        .status-badge {
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            display: inline-block;
+                        }
+                        .status-open {
+                            background-color: #fff3cd;
+                            color: #856404;
+                        }
+                        .status-in\ progress {
+                            background-color: #cfe2ff;
+                            color: #084298;
+                        }
+                        .status-resolved {
+                            background-color: #d1e7dd;
+                            color: #0f5132;
+                        }
+                        .status-closed {
+                            background-color: #e2e3e5;
+                            color: #383d41;
+                        }
+                        .btn-view-ticket {
+                            padding: 6px 12px;
+                            background-color: #0d6efd;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 12px;
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                        }
+                        .btn-view-ticket:hover {
+                            background-color: #0b5ed7;
+                        }
+                        .empty-state {
+                            text-align: center;
+                            padding: 40px;
+                            color: #999;
+                        }
+                        .empty-state i {
+                            font-size: 48px;
+                            margin-bottom: 16px;
+                            opacity: 0.5;
+                        }
+                    </style>
+
+                    <script>
+                        function showTicketDetails(ticketId) {
+                            // This can be expanded to show a modal with full ticket details
+                            alert('Viewing ticket #' + ticketId + '\nFull details view can be implemented here');
+                        }
+                    </script>
                 @endif
             </main>
         </div>

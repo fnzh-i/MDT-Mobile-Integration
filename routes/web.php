@@ -115,7 +115,10 @@ Route::middleware(['auth'])->group(function (){
 
         // for settings
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin-settings');
-        
+        Route::put('/settings', [AdminController::class, 'updateSettings'])->name('admin-update-settings');
+
+        // for support tickets
+        Route::get('/support-tickets', [AdminController::class, 'supportTickets'])->name('admin-support-tickets');
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
     });

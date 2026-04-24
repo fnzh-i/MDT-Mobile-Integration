@@ -12,12 +12,14 @@ use App\Repositories\VehicleRepository;
 use App\Repositories\TicketRepository;
 use App\Repositories\ViolationRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\SupportTicketRepository;
 
 // Import all Services
 use App\Services\LicenseService;
 use App\Services\VehicleService;
 use App\Services\TicketService;
 use App\Services\UserService;
+use App\Services\SupportTicketService;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -66,6 +68,8 @@ class CoreServiceProvider extends ServiceProvider
         
         $this->app->singleton(UserRepository::class, fn($app) => new UserRepository($app->make(mysqli::class)));
 
+        $this->app->singleton(SupportTicketRepository::class, fn($app) => new SupportTicketRepository($app->make(mysqli::class)));
+
         // 3. Register Services
         $this->app->singleton(LicenseService::class, function ($app) {
             return new LicenseService(
@@ -97,6 +101,13 @@ class CoreServiceProvider extends ServiceProvider
             return new UserService(
                 $app->make(mysqli::class),
                 $app->make(UserRepository::class)
+            );
+        });
+
+        $this->app->singleton(SupportTicketService::class, function ($app) {
+            return new SupportTicketService(
+                $app->make(mysqli::class),
+                $app->make(SupportTicketRepository::class)
             );
         });
     }

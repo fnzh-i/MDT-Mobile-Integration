@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\{LicenseService,
                   UserService,
-                  VehicleService};
+                  VehicleService,
+                  SupportTicketService};
 use App\Repositories\{UserRepository,
                       LicenseRepository,
                       VehicleRepository,
@@ -17,6 +18,7 @@ class AdminController extends Controller
     protected $userService;
     protected $licenseService;
     protected $vehicleService;
+    protected $supportTicketService;
     protected $userRepository;
     protected $licenseRepository;
     protected $vehicleRepository;
@@ -25,6 +27,7 @@ class AdminController extends Controller
     public function __construct(UserService $userService,
                                 LicenseService $licenseService,
                                 VehicleService $vehicleService,
+                                SupportTicketService $supportTicketService,
                                 UserRepository $userRepository,
                                 LicenseRepository $licenseRepository,
                                 VehicleRepository $vehicleRepository,
@@ -33,6 +36,7 @@ class AdminController extends Controller
         $this->userService = $userService;
         $this->licenseService = $licenseService;
         $this->vehicleService = $vehicleService;
+        $this->supportTicketService = $supportTicketService;
         $this->userRepository = $userRepository;
         $this->licenseRepository = $licenseRepository;
         $this->vehicleRepository = $vehicleRepository;
@@ -212,5 +216,19 @@ class AdminController extends Controller
     {
         // TODO: Implement user archive logic
         return redirect()->back()->with('success', 'User archived successfully');
+    }
+    public function updateSettings()
+    {
+        return redirect()->back()->with('success', 'User archived successfully');
+        return view('admin-update-settings', ['section' => 'settings']);
+    }
+
+    public function supportTickets()
+    {
+        $tickets = $this->supportTicketService->getAllTickets();
+        return view('admin-dashboard', [
+            'section' => 'support-tickets',
+            'tickets' => $tickets
+        ]);
     }
 }

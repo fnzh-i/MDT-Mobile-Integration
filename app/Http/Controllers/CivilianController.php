@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\{PersonRepository, LicenseRepository, VehicleRepository, TicketRepository};
+use App\Services\SupportTicketService;
 
 class CivilianController extends Controller
 {
@@ -12,17 +13,20 @@ class CivilianController extends Controller
     protected LicenseRepository $licenseRepo;
     protected VehicleRepository $vehicleRepo;
     protected TicketRepository $ticketRepo;
+    protected SupportTicketService $supportTicketService;
 
     public function __construct(
         PersonRepository $personRepo,
         LicenseRepository $licenseRepo,
         VehicleRepository $vehicleRepo,
-        TicketRepository $ticketRepo
+        TicketRepository $ticketRepo,
+        SupportTicketService $supportTicketService
     ) {
         $this->personRepo = $personRepo;
         $this->licenseRepo = $licenseRepo;
         $this->vehicleRepo = $vehicleRepo;
         $this->ticketRepo = $ticketRepo;
+        $this->supportTicketService = $supportTicketService;
     }
 
     private function getAuthenticatedUserData()
@@ -239,12 +243,19 @@ class CivilianController extends Controller
             'message' => 'required|string|min:10',
         ]);
 
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
+            
+            // Create support ticket through service
+            $ticketId = $this->supportTicketService->createTicket(
+                $user->id,
+                $request->category,
+                $request->message
+            );
 
-        // In a real application, you would save this to a support_tickets table
-        // For now, we'll just redirect back with a success message
-        // You can implement ticket creation logic here
-
-        return redirect()->back()->with('success', 'Support ticket submitted successfully. An administrator will review your request shortly.');
+            return redirect()->back()->with('success', 'Support ticket #' . $ticketId . ' submitted successfully. An administrator will review your request shortly.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error submitting support ticket: ' . $e->getMessage());
+        }
     }
 }
