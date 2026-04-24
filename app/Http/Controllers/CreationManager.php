@@ -86,18 +86,12 @@ class CreationManager extends Controller
 
             $vehicleId = $service->createVehicle($dto);
 
-            // SUCCESS: Return JSON
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Vehicle Created Successfully ID: ' . $vehicleId
-            ]);
+            // SUCCESS: Redirect with notification
+            return redirect()->route('admin-dashboard')->with('status', 'Vehicle Created Successfully ID: ' . $vehicleId);
 
         } catch (Throwable $e) {
-            // ERROR: Return JSON with 400 or 500 status
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 400);
+            // ERROR: Redirect back with error notification
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
 

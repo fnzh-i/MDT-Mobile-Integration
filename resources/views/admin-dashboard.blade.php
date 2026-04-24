@@ -325,6 +325,13 @@
                                 <div class="form-field-label">Issue Date</div>
                                 <input type="date" name="issue_date" class="form-input" required>
                             </div>
+
+                            <div class="form-field-label">Expiry Option</div>
+                                <div class="radio-row">
+                                    <label for="" class="radio-option"> <input type="radio" name="expiry_option" value="1" checked> 1 Years </label>
+                                    <label for="" class="radio-option"> <input type="radio" name="expiry_option" value="3"> 3 Years </label>
+                                </div>
+
                             <div class="form-section">
                                 <div class="form-field-label">Registration Status</div>
                                 <div class="radio-row">
