@@ -16,59 +16,48 @@ class SupportTicketSeeder extends Seeder
     {
         $tickets = [
             [
-                'user_id'     => 1,
-                'category'    => 'Technical',
-                'subject'     => 'Cannot access dashboard',
-                'description' => 'User reporting 403 error when clicking the admin link.',
-                'priority'    => 'High',
-                'status'      => 'Open',
+                'user_id'   => 1,
+                'category'  => 'Technical',
+                'message'   => 'Cannot access dashboard. User reporting 403 error when clicking the admin link.',
+                'status'    => 'Open',
             ],
             [
-                'user_id'     => 2,
-                'category'    => 'Billing',
-                'subject'     => 'License renewal issue',
-                'description' => 'Payment processed but expiry date did not update.',
-                'priority'    => 'Medium',
-                'status'      => 'In Progress',
+                'user_id'   => 2,
+                'category'  => 'Billing',
+                'message'   => 'License renewal issue. Payment processed but expiry date did not update.',
+                'status'    => 'In Progress',
             ],
             [
-                'user_id'     => 3,
-                'category'    => 'Account',
-                'subject'     => 'Password reset request',
-                'description' => 'User forgot their security questions and cannot reset password.',
-                'priority'    => 'Low',
-                'status'      => 'Closed',
+                'user_id'   => 3,
+                'category'  => 'Account',
+                'message'   => 'Password reset request. User forgot their security questions and cannot reset password.',
+                'status'    => 'Closed',
             ],
             [
-                'user_id'     => 4,
-                'category'    => 'Technical',
-                'subject'     => 'Mobile app crashing',
-                'description' => 'The MDT app closes immediately after splash screen on Android 14.',
-                'priority'    => 'Critical',
-                'status'      => 'Open',
+                'user_id'   => 4,
+                'category'  => 'Technical',
+                'message'   => 'Mobile app crashing. The MDT app closes immediately after splash screen on Android 14.',
+                'status'    => 'Open',
             ],
             [
-                'user_id'     => 5,
-                'category'    => 'General',
-                'subject'     => 'Inquiry about vehicle registration',
-                'description' => 'Asking for requirements regarding heavy vehicle registration.',
-                'priority'    => 'Low',
-                'status'      => 'Open',
+                'user_id'   => 5,
+                'category'  => 'General',
+                'message'   => 'Inquiry about vehicle registration. Asking for requirements regarding heavy vehicle registration.',
+                'status'    => 'Open',
             ],
         ];
 
         foreach ($tickets as $t) {
             // Using updateOrInsert prevents Duplicate Entry errors
             DB::table('support_tickets')->updateOrInsert(
-                ['subject' => $t['subject']], // Unique identifier to check
+                ['user_id' => $t['user_id'], 'message' => $t['message']], // Unique identifier to check
                 [
-                    'user_id'     => $t['user_id'],
-                    'category'    => $t['category'],
-                    'description' => $t['description'],
-                    'priority'    => $t['priority'],
-                    'status'      => $t['status'],
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'user_id'   => $t['user_id'],
+                    'category'  => $t['category'],
+                    'message'   => $t['message'],
+                    'status'    => $t['status'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }

@@ -52,5 +52,5 @@ class SupportTicketEntity
     public function getUpdatedAt(): string { return $this->updatedAt; }
     public function getUserEmail(): ?string { return $this->userEmail; }
     public function getUsername(): ?string { return $this->username; }
-    public function getUserName(): ?string { return $this->userName; }
+    public function getFullName(): ?string { return $this->userName; }
 }

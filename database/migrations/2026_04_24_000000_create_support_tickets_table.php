@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('support_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->string('subject');
             $table->string('category');
-            $table->text('description');
-            $table->string('priority');
+            $table->text('message');
             $table->string('status');
+            $table->text('admin_response')->nullable();
             $table->timestamps();
         });
     }

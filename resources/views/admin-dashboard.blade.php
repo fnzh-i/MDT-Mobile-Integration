@@ -604,7 +604,7 @@
                                         <tr>
                                             <td>#{{ $ticket->getId() ?? 'N/A' }}</td>
                                             <td>
-                                                <strong>{{ $ticket->getUsername() ?? 'N/A' }}</strong><br>
+                                                <strong>{{ $ticket->getFullName() ?? 'N/A' }}</strong><br>
                                                 <small>{{ $ticket->getUserEmail() ?? 'N/A' }}</small>
                                             </td>
                                             <td>{{ ucfirst(str_replace('_', ' ', $ticket->getCategory() ?? 'N/A')) }}</td>
