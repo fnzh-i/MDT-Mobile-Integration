@@ -119,8 +119,15 @@ Route::middleware(['auth'])->group(function (){
 
         // for support tickets
         Route::get('/support-tickets', [AdminController::class, 'supportTickets'])->name('admin-support-tickets');
+        Route::post('/support-tickets/{id}/status', [AdminController::class, 'updateSupportTicketStatus'])->name('admin-update-ticket-status');
+        Route::post('/support-tickets/{id}/email', [AdminController::class, 'sendSupportEmail'])->name('admin-send-support-email');
+        Route::post('/support-tickets/{id}/password-reset', [AdminController::class, 'sendPasswordResetEmail'])->name('admin-send-password-reset');
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
+
+        // API Routes for Support Tickets
+        Route::get('/api/dashboard-totals', [AdminController::class, 'getDashboardTotals']);
+        Route::get('/api/support-tickets/{id}', [AdminController::class, 'getTicketDetails']);
     });
     Route:: prefix('supervisor')->group(function(){
         Route::get('/vehicle-lookup', [SupervisorController::class, 'searchVehicles'])->name('supervisor-vehicle-lookup');

@@ -59,22 +59,22 @@
                     <div class="stat-cards-row">
                         <div class="stat-card">
                             <i class="bi bi-people stat-icon"></i>
-                            <div class="stat-number">{{ $totalUsers ?? 0 }}</div>
+                            <div class="stat-number" id="totalUsers" data-total="{{ $totalUsers ?? 0 }}">{{ $totalUsers ?? 0 }}</div>
                             <div class="stat-label">Total Registered Users</div>
                         </div>
                         <div class="stat-card">
                             <i class="bi bi-card-heading stat-icon"></i>
-                            <div class="stat-number">{{ $totalLicenses ?? 0 }}</div>
+                            <div class="stat-number" id="totalLicenses" data-total="{{ $totalLicenses ?? 0 }}">{{ $totalLicenses ?? 0 }}</div>
                             <div class="stat-label">Total Registered Licenses</div>
                         </div>
                         <div class="stat-card">
                             <i class="bi bi-car-front stat-icon"></i>
-                            <div class="stat-number">{{ $totalVehicles ?? 0 }}</div>
+                            <div class="stat-number" id="totalVehicles" data-total="{{ $totalVehicles ?? 0 }}">{{ $totalVehicles ?? 0 }}</div>
                             <div class="stat-label">Total Registered Vehicles</div>
                         </div>
                         <div class="stat-card">
                             <i class="bi bi-file-earmark stat-icon"></i>
-                            <div class="stat-number">{{ $totalTickets ?? 0 }}</div>
+                            <div class="stat-number" id="totalTickets" data-total="{{ $totalTickets ?? 0 }}">{{ $totalTickets ?? 0 }}</div>
                             <div class="stat-label">Total Issued Tickets</div>
                         </div>
                     </div>
@@ -719,10 +719,134 @@
                         }
                     </style>
 
+                    <!-- Ticket Detail Modal -->
+                    <div id="ticketModal" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                        <div class="modal-content" style="background: white; border-radius: 8px; margin: 50px auto; padding: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2 style="margin: 0;">Support Ticket Details</h2>
+                                <button onclick="closeTicketModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                            </div>
+
+                            <div id="ticketDetails" style="margin-bottom: 30px;">
+                                <!-- Content will be loaded via AJAX -->
+                            </div>
+
+                            <hr style="margin: 30px 0;">
+
+                            <!-- Status Update -->
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="margin-bottom: 15px;">Update Status</h3>
+                                <form id="statusForm" method="POST" style="display: flex; gap: 10px;">
+                                    @csrf
+                                    <select name="status" class="form-control" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select new status</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Resolved">Resolved</option>
+                                        <option value="Closed">Closed</option>
+                                    </select>
+                                    <button type="submit" class="btn-submit-action" style="padding: 8px 16px; background: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer;">Update Status</button>
+                                </form>
+                            </div>
+
+                            <!-- Email Actions (shown conditionally) -->
+                            <div id="emailActions" style="margin-top: 30px; display: none;">
+                                <hr style="margin: 30px 0;">
+                                
+                                <!-- Password Reset Email -->
+                                <div id="passwordResetAction" style="display: none; margin-bottom: 20px;">
+                                    <h3 style="margin-bottom: 15px;">Send Password Reset Email</h3>
+                                    <form id="passwordResetForm" method="POST" style="display: flex; gap: 10px;">
+                                        @csrf
+                                        <button type="submit" class="btn-submit-action" style="padding: 8px 16px; background: #198754; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Reset Email</button>
+                                    </form>
+                                </div>
+
+                                <!-- General Inquiry Email -->
+                                <div id="generalEmailAction" style="display: none;">
+                                    <h3 style="margin-bottom: 15px;">Send Email Response</h3>
+                                    <form id="emailForm" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                                        @csrf
+                                        <input type="text" name="email_subject" placeholder="Email Subject" class="form-control" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;" required>
+                                        <textarea name="email_body" placeholder="Email Body" class="form-control" rows="6" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: Arial;" required></textarea>
+                                        <button type="submit" class="btn-submit-action" style="padding: 10px 16px; background: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Email</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <script>
                         function showTicketDetails(ticketId) {
-                            // This can be expanded to show a modal with full ticket details
-                            alert('Viewing ticket #' + ticketId + '\nFull details view can be implemented here');
+                            // Fetch ticket data
+                            fetch(`/admin/api/support-tickets/${ticketId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const ticket = data.ticket;
+                                    const modal = document.getElementById('ticketModal');
+                                    
+                                    // Populate ticket details
+                                    document.getElementById('ticketDetails').innerHTML = `
+                                        <div>
+                                            <p><strong>Ticket ID:</strong> #${ticket.id}</p>
+                                            <p><strong>User:</strong> ${ticket.user_name} (${ticket.email})</p>
+                                            <p><strong>Category:</strong> ${ticket.category.replace(/_/g, ' ')}</p>
+                                            <p><strong>Status:</strong> <span class="status-badge status-${ticket.status.toLowerCase()}">${ticket.status}</span></p>
+                                            <p><strong>Submitted:</strong> ${new Date(ticket.created_at).toLocaleDateString()}</p>
+                                            <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+                                                <strong>Message:</strong>
+                                                <p style="margin-top: 10px; white-space: pre-wrap;">${ticket.message}</p>
+                                            </div>
+                                            ${ticket.admin_response ? `
+                                                <div style="margin-top: 15px; padding: 15px; background: #d1e7dd; border-radius: 4px;">
+                                                    <strong>Admin Response:</strong>
+                                                    <p style="margin-top: 10px; white-space: pre-wrap;">${ticket.admin_response}</p>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `;
+
+                                    // Show email actions based on category
+                                    const emailActions = document.getElementById('emailActions');
+                                    const passwordResetAction = document.getElementById('passwordResetAction');
+                                    const generalEmailAction = document.getElementById('generalEmailAction');
+                                    
+                                    emailActions.style.display = 'block';
+                                    
+                                    if (ticket.category === 'password_change' || ticket.category === 'forgot_password') {
+                                        passwordResetAction.style.display = 'block';
+                                        generalEmailAction.style.display = 'none';
+                                    } else if (ticket.category === 'general_inquiry' || ticket.category === 'other') {
+                                        generalEmailAction.style.display = 'block';
+                                        passwordResetAction.style.display = 'none';
+                                    } else {
+                                        generalEmailAction.style.display = 'block';
+                                        passwordResetAction.style.display = 'none';
+                                    }
+
+                                    // Update form actions
+                                    const statusForm = document.getElementById('statusForm');
+                                    const emailForm = document.getElementById('emailForm');
+                                    const passwordResetForm = document.getElementById('passwordResetForm');
+                                    
+                                    statusForm.action = `/admin/support-tickets/${ticketId}/status`;
+                                    emailForm.action = `/admin/support-tickets/${ticketId}/email`;
+                                    passwordResetForm.action = `/admin/support-tickets/${ticketId}/password-reset`;
+
+                                    modal.style.display = 'block';
+                                })
+                                .catch(error => console.error('Error:', error));
+                        }
+
+                        function closeTicketModal() {
+                            document.getElementById('ticketModal').style.display = 'none';
+                        }
+
+                        // Close modal when clicking outside
+                        window.onclick = function(event) {
+                            const modal = document.getElementById('ticketModal');
+                            if (event.target === modal) {
+                                modal.style.display = 'none';
+                            }
                         }
                     </script>
                 @endif

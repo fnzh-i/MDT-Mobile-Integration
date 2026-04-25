@@ -11,6 +11,8 @@ use App\Repositories\{UserRepository,
                       VehicleRepository,
                       TicketRepository};
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class AdminController extends Controller
@@ -88,6 +90,73 @@ class AdminController extends Controller
             'totalVehicles' => $totalVehicles,
             'totalTickets' => $totalTickets,
         ]);
+    }
+
+    public function getDashboardTotals()
+    {
+        $months = 6;
+        $usersTrend = $this->buildMonthlyCumulativeSeries('users', $months);
+        $licensesTrend = $this->buildMonthlyCumulativeSeries('licenses', $months);
+        $vehiclesTrend = $this->buildMonthlyCumulativeSeries('vehicles', $months);
+        $ticketsTrend = $this->buildMonthlyCumulativeSeries('tickets', $months);
+
+        return response()->json([
+            'totalUsers' => $this->userRepository->count(),
+            'totalLicenses' => $this->licenseRepository->count(),
+            'totalVehicles' => $this->vehicleRepository->count(),
+            'totalTickets' => $this->ticketRepository->count(),
+            'trend' => [
+                'labels' => $usersTrend['labels'],
+                'users' => $usersTrend['values'],
+                'licenses' => $licensesTrend['values'],
+                'vehicles' => $vehiclesTrend['values'],
+                'tickets' => $ticketsTrend['values'],
+            ],
+        ]);
+    }
+
+    private function buildMonthlyCumulativeSeries(string $table, int $months = 6): array
+    {
+        $safeMonths = max(2, $months);
+        $startMonth = Carbon::now()->startOfMonth()->subMonths($safeMonths - 1);
+
+        $monthKeys = [];
+        $labels = [];
+
+        for ($i = 0; $i < $safeMonths; $i++) {
+            $monthDate = $startMonth->copy()->addMonths($i);
+            $monthKeys[] = $monthDate->format('Y-m');
+            $labels[] = $monthDate->format('M Y');
+        }
+
+        $baseCount = (int) DB::table($table)
+            ->where('created_at', '<', $startMonth->toDateTimeString())
+            ->count();
+
+        $monthlyRows = DB::table($table)
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month_key, COUNT(*) as total")
+            ->where('created_at', '>=', $startMonth->toDateTimeString())
+            ->groupBy('month_key')
+            ->orderBy('month_key')
+            ->get();
+
+        $monthlyMap = [];
+        foreach ($monthlyRows as $row) {
+            $monthlyMap[$row->month_key] = (int) $row->total;
+        }
+
+        $values = [];
+        $runningTotal = $baseCount;
+
+        foreach ($monthKeys as $monthKey) {
+            $runningTotal += $monthlyMap[$monthKey] ?? 0;
+            $values[] = $runningTotal;
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $values,
+        ];
     }
     public function createLicense()
     {
@@ -230,5 +299,125 @@ class AdminController extends Controller
             'section' => 'support-tickets',
             'tickets' => $tickets
         ]);
+    }
+
+    /**
+     * Update support ticket status (Open -> In Progress -> Resolved -> Closed)
+     */
+    public function updateSupportTicketStatus(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'status' => 'required|in:Open,In Progress,Resolved,Closed'
+            ]);
+
+            $this->supportTicketService->updateTicketStatus($id, $request->status);
+
+            return redirect()->back()->with('success', 'Ticket status updated to ' . $request->status);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error updating ticket status: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send password reset email for password change/forgot password tickets
+     */
+    public function sendPasswordResetEmail(Request $request, $id)
+    {
+        try {
+            $ticket = $this->supportTicketService->getTicketById($id);
+            
+            if (!$ticket) {
+                return redirect()->back()->with('error', 'Ticket not found');
+            }
+
+            // Get the user
+            $user = \App\Models\User::find($ticket->getUserId());
+            
+            if (!$user) {
+                return redirect()->back()->with('error', 'User not found');
+            }
+
+            // Send password reset email
+            \Illuminate\Support\Facades\Password::sendResetLink(['email' => $user->email]);
+
+            // Mark ticket as resolved
+            $this->supportTicketService->updateTicketStatus($id, 'Resolved');
+
+            return redirect()->back()->with('success', 'Password reset email sent to ' . $user->email . ' and ticket marked as resolved');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error sending password reset email: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get ticket details (for API/AJAX)
+     */
+    public function getTicketDetails($id)
+    {
+        try {
+            $ticket = $this->supportTicketService->getTicketById($id);
+            
+            if (!$ticket) {
+                return response()->json(['error' => 'Ticket not found'], 404);
+            }
+
+            return response()->json([
+                'ticket' => [
+                    'id' => $ticket->getId(),
+                    'user_id' => $ticket->getUserId(),
+                    'category' => $ticket->getCategory(),
+                    'message' => $ticket->getMessage(),
+                    'status' => $ticket->getStatus(),
+                    'admin_response' => $ticket->getAdminResponse(),
+                    'created_at' => $ticket->getCreatedAt(),
+                    'updated_at' => $ticket->getUpdatedAt(),
+                    'email' => $ticket->getUserEmail(),
+                    'user_name' => $ticket->getFullName(),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Send custom email response to user for general inquiries
+     */
+    public function sendSupportEmail(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'email_subject' => 'required|string|min:5',
+                'email_body' => 'required|string|min:10'
+            ]);
+
+            $ticket = $this->supportTicketService->getTicketById($id);
+            
+            if (!$ticket) {
+                return redirect()->back()->with('error', 'Ticket not found');
+            }
+
+            // Get the user
+            $user = \App\Models\User::find($ticket->getUserId());
+            
+            if (!$user) {
+                return redirect()->back()->with('error', 'User not found');
+            }
+
+            // Send email using Laravel Mail
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $request) {
+                $message->to($user->email)
+                    ->subject($request->email_subject)
+                    ->setBody($request->email_body, 'text/html');
+            });
+
+            // Update ticket with admin response
+            $this->supportTicketService->respondToTicket($id, "Email sent: " . $request->email_subject . "\n\n" . $request->email_body);
+
+            return redirect()->back()->with('success', 'Email sent to ' . $user->email);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error sending email: ' . $e->getMessage());
+        }
     }
 }

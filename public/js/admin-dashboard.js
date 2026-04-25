@@ -51,28 +51,145 @@ window.addEventListener('resize', () => {
     }
 });
 
-window.addEventListener('load', () => { //sample
-    const opts = {
+window.addEventListener('load', () => {
+    const dashboardElements = {
+        totalUsers: document.getElementById('totalUsers'),
+        totalLicenses: document.getElementById('totalLicenses'),
+        totalVehicles: document.getElementById('totalVehicles'),
+        totalTickets: document.getElementById('totalTickets')
+    };
+
+    const usersCanvas = document.getElementById('usersChart');
+    const licensesCanvas = document.getElementById('licenseChart');
+    const vehiclesCanvas = document.getElementById('vehicleChart');
+    const ticketsCanvas = document.getElementById('ticketChart');
+
+    if (!usersCanvas && !licensesCanvas && !vehiclesCanvas && !ticketsCanvas) {
+        return;
+    }
+
+    const toInt = (value) => {
+        const parsed = parseInt(value, 10);
+        return Number.isNaN(parsed) ? 0 : parsed;
+    };
+
+    const readInitialTotals = () => ({
+        totalUsers: toInt(dashboardElements.totalUsers?.dataset.total ?? dashboardElements.totalUsers?.textContent),
+        totalLicenses: toInt(dashboardElements.totalLicenses?.dataset.total ?? dashboardElements.totalLicenses?.textContent),
+        totalVehicles: toInt(dashboardElements.totalVehicles?.dataset.total ?? dashboardElements.totalVehicles?.textContent),
+        totalTickets: toInt(dashboardElements.totalTickets?.dataset.total ?? dashboardElements.totalTickets?.textContent)
+    });
+
+    const updateStatCards = (totals) => {
+        Object.entries(dashboardElements).forEach(([key, element]) => {
+            if (!element) return;
+            const value = toInt(totals[key]);
+            element.textContent = value;
+            element.dataset.total = value;
+        });
+    };
+
+    const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            y: { beginAtZero: true, ticks: { font: { size: 10 } } },
-            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0,
+                    font: { size: 10 }
+                }
+            },
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 10 } }
+            }
         }
     };
 
-    const u = document.getElementById('usersChart'); 
-    if (u) new Chart(u, { type: 'bar', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], datasets: [{ data: [5,12,8,20,15,18,10], backgroundColor: '#064789', borderRadius: 4 }] }, options: opts });
+    const buildChart = (canvas, label, color, values = [], labels = [], type = 'bar') => {
+        if (!canvas) return null;
+        return new Chart(canvas, {
+            type,
+            data: {
+                labels,
+                datasets: [{
+                    label,
+                    data: values,
+                    backgroundColor: type === 'line' ? 'rgba(6,71,137,0.15)' : color,
+                    borderColor: color,
+                    borderWidth: type === 'line' ? 2 : 0,
+                    borderRadius: type === 'line' ? 0 : 4,
+                    fill: type === 'line',
+                    tension: 0.35,
+                    pointRadius: type === 'line' ? 3 : 0
+                }]
+            },
+            options: chartOptions
+        });
+    };
 
-    const l = document.getElementById('licenseChart');
-    if (l) new Chart(l, { type: 'bar', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], datasets: [{ data: [40,70,55,90,60,80,45], backgroundColor: '#064789', borderRadius: 4 }] }, options: opts });
+    const initialTotals = readInitialTotals();
+    const initialLabels = ['Current'];
 
-    const v = document.getElementById('vehicleChart');
-    if (v) new Chart(v, { type: 'line', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], datasets: [{ data: [20,45,30,60,35,50,25], borderColor: '#064789', backgroundColor: 'rgba(6,71,137,0.1)', fill: true, tension: 0.4, pointRadius: 3 }] }, options: opts });
+    const charts = {
+        users: buildChart(usersCanvas, 'Registered Users', '#064789', [initialTotals.totalUsers], initialLabels, 'bar'),
+        licenses: buildChart(licensesCanvas, 'Registered Licenses', '#0f766e', [initialTotals.totalLicenses], initialLabels, 'bar'),
+        vehicles: buildChart(vehiclesCanvas, 'Registered Vehicles', '#b45309', [initialTotals.totalVehicles], initialLabels, 'line'),
+        tickets: buildChart(ticketsCanvas, 'Issued Tickets', '#b91c1c', [initialTotals.totalTickets], initialLabels, 'bar')
+    };
 
-    const t = document.getElementById('ticketChart');
-    if (t) new Chart(t, { type: 'bar', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], datasets: [{ data: [3,8,5,14,9,11,6], backgroundColor: '#064789', borderRadius: 4 }] }, options: opts });
+    const updateCharts = (totals) => {
+        const trendLabels = Array.isArray(totals.trend?.labels) && totals.trend.labels.length > 0
+            ? totals.trend.labels
+            : ['Current'];
+
+        const normalizeSeries = (series, fallbackValue) => {
+            if (!Array.isArray(series) || series.length === 0) {
+                return [toInt(fallbackValue)];
+            }
+            return series.map((value) => toInt(value));
+        };
+
+        const chartSeriesMap = {
+            users: normalizeSeries(totals.trend?.users, totals.totalUsers),
+            licenses: normalizeSeries(totals.trend?.licenses, totals.totalLicenses),
+            vehicles: normalizeSeries(totals.trend?.vehicles, totals.totalVehicles),
+            tickets: normalizeSeries(totals.trend?.tickets, totals.totalTickets)
+        };
+
+        Object.entries(charts).forEach(([key, chart]) => {
+            if (!chart) return;
+            chart.data.labels = trendLabels;
+            chart.data.datasets[0].data = chartSeriesMap[key];
+            chart.update();
+        });
+    };
+
+    const refreshDashboardMetrics = () => {
+        fetch('/admin/api/dashboard-totals', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch dashboard totals');
+                }
+                return response.json();
+            })
+            .then((totals) => {
+                updateStatCards(totals);
+                updateCharts(totals);
+            })
+            .catch((error) => {
+                console.error('Dashboard totals refresh error:', error);
+            });
+    };
+
+    refreshDashboardMetrics();
+    window.setInterval(refreshDashboardMetrics, 30000);
 });
 
 document.getElementById('generate-client-num-btn')?.addEventListener('click', () => {
