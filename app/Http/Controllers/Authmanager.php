@@ -7,10 +7,22 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use App\Repositories\UserRepository;
 
 
 class AuthManager extends Controller
 {
+  protected $userService;
+  protected $userRepo;
+
+  public function __construct(UserService $userService, UserRepository $userRepo)
+  {
+    $this->userService = $userService;
+    $this->userRepo = $userRepo;
+  }
+
+
     public function showRegisterForm() 
     {
         return view('auth.register'); 
@@ -42,6 +54,8 @@ class AuthManager extends Controller
         $user->username = $validated['username'];
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
+
+        $user->lto_client_id = $this->userService->generateClientNumber();
         
         // Set a default role so the database doesn't complain
         $user->role = 'CIVILIAN'; 
