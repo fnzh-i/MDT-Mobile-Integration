@@ -43,7 +43,8 @@ class VehicleController extends BaseController {
     }
 
     public function search(): void {
-        $searchNumber = trim($_GET['search_number'] ?? '');
+        $data = $this->getJsonInput();
+        $searchNumber = trim($data['search_number'] ?? ($_GET['search_number'] ?? ''));
 
         if (empty($searchNumber)) {
             $this->sendResponse("Please enter the plate or MV file number.", 400);
