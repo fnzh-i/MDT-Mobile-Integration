@@ -63,8 +63,19 @@ class UserRepository{
     }
 
     public function hydrate(array $row): UserEntity {
+        $clientNumber = $row["client_number"] ?? $row["lto_client_id"] ?? null;
+        $userId = $row["user_id"] ?? $row["id"] ?? null;
+
+        if ($clientNumber === null) {
+            throw new RuntimeException("User row is missing client number.");
+        }
+
+        if ($userId === null) {
+            throw new RuntimeException("User row is missing user id.");
+        }
+
         return new UserEntity(
-            $row["client_number"],
+            $clientNumber,
             $row["first_name"],
             $row["middle_name"] ?? null,
             $row["last_name"],
@@ -72,7 +83,7 @@ class UserRepository{
             $row["email"],
             $row["password"],
             UserRolesEnum::from($row["role"]),
-            (int)$row["user_id"]
+            (int)$userId
         );
     }
 

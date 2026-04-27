@@ -80,6 +80,25 @@ class UserService {
         }
     }
 
+    public function changePassword(string $username, string $currentPassword, string $newPassword): void {
+        $user = $this->userRepo->findByUsername($username);
+
+        if (!$user) {
+            throw new Exception("User not found.");
+        }
+
+        if (!password_verify($currentPassword, $user->getPassword())) {
+            throw new Exception("Current password is incorrect.");
+        }
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        $updated = $this->userRepo->updatePassword($username, $hashedPassword);
+
+        if (!$updated) {
+            throw new Exception("Unable to update password.");
+        }
+    }
+
     public function generateClientNumber(): string {
         do {
             $newClientNumber = UserEntity::generateFormat("NN-NNNNNN-NNNNNNN");

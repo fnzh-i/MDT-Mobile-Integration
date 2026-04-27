@@ -133,6 +133,10 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/vehicle-lookup', [SupervisorController::class, 'searchVehicles'])->name('supervisor-vehicle-lookup');
         Route::get('/license-lookup', [SupervisorController::class, 'searchLicenses'])->name('supervisor-license-lookup');
         Route::get('/settings', [SupervisorController::class, 'settings'])->name('supervisor-settings');
+        Route::put('/settings', [SupervisorController::class, 'updateSettings'])->name('supervisor-update-settings');
+
+        Route::get('/support', [SupervisorController::class, 'support'])->name('supervisor-support');
+        Route::post('/support', [SupervisorController::class, 'submitSupport'])->name('supervisor-support-submit');
     });
     // Route::prefix('admin')->group(function(){
     //     Route::get('/license/create', [CreationManager::class, 'showCreateLicenseForm'])->name('license.create');

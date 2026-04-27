@@ -23,8 +23,8 @@ class SearchLicenseResponse implements JsonSerializable {
             "license" => [
                 "id"            => $this->license->getId(),
                 "licenseNumber" => $this->license->getLicenseNumber(),
-                "type"          => $this->license->getLicenseType(),
-                "status"        => $this->license->getLicenseStatus(),
+                "type"          => $this->license->getLicenseType()->value,
+                "status"        => $this->license->getLicenseStatus()->value,
                 "dlCodes"       => $this->license->getDLCodesAsString(),
                 "issueDate"     => $this->license->getIssueDate()->format("F j, Y"),
                 "expiryDate"    => $this->license->getExpiryDate()->format("F j, Y")

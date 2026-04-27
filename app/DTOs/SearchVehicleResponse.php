@@ -26,7 +26,7 @@ class SearchVehicleResponse implements JsonSerializable {
                 "model"        => $this->vehicle->getModel(),
                 "year"         => $this->vehicle->getYear(),
                 "color"        => $this->vehicle->getColor(),
-                "regStatus"    => $this->vehicle->getRegStatus(),
+                "regStatus"    => $this->vehicle->getRegStatus()->value,
                 "issueDate"    => $this->vehicle->getIssueDate()->format("F j, Y"),
                 "expiryDate"   => $this->vehicle->getExpiryDate()->format("F j, Y")
             ],
