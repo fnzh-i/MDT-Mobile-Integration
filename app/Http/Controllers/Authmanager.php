@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Services\UserService;
+use App\Services\SupportTicketService;
 use App\Repositories\UserRepository;
 
 
@@ -114,6 +115,50 @@ class AuthManager extends Controller
                 "message" => "Something went wrong"
                 ],200);
     }
+
+    public function apiForgotPasswordTicket(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "error",
+                "message" => $validate->errors()->first()
+            ], 422);
+        }
+
+        $email = trim((string) $request->input('email'));
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                "status" => "error",
+                "message" => "No account found with that email."
+            ], 404);
+        }
+
+        try {
+            $ticketId = app(SupportTicketService::class)->createTicket(
+                (int) $user->id,
+                'Forgot Password',
+                'Forgot password request submitted from mobile app for: ' . $email
+            );
+
+            return response()->json([
+                "status" => "success",
+                "data" => ["ticket_id" => $ticketId],
+                "message" => "Support ticket submitted successfully."
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Unable to submit support ticket."
+            ], 500);
+        }
+    }
+
     function LoginCivilian (Request $request){
         $validate = Validator::make($request->all(),
         [

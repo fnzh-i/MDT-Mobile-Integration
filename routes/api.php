@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [Authmanager::class, "apilogin"]);
+Route::post('/forgot-password-ticket', [Authmanager::class, "apiForgotPasswordTicket"]);
 
 Route::middleware("auth:sanctum")->group(function () {
 Route::match(['get', 'post'], "/vehicle/search", function () {
