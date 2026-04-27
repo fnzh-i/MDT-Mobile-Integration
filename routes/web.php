@@ -17,16 +17,16 @@ use App\Http\Controllers\SupervisorController;
 // Route::get('/register', [AuthManager::class, 'showRegisterForm'])->name('register');
 
 // --- PUBLIC ROUTES (No Middleware) ---
-Route::get('/login', function () { return view('auth.login'); })->name('login');
-Route::post('/login', [AuthManager::class, 'Login']);
+Route::get('/secret-login', function () { return view('auth.secret-login'); })->name('secret-login');
+Route::post('/secret-login', [AuthManager::class, 'Login']);
 
-Route::get('/login-civilian', function () {return view('login-civilian');})->name('login-civilian');
+Route::get('/login-civilian', function () {return view('auth.login-civilian');})->name('login-civilian');
 Route::post('/login-civilian', [AuthManager::class, 'LoginCivilian']);
 
 Route::post('apilogin', [AuthManager::class, 'ApiLogin']);
 
 Route::post('/register', [AuthManager::class, 'Register']);
-Route::get('/register', function () { return view('register'); })->name('register');
+Route::get('/register', function () { return view('auth.register'); })->name('register');
 
 Route::post('/forgot-password', [AuthManager::class, 'forgotPassword'])->name('forgot-password');
 Route::post('/support/email', [SupportController::class, 'sendEmail'])->name('support.email');
