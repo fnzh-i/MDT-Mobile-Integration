@@ -74,21 +74,21 @@ class PersonRepository {
     }
 
     public function hydrate(array $row): PersonEntity {
-        return new PersonEntity(
-            $row["first_name"],
-            $row["middle_name"] ?? null,
-            $row["last_name"],
-            $row["suffix"] ?? null,
-            new DateTime($row["date_of_birth"]),
-            $row["gender"],
-            $row["address"],
-            $row["nationality"],
-            $row["height"],
-            $row["weight"],
-            $row["eye_color"],
-            $row["blood_type"],
-            (int)$row["person_id"]
-        );
+      return new PersonEntity(
+        $row["first_name"] ?? 'Unknown',    
+        $row["middle_name"] ?? null,        
+        $row["last_name"] ?? 'Unknown',     
+        $row["suffix"] ?? null,             
+        new DateTime($row["date_of_birth"] ?? 'now'), 
+        $row["gender"] ?? 'Unknown',        
+        $row["address"] ?? 'Unknown',       
+        $row["nationality"] ?? 'Unknown',   
+        $row["height"] ?? '0',              
+        $row["weight"] ?? '0',              
+        $row["eye_color"] ?? 'Unknown',     
+        $row["blood_type"] ?? 'Unknown',    
+        (int)$row["person_id"]              
+      );
     }
 
     // public function findById(int $id): ?Person {
@@ -117,7 +117,7 @@ class PersonRepository {
         $row = $result->fetch_assoc();
         $stmt->close();
 
-        return $row ? $this->hydrate($row) : null;
+        return (is_array($row)) ? $this->hydrate($row) : null;
     }
 
     public function findByName(string $firstName, string $lastName, ?string $middleName = null): ?PersonEntity {
@@ -143,7 +143,7 @@ class PersonRepository {
         $row = $result->fetch_assoc();
         $stmt->close();
 
-        return $row ? $this->hydrate($row) : null;
+        return ($row && is_array($row)) ? $this->hydrate($row) : null;
     }
 }
 ?>
