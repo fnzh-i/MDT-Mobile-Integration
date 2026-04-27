@@ -40,11 +40,11 @@ Route::middleware(['auth'])->group(function (){
     });
 
     // Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/admin-dashboard',[AdminController::class, 'index'])->name('admin-dashboard');
-    Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->name('civilian-dashboard');
-    Route::get('/supervisor-dashboard', [SupervisorController::class, 'index'])->name('supervisor-dashboard');
+    Route::get('/admin-dashboard',[AdminController::class, 'index'])->middleware('role:ADMIN')->name('admin-dashboard');
+    Route::get('/civilian-dashboard', [CivilianController::class, 'index'])->middleware('role:CIVILIAN')->name('civilian-dashboard');
+    Route::get('/supervisor-dashboard', [SupervisorController::class, 'index'])->middleware('role:SUPERVISOR')->name('supervisor-dashboard');
     
-    Route::prefix('civilian')->group(function(){ // Civilian manager routes
+    Route::prefix('civilian')->middleware('role:CIVILIAN')->group(function(){ // Civilian manager routes
         Route::get('/license', [CivilianController::class, 'license'])->name('civilian-license');
         Route::get('/vehicles', [CivilianController::class, 'vehicles'])->name('civilian-vehicle');
         Route::get('/violations', [CivilianController::class, 'violations'])->name('civilian-violations');
@@ -65,20 +65,20 @@ Route::middleware(['auth'])->group(function (){
                 'message' => $e->getMessage()
             ], 500);
         }
-    });
+    })->middleware('role:SUPERVISOR');
 
     Route::get('/api/vehicle/search', function () {
         // api for fetching vehicles from the CoreServiceProvider automatically
         $service = app(\App\Services\VehicleService::class);
         $controller = new VehicleController($service);
         return $controller->search();
-    });
+    })->middleware('role:SUPERVISOR');
 
-    Route::get('/license/search', function () { return view('license-search'); })->name('license.search.page');
+    Route::get('/license/search', function () { return view('license-search'); })->middleware('role:SUPERVISOR')->name('license.search.page');
 
-    Route::get('/vehicle/search', function () { return view('vehicle-search'); })->name('vehicle.search.page');
+    Route::get('/vehicle/search', function () { return view('vehicle-search'); })->middleware('role:SUPERVISOR')->name('vehicle.search.page');
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware('role:ADMIN')->group(function () {
 
         // Create Routes
         Route::get('/create-users', [AdminController::class, 'createUsers'])->name('admin-create-users');
@@ -129,7 +129,7 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/api/dashboard-totals', [AdminController::class, 'getDashboardTotals']);
         Route::get('/api/support-tickets/{id}', [AdminController::class, 'getTicketDetails']);
     });
-    Route:: prefix('supervisor')->group(function(){
+    Route:: prefix('supervisor')->middleware('role:SUPERVISOR')->group(function(){
         Route::get('/vehicle-lookup', [SupervisorController::class, 'searchVehicles'])->name('supervisor-vehicle-lookup');
         Route::get('/license-lookup', [SupervisorController::class, 'searchLicenses'])->name('supervisor-license-lookup');
         Route::get('/settings', [SupervisorController::class, 'settings'])->name('supervisor-settings');

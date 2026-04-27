@@ -23,6 +23,15 @@ class AuthManager extends Controller
     $this->userRepo = $userRepo;
   }
 
+    private function dashboardForRole(string $role): string
+    {
+            return match (strtoupper($role)) {
+                    'ADMIN' => 'admin-dashboard',
+                    'SUPERVISOR' => 'supervisor-dashboard',
+                    default => 'civilian-dashboard',
+            };
+    }
+
 
     public function showRegisterForm() 
     {
@@ -186,8 +195,10 @@ class AuthManager extends Controller
 
             if ($user instanceof User) {
                 $token = $user->createToken('mobile_token')->plainTextToken;
-            }   
-                return redirect()->intended(route('civilian-dashboard'));
+            }
+
+                $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
+                return redirect()->intended(route($target));
                 // return response()->json(
                 //     [
                 //     "status"=>"success",
@@ -228,8 +239,10 @@ class AuthManager extends Controller
 
             if ($user instanceof User) {
                 $token = $user->createToken('mobile_token')->plainTextToken;
-            }   
-                return redirect()->intended(route('admin-dashboard'));
+            }
+
+                $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
+                return redirect()->intended(route($target));
                 // return response()->json(
                 //     [
                 //     "status"=>"success",
