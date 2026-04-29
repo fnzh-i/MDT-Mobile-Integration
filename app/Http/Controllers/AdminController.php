@@ -275,10 +275,23 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'License revoked successfully');
     }
 
-    public function updateUser($id)
+    public function updateUser(Request $request, $id)
     {
-        // TODO: Implement user update logic
-        return redirect()->back()->with('success', 'User updated successfully');
+        $validated = $request->validate([
+            'role'       => 'required|in:ADMIN',
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'username'   => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+        ]);
+
+        try {
+            $this->userService->updateUser($id, $validated);
+
+            return redirect()->back()->with('success', 'User updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
+        }
     }
 
     public function archiveUser($id)

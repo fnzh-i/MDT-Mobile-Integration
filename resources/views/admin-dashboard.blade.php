@@ -357,61 +357,66 @@
                     </div>
                 
                 @elseif ($section === 'search-users')
+                    <div class="search-card mb-4">
+                        <h2 class="search-card-title">Search User</h2>
+                        <form action="{{ route('admin-search-users') }}" method="GET">
+                            <div class="form-field-label">Enter Username or Email</div>
+                            <div class="input-group">
+                                <input type="text" name="query" class="search-input" placeholder="example@example.com" value="{{ request('query') }}" required>
+                                <button type="submit" class="btn-search-submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+
                     @if ($searchedUser)
                         <div class="form-card">
                             <h2 class="form-card-title">User Management</h2>
                             <div class="mgmt-table-wrapper">
-                                <table class="mgmt-table">
-                                    <thead>
-                                        <tr>
-                                            <th>User ID</th>
-                                            <th>Role</th>
-                                            <th>First Name</th>
-                                            <th>Middle Name</th>
-                                            <th>Last Name</th>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>Password</th>
-                                            <th>Action</th>
-                                        </tr>  
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->id }}" readonly> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->role }}" id="edit_role"> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->firstName }}" id="edit_first"> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->middleName ?? '' }}" id="edit_middle"> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->lastName }}" id="edit_last"> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->username }}" id="edit_username"> </td>
-                                            <td> <input type="text" class="tbl-input" value="{{ $searchedUser->email }}" id="edit_email"> </td>
-                                            <td> <input type="text" class="tbl-input" placeholder="••••••••" type="password" value="{{ $searchedUser->password }}" id="edit_password"> </td>
-                                            <td class="action-cell">
-                                                <form action="{{ route('admin-update-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
-                                                    @csrf @method('PUT')
+                                <form action="{{ route('admin-update-user', $searchedUser->user_id) }}" method="POST">
+                                    @csrf @method('PUT')
+                                    <table class="mgmt-table">
+                                        <thead>
+                                            <tr>
+                                                <th>User ID</th>
+                                                <th>Role</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                            </tr>  
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" class="tbl-input" name="id" value="{{ $searchedUser->id }}" readonly></td>
+                                                <td> 
+                                                    <select name="role" class="tbl-input">
+                                                        <option value="CIVILIAN" {{ $searchedUser->role === 'CIVILIAN' ? 'selected' : '' }}>CIVILIAN</option>
+                                                        <option value="ENFORCER" {{ $searchedUser->role === 'ENFORCER' ? 'selected' : '' }}>ENFORCER</option>
+                                                        <option value="TEAMLEADER" {{ $searchedUser->role === 'TEAMLEADER' ? 'selected' : '' }}>TEAMLEADER</option>
+                                                        <option value="SUPERVISOR" {{ $searchedUser->role === 'SUPERVISOR' ? 'selected' : '' }}>SUPERVISOR</option>
+                                                        <option value="ADMIN" {{ $searchedUser->role === 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="tbl-input" name="first_name" value="{{ $searchedUser->firstName }}"></td>
+                                                <td><input type="text" class="tbl-input" name="last_name" value="{{ $searchedUser->lastName }}"></td>
+                                                <td><input type="text" class="tbl-input" name="username" value="{{ $searchedUser->username }}"></td>
+                                                <td><input type="text" class="tbl-input" name="email" value="{{ $searchedUser->email }}"></td>
+                                                <td class="action-cell">
                                                     <button type="submit" class="btn-update">Update</button>
-                                                </form>
-                                                <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
-                                                    @csrf @method('PATCH')
-                                                    <button type="submit" class="btn-archive" onclick="return confirm('Archive this user?')">Archive</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    </tbody> 
-                                </table>
+                                </form> <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="btn-archive" onclick="return confirm('Archive this user?')">Archive</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </tbody> 
+                                    </table>
                             </div>
-                            <a href="{{ route('admin-create-users') }}" class="btn-form-submit mt-3 d-inline-block">Create User</a>
                         </div>
-                    @else
-                        <div class="search-card">
-                            <h2 class="search-card-title">Search User</h2>
-                            <form action="{{ route('admin-search-users') }}" method="GET">
-                                <div class="form-field-label">Enter Username or Email</div>
-                                <input type="text" name="query" class="search-input" placeholder="example@example.com" value="{{ request('query') }}" required>
-                                <button type="submit" class="btn-search-submit">Search</button>
-                            </form>
-                            @if (request('query') && !$searchedUser)
-                            <p class="no-data mt-3">No user found for "{{ request('query') }}"</p>
-                            @endif
+                    @elseif(request('query'))
+                        <div class="alert alert-warning mt-3">
+                            No user found for "{{ request('query') }}"
                         </div>
                     @endif
                 

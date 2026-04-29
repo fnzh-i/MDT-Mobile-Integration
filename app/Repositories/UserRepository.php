@@ -195,5 +195,33 @@ class UserRepository{
         $row = $result->fetch_assoc();
         return (int)($row['total'] ?? 0);
     }
+    public function update(int $id, array $data): bool {
+        $sql = "UPDATE users SET 
+                role = ?, 
+                first_name = ?, 
+                last_name = ?, 
+                username = ?, 
+                email = ?, 
+                updated_at = NOW() 
+                WHERE id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param(
+            "sssssi",
+            $data['role'],
+            $data['first_name'],
+            $data['last_name'],
+            $data['username'],
+            $data['email'],
+            $id
+        );
+
+        return $stmt->execute();
+    }
 }
 ?>

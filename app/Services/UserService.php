@@ -119,6 +119,15 @@ class UserService {
         return new SearchUserResponse($user);
     }
 
+    public function updateUser(int $id, array $data): void {
+        // Basic validation logic can go here (e.g. checking if username is taken by someone else)
+        $updated = $this->userRepo->update($id, $data);
+
+        if (!$updated) {
+            throw new Exception("Failed to update user in database.");
+        }
+    }
+
 
     // public function existsByClientNumber(string $clientNumber): bool {
     //     $sql = "SELECT 1 FROM licenses WHERE license_number = ? LIMIT 1";
