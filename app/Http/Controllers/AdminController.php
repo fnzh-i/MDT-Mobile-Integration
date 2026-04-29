@@ -263,10 +263,24 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Vehicle revoked successfully');
     }
 
-    public function updateLicense($id)
+    public function updateLicense(Request $request, $id)
     {
-        // TODO: Implement license update logic
-        return redirect()->back()->with('success', 'License updated successfully');
+        $validated = $request->validate([
+            'license_number' => 'required|string|max:20',
+            'status'         => 'required|string|',
+            'type'           => 'required|string|',
+            'dl_codes'       => 'required|string',
+            'expiry_date'    => 'required|date',
+            'address'        => 'required|string|max:255',
+        ]);
+
+        try {
+            $this->licenseService->updateLicense((int)$id, $validated);
+
+            return redirect()->back()->with('success', 'License updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
+        }
     }
 
     public function revokeLicense($id)

@@ -421,52 +421,77 @@
                     @endif
                 
                 @elseif ($section === 'search-license')
-                    @if ($searchedLicense)
-                        <div class="search-card">
-                            <h2 class="search-card-title">Search Result</h2>
-                            <div class="result-table-wrap">
-                                <table class="result-table">
-                                    <tbody>
-                                        <tr> <td class="result-label">License Number</td> <td>{{ $searchedLicense->licenseNumber }}</td> </tr>
-                                        <tr> <td class="result-label">Status</td> <td><span class="{{ $searchedLicense->status === 'Active' ? 'status-green' : 'status-red' }}">{{ $searchedLicense->status }}</span></td> </tr>
-                                        <tr> <td class="result-label">Type</td> <td>{{ $searchedLicense->type }}</td></tr>
-                                        <tr> <td class="result-label">Issue Date</td> <td>{{ $searchedLicense->issueDate }}</td> </tr>
-                                        <tr> <td class="result-label">Expiry Date</td> <td>{{ $searchedLicense->expiryDate }}</td> </tr>
-                                        <tr> <td class="result-label">DL Codes</td> <td>{{ $searchedLicense->dlCodes }}</td> </tr>
-                                        <tr> <td class="result-label">Name</td> <td>{{ $searchedLicense->firstName }} {{ $searchedLicense->lastName }}</td> </tr>
-                                        <tr> <td class="result-label">Birthday</td> <td>{{ $searchedLicense->dateOfBirth }}</td> </tr>
-                                        <tr> <td class="result-label">Gender</td> <td>{{ $searchedLicense->gender }}</td> </tr>
-                                        <tr> <td class="result-label">Address</td> <td>{{ $searchedLicense->address }}</td> </tr>
-                                        <tr> <td class="result-label">Nationality</td> <td>{{ $searchedLicense->nationality }}</td> </tr>
-                                        <tr> <td class="result-label">Height</td> <td>{{ $searchedLicense->height }}</td> </tr>
-                                        <tr> <td class="result-label">Weight</td> <td>{{ $searchedLicense->weight }}</td> </tr>
-                                        <tr> <td class="result-label">Eye Color</td> <td>{{ $searchedLicense->eyeColor }}</td> </tr>
-                                        <tr> <td class="result-label">Blood Type</td> <td>{{ $searchedLicense->bloodType }}</td> </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="result-actions">
-                                <form action="{{ route('admin-update-license', $searchedLicense->license_id) }}" method="POST" style="display: inline">
-                                    @csrf @method('PUT')
-                                    <button type="submit" class="btn-form-submit">Update</button>
-                                </form>
-                                <form action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" method="POST" style="display: inline">
-                                    @csrf @method('PATCH')
-                                    <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this license?')">Revoke</button>
-                                </form>
-                            </div>
-                        </div>
-                    @else 
-                        <div class="search-card">
-                            <h2 class="search-card-title">Search License</h2>
-                            <form action="{{ route('admin-search-license') }}" method="GET">
-                                <div class="form-field-label">Enter License Number</div>
+                    <div class="search-card mb-4">
+                        <h2 class="search-card-title">Search License</h2>
+                        <form action="{{ route('admin-search-license') }}" method="GET">
+                            <div class="form-field-label">Enter License Number</div>
+                            <div class="input-group">
                                 <input type="text" name="query" class="search-input" placeholder="AXX-XX-XXXXXX" value="{{ request('query') }}" required>
                                 <button type="submit" class="btn-search-submit">Search</button>
-                            </form>
-                            @if (request('query') && !$searchedLicense)
-                                <p class="no-data mt-3">No license found for "{{ request('query') }}".</p>
-                            @endif
+                            </div>
+                        </form>
+                        @if (request('query') && !$searchedLicense)
+                            <p class="no-data mt-3">No license found for "{{ request('query') }}".</p>
+                        @endif
+                    </div>
+
+                    @if ($searchedLicense)
+                        <div class="search-card">
+                            <h2 class="search-card-title">Edit License Details</h2>
+                            
+                            <form action="{{ route('admin-update-license', $searchedLicense->license_id) }}" method="POST">
+                                @csrf @method('PUT')
+                                
+                                <div class="result-table-wrap">
+                                    <table class="result-table">
+                                        <tbody>
+                                            <tr> 
+                                                <td class="result-label">License Number</td> 
+                                                <td><input type="text" name="license_number" class="tbl-input" value="{{ $searchedLicense->licenseNumber }}"></td> 
+                                            </tr>
+                                            <tr> 
+                                                <td class="result-label">Status</td> 
+                                                <td>
+                                                    <select name="status" class="tbl-input">
+                                                        <option value="Active" {{ $searchedLicense->status === 'Active' ? 'selected' : '' }}>Active</option>
+                                                        <option value="Expired" {{ $searchedLicense->status === 'Expired' ? 'selected' : '' }}>Expired</option>
+                                                        <option value="Suspended" {{ $searchedLicense->status === 'Suspended' ? 'selected' : '' }}>Suspended</option>
+                                                        <option value="Revoked" {{ $searchedLicense->status === 'Revoked' ? 'selected' : '' }}>Revoked</option>
+                                                    </select>
+                                                </td> 
+                                            </tr>
+                                            <tr> 
+                                                <td class="result-label">Type</td> 
+                                                <td>
+                                                    <select name="type" class="tbl-input">
+                                                        <option value="Professional" {{ $searchedLicense->type === 'Professional' ? 'selected' : '' }}>Professional</option>
+                                                        <option value="Non-Professional" {{ $searchedLicense->type === 'Non-Professional' ? 'selected' : '' }}>Non-Professional</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr> 
+                                                <td class="result-label">DL Codes</td> 
+                                                <td><input type="text" name="dl_codes" class="tbl-input" value="{{ $searchedLicense->dlCodes }}"></td> 
+                                            </tr>
+                                            <tr> 
+                                                <td class="result-label">Expiry Date</td> 
+                                                <td><input type="date" name="expiry_date" class="tbl-input" value="{{ \Carbon\Carbon::parse($searchedLicense->expiryDate)->format('Y-m-d') }}"></td> 
+                                            </tr>
+                                            <tr> 
+                                                <td class="result-label">Address</td> 
+                                                <td><input type="text" name="address" class="tbl-input" value="{{ $searchedLicense->address }}"></td> 
+                                            </tr>
+                                            </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="result-actions mt-3">
+                                    <button type="submit" class="btn-form-submit">Update License</button>
+                            </form> <form action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" method="POST" style="display: inline">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this license?')">Revoke</button>
+                                    </form>
+                                </div>
                         </div>
                     @endif
                 

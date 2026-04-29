@@ -223,6 +223,36 @@ class LicenseRepository {
         return $this->hydrate($row);
     }
 
+    public function update(int $id, array $data): bool {        
+        $sql = "UPDATE licenses SET 
+                license_number = ?, 
+                license_status = ?, 
+                license_type = ?, 
+                dl_codes = ?, 
+                expiry_date = ?, 
+                updated_at = NOW() 
+                WHERE license_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new \RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param(
+            "sssssi",
+            $data['license_number'],
+            $data['status'],      // From Controller
+            $data['type'],        // From Controller
+            $data['dl_codes'],
+            $data['expiry_date'],
+            $id                   // The license_id
+        );
+
+        $success = $stmt->execute();
+        return $success;
+    }
+
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM licenses";
         $result = $this->conn->query($sql);

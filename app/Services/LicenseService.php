@@ -107,5 +107,13 @@ class LicenseService {
 
         return $newLicenseNumber;
     }
+    public function updateLicense(int $id, array $data): void {
+
+    $updated = $this->licenseRepo->update($id, $data);
+
+    if (!$updated) {
+        throw new Exception("Failed to update license record.");
+    }
+}
 }
 ?>

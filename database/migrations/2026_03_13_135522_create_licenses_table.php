@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('person_id')->index('person_id');
             $table->string('license_number', 50)->unique('license_number');
             $table->enum('license_type', ['Professional', 'Non-Professional', 'Student Permit']);
-            $table->enum('license_status', ['Active', 'Revoked', 'Expired']);
+            $table->enum('license_status', ['Active', 'Revoked', 'Suspended', 'Expired']);
             $table->string('dl_codes', 50);
             $table->date('issue_date');
             $table->date('expiry_date');
