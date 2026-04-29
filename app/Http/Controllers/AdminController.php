@@ -251,16 +251,37 @@ class AdminController extends Controller
         return view('admin-dashboard', ['section' => 'settings']);
     }
 
-    public function updateVehicle($id)
+    public function updateVehicle(Request $request, $id)
     {
-        // TODO: Implement vehicle update logic
-        return redirect()->back()->with('success', 'Vehicle updated successfully');
+        $validated = $request->validate([
+            'plate_number' => 'required|string|max:20',
+            'make'         => 'required|string|max:50',
+            'model'        => 'required|string|max:50',
+            'color'        => 'required|string|max:30',
+            'reg_status'   => 'required|string',
+        ]);
+
+        try {
+            // 2. Pass to the service (which then calls the repository we fixed earlier)
+            $this->vehicleService->updateVehicle((int)$id, $validated);
+
+            return redirect()->back()->with('success', 'Vehicle registration updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
+        }
     }
 
     public function revokeVehicle($id)
     {
-        // TODO: Implement vehicle revoke logic
-        return redirect()->back()->with('success', 'Vehicle revoked successfully');
+        try {
+            $this->vehicleService->updateVehicle((int)$id, [
+                'reg_status' => 'Revoked' 
+            ]);
+
+            return redirect()->back()->with('success', "Vehicle registration (ID: {$id}) has been successfully REVOKED.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Revocation failed: ' . $e->getMessage());
+        }
     }
 
     public function updateLicense(Request $request, $id)

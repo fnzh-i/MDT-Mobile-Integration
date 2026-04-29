@@ -113,5 +113,9 @@ class VehicleService {
 
         return $newPlateNumber;
     }
+    public function updateVehicle(int $id, array $data) {
+        return $this->vehicleRepo->update($id, $data);
+    }
+    
 }
 ?>

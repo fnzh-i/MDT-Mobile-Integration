@@ -27,6 +27,19 @@
             form.submit();
         }
     }
+    function handleVehicleRevoke(vehicleId) {
+        const formId = 'revokeVehicleForm-' + vehicleId;
+        const form = document.getElementById(formId);
+        
+        if (!form) {
+            console.error("Vehicle form not found:", formId);
+            return;
+        }
+
+        if (confirm("DANGER: Are you sure you want to REVOKE this vehicle registration? This cannot be undone.")) {
+            form.submit();
+        }
+    }
 </script>
 <body>
     <div class="shell">
@@ -522,8 +535,7 @@
 
                                 <div class="result-actions mt-3">
                                         <button type="submit" class="btn-form-submit">Update License</button>
-                                </form> 
-
+                            </form> 
                                 <form id="revokeForm-{{ $searchedLicense->license_id }}" 
                                     action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" 
                                     method="POST" 
@@ -541,51 +553,63 @@
                         @endif
                 
                 @elseif ($section === 'search-vehicle')
-                    @if ($searchedVehicle)
-                        <div class="search-card">
-                            <h2 class="search-card-title">Search Result</h2>
+                <div class="search-card mb-4">
+                    <h2 class="search-card-title">Search Vehicle</h2>
+                    <form action="{{ route('admin-search-vehicle') }}" method="GET">
+                        <div class="form-field-label">Enter Plate or MV File Number</div>
+                        <div class="input-group">
+                            <input type="text" name="query" class="search-input" placeholder="ABC-1234" value="{{ request('query') }}" required>
+                            <button type="submit" class="btn-search-submit">Search</button>
+                        </div>
+                    </form>
+                    @if (request('query') && !$searchedVehicle)
+                        <p class="no-data mt-3">No vehicle found for "{{ request('query') }}".</p>
+                    @endif
+                </div>
+                @if ($searchedVehicle)
+                    <div class="search-card">
+                        <h2 class="search-card-title">Edit Vehicle Registration</h2>
+                        <form action="{{ route('admin-update-vehicle', $searchedVehicle->vehicle_id) }}" method="POST">
+                            @csrf @method('PUT')
                             <div class="result-table-wrap">
                                 <table class="result-table">
                                     <tbody>
-                                        <tr> <td class="result-label">Plate Number</td> <td>{{ $searchedVehicle->plateNumber }}</td> </tr>
-                                        <tr> <td class="result-label">MV File Number</td> <td>{{ $searchedVehicle->mvFileNumber }}</td> </tr>
-                                        <tr> <td class="result-label">VIN</td> <td>{{ $searchedVehicle->vin }}</td> </tr>
-                                        <tr> <td class="result-label">Brand</td> <td>{{ $searchedVehicle->make }}</td> </tr>
-                                        <tr> <td class="result-label">Model</td> <td>{{ $searchedVehicle->model }}</td> </tr>
-                                        <tr> <td class="result-label">Color</td> <td>{{ $searchedVehicle->color }}</td> </tr>
-                                        <tr> <td class="result-label">Year</td> <td>{{ $searchedVehicle->year }}</td> </tr>
-                                        <tr> <td class="result-label">Registration Expiry</td> <td>{{ $searchedVehicle->expiryDate }}</td> </tr>
-                                        <tr> <td class="result-label">Status</td> <td><span class="{{ $searchedVehicle->regStatus === 'Registered' ? 'status-green' : 'status-red' }}">{{ $searchedVehicle->regStatus }}</span></td> </tr>
-                                        <tr> <td class="result-label">License Number</td> <td>{{ $searchedVehicle->licenseNumber ?? '—' }}</td> </tr>
+                                        <tr> 
+                                            <td class="result-label">Plate Number</td> 
+                                            <td><input type="text" name="plate_number" class="tbl-input" value="{{ $searchedVehicle->plateNumber }}"></td> 
+                                        </tr>
+                                        <tr> 
+                                            <td class="result-label">Brand/Make</td> 
+                                            <td><input type="text" name="make" class="tbl-input" value="{{ $searchedVehicle->make }}"></td> 
+                                        </tr>
+                                        <tr> 
+                                            <td class="result-label">Model</td> 
+                                            <td><input type="text" name="model" class="tbl-input" value="{{ $searchedVehicle->model }}"></td> 
+                                        </tr>
+                                        <tr> 
+                                            <td class="result-label">Color</td> 
+                                            <td><input type="text" name="color" class="tbl-input" value="{{ $searchedVehicle->color }}"></td> 
+                                        </tr>
+                                        <tr> 
+                                            <td class="result-label">Status</td> 
+                                            <td>
+                                                <select name="reg_status" class="tbl-input">
+                                                    <option value="Registered" {{ $searchedVehicle->regStatus === 'Registered' ? 'selected' : '' }}>Registered</option>
+                                                    <option value="Unregistered" {{ $searchedVehicle->regStatus === 'Unregistered' ? 'selected' : '' }}>Unregistered</option>
+                                                    <option value="Expired" {{ $searchedVehicle->regStatus === 'Expired' ? 'selected' : '' }}>Expired</option>
+                                                </select>
+                                            </td> 
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
+
                             <div class="result-actions">
-                                <form action="{{ route('admin-update-vehicle', $searchedVehicle->vehicle_id) }}" method="POST" style="display: inline">
-                                    @csrf @method('PUT')
-                                    <button type="submit" class="btn-form-submit">Update</button>
-                                </form>
-                                <form action="{{ route('admin-revoke-vehicle', $searchedVehicle->vehicle_id) }}" method="POST" style="display: inline">
-                                    @csrf @method('PATCH')
-                                    <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this vehicle registration?')">Revoke</button>
-                                </form>
+                                <button type="submit" class="btn-form-submit">Update Vehicle</button>
+                        </form>
                             </div>
-                        </div>
-                    @else
-                        <div class="search-card">
-                            <h2 class="search-card-title">Search Vehicle</h2>
-                            <form method="GET" action="{{ route('admin-search-vehicle') }}">
-                                <div class="form-field-label">Enter Plate or MV File Number</div>
-                                <input type="text" name="query" class="search-input"
-                                    placeholder="ABC-1234 / MV-0123456789"
-                                    value="{{ request('query') }}" required>
-                                <button type="submit" class="btn-search-submit">Search</button>
-                            </form>
-                            @if (request('query') && !$searchedVehicle)
-                                <p class="no-data mt-3">No vehicle found for "{{ request('query') }}".</p>
-                            @endif
-                        </div>
-                    @endif
+                    </div>
+                @endif
 
                 @elseif ($section === 'authorize')
                     <h1 class="dash-title">Authorize</h1>

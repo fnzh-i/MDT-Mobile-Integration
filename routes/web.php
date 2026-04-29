@@ -101,9 +101,10 @@ Route::middleware(['auth'])->group(function (){
 
         // Update and Revoke Routes
         Route::put('/vehicle/update/{id}', [AdminController::class, 'updateVehicle'])->name('admin-update-vehicle');
-        Route::patch('/vehicle/revoke/{id}', [AdminController::class, 'revokeVehicle'])->name('admin-revoke-vehicle');
+        Route::patch('/vehicle/{id}/revoke', [AdminController::class, 'revokeVehicle'])->name('admin-revoke-vehicle');
+
         Route::put('/license/update/{id}', [AdminController::class, 'updateLicense'])->name('admin-update-license');
-        Route::patch('/license/revoke/{id}', [AdminController::class, 'revokeLicense'])->name('admin-revoke-license');
+        Route::patch('/license/{id}/revoke', [AdminController::class, 'revokeLicense'])->name('admin-revoke-license');
         Route::put('/user/update/{id}', [AdminController::class, 'updateUser'])->name('admin-update-user');
         Route::patch('/user/archive/{id}', [AdminController::class, 'archiveUser'])->name('admin-archive-user');
 
@@ -126,7 +127,6 @@ Route::middleware(['auth'])->group(function (){
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
         // for revocation
-        Route::patch('/admin/license/{id}/revoke', [AdminController::class, 'revokeLicense'])->name('admin-revoke-license');
         // API Routes for Support Tickets
         Route::get('/api/dashboard-totals', [AdminController::class, 'getDashboardTotals']);
         Route::get('/api/support-tickets/{id}', [AdminController::class, 'getTicketDetails']);

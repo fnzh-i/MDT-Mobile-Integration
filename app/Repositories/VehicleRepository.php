@@ -201,6 +201,56 @@ class VehicleRepository {
         $stmt->close();
         return $vehicles;
     }
+    public function update(int $id, array $data): bool {
+        $fields = [];
+        $types = "";
+        $values = [];
+
+        $columnMapping = [
+            'plate_number' => 's',
+            'make'         => 's',
+            'model'        => 's',
+            'color'        => 's',
+            'reg_status'   => 's', 
+        ];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $columnMapping)) {
+                $fields[] = "{$key} = ?";
+                $types .= $columnMapping[$key];
+                $values[] = $value;
+            }
+        }
+
+        if (empty($fields)) return false;
+
+        // Build the SQL - Ensure 'vehicle_id' is the correct Primary Key name
+        $sql = "UPDATE vehicles SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE vehicle_id = ?";
+        $types .= "i";
+        $values[] = $id;
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            throw new \RuntimeException("Prepare Failed: " . $this->conn->error);
+        }
+        
+        $bindParams = [$types];
+        foreach ($values as $key => $value) {
+            $bindParams[] = &$values[$key];
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindParams);
+
+        if (!$stmt->execute()) {
+            // If it fails, this will tell us exactly why (e.g. Constraint violation)
+            throw new \RuntimeException("Update Execution Failed: " . $stmt->error);
+        }
+
+        $affected = $stmt->affected_rows;
+        $stmt->close();
+        
+        // Even if it "succeeds", if 0 rows were changed, it might mean the ID didn't match
+        return $affected >= 0;
+    }
 
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM vehicles";

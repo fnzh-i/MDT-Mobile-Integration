@@ -71,7 +71,12 @@
                             <div class="card-body-custom">
                                 <div class="card-detail"> <span class="detail-label">Name:</span> {{ $licenseData->firstName ?? 'N/A' }} {{ $licenseData->lastName ?? '' }} </div>
                                 <div class="card-detail"> <span class="detail-label">License Number:</span> {{ $licenseData->licenseNumber ?? 'N/A' }} </div>
-                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">{{ $licenseData->status ?? 'N/A' }}</span> </div>
+                                <div class="card-detail"> 
+                                    <span class="detail-label">Status:</span> 
+                                    <span class="{{ ($licenseData->status ?? '') === 'Revoked' ? 'status-red' : 'status-green' }}">
+                                        {{ $licenseData->status ?? 'N/A' }}
+                                    </span> 
+                                </div>
                                 <div class="card-detail"> <span class="detail-label">Expiry Date:</span> {{ $licenseData->expiryDate ?? 'N/A' }}</div>
                             </div>
                             <div class="card-footer-custom">
@@ -87,7 +92,12 @@
                             <div class="card-body-custom">
                                 <div class="card-detail"> <span class="detail-label">Model:</span> {{ $vehicleData->make ?? 'N/A' }} {{ $vehicleData->model ?? '' }} </div>
                                 <div class="card-detail"> <span class="detail-label">Plate Number:</span> {{ $vehicleData->plateNumber ?? 'N/A' }} </div>
-                                <div class="card-detail"> <span class="detail-label">Status:</span> <span class="status-green">{{ $vehicleData->status ?? 'N/A' }}</span> </div>
+                                <div class="card-detail"> 
+                                    <span class="detail-label">Status:</span> 
+                                    <span class="{{ ($vehicleData->status ?? '') === 'Expired' ? 'status-red' : 'status-green' }}">
+                                        {{ $vehicleData->status ?? 'N/A' }}
+                                    </span> 
+                                </div>
                                 <div class="card-detail"> <span class="detail-label">Registration Expiry:</span> {{ $vehicleData->regExpiryDate ?? 'N/A' }} </div>
                             </div> 
                             <div class="card-footer-custom">
