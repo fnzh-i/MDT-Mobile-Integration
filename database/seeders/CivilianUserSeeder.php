@@ -65,18 +65,6 @@ class CivilianUserSeeder extends Seeder
         ];
 
         foreach ($civilians as $civilian) {
-            // Search for the person by full name match
-            $person = DB::table('persons')
-                ->where('first_name', $civilian['first_name'])
-                ->where('last_name', $civilian['last_name'])
-                ->first();
-
-            if ($person) {
-                $civilian['person_id'] = $person->id;
-            } else {
-                // This will print in your terminal during seeding if a match isn't found
-                $this->command->warn("Could not find person record for: " . $civilian['first_name']);
-            }
 
             User::updateOrCreate(
                 ['username' => $civilian['username']],

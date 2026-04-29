@@ -74,20 +74,27 @@ class PersonRepository {
     }
 
     public function hydrate(array $row): PersonEntity {
-      return new PersonEntity(
-        $row["first_name"] ?? 'Unknown',    
-        $row["middle_name"] ?? null,        
-        $row["last_name"] ?? 'Unknown',     
-        $row["suffix"] ?? null,             
-        new DateTime($row["date_of_birth"] ?? 'now'), 
-        $row["gender"] ?? 'Unknown',        
-        $row["address"] ?? 'Unknown',       
-        $row["nationality"] ?? 'Unknown',   
-        $row["height"] ?? '0',              
-        $row["weight"] ?? '0',              
-        $row["eye_color"] ?? 'Unknown',     
-        $row["blood_type"] ?? 'Unknown',    
-        (int)$row["person_id"]              
+
+        $id = 0;
+        if (isset($row['person_id'])) {
+            $id = (int)$row['person_id'];
+        } elseif (isset($row['id'])) {
+            $id = (int)$row['id'];
+        }
+        return new PersonEntity(
+            $row["first_name"] ?? 'Unknown',    
+            $row["middle_name"] ?? null,        
+            $row["last_name"] ?? 'Unknown',     
+            $row["suffix"] ?? null,             
+            new DateTime($row["date_of_birth"] ?? 'now'), 
+            $row["gender"] ?? 'Unknown',        
+            $row["address"] ?? 'Unknown',       
+            $row["nationality"] ?? 'Unknown',   
+            $row["height"] ?? '0',              
+            $row["weight"] ?? '0',              
+            $row["eye_color"] ?? 'Unknown',  
+            $row["blood_type"] ?? 'Unknown',    
+            $id,
       );
     }
 

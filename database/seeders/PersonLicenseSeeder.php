@@ -24,7 +24,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1994-10-23',
                 'gender'        => 'Female',
                 'address'       => '123 Rizal St, Makati City',
-                'license_no'    => 'D01-12-000567',
+                'license_number'    => 'D01-12-000567',
                 'type'          => 'Non-Professional',
             ],
             [
@@ -34,7 +34,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1988-05-15',
                 'gender'        => 'Male',
                 'address'       => '456 Quezon Ave, Quezon City',
-                'license_no'    => 'N02-05-889234',
+                'license_number'    => 'N02-05-889234',
                 'type'          => 'Professional',
             ],
             [
@@ -44,7 +44,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1992-12-12',
                 'gender'        => 'Female',
                 'address'       => '789 Session Rd, Baguio City',
-                'license_no'    => 'D15-22-114455',
+                'license_number'    => 'D15-22-114455',
                 'type'          => 'Non-Professional',
             ],
             [
@@ -54,7 +54,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1990-08-30',
                 'gender'        => 'Male',
                 'address'       => '101 Vigan St, Ilocos Sur',
-                'license_no'    => 'N09-15-667788',
+                'license_number'    => 'N09-15-667788',
                 'type'          => 'Professional',
             ],
             [
@@ -64,7 +64,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1997-01-05',
                 'gender'        => 'Female',
                 'address'       => '202 JP Laurel Ave, Davao City',
-                'license_no'    => 'D11-20-990011',
+                'license_number'    => 'D11-20-990011',
                 'type'          => 'Non-Professional',
             ],
             [
@@ -74,7 +74,7 @@ class PersonLicenseSeeder extends Seeder
                 'date_of_birth' => '1985-03-22',
                 'gender'        => 'Male',
                 'address'       => '303 Kawit St, Cavite',
-                'license_no'    => 'N04-10-334422',
+                'license_number'    => 'N04-10-334422',
                 'type'          => 'Professional',
             ],
         ];
@@ -99,7 +99,7 @@ class PersonLicenseSeeder extends Seeder
 
             DB::table('licenses')->insert([
                 'person_id'      => $personId,
-                'license_number' => $entry['license_no'],
+                'license_number' => $entry['license_number'],
                 'license_type'   => $entry['type'],
                 'license_status' => 'Active',
                 'dl_codes'       => implode(', ', ['A','A1','B','B1','C','D']),

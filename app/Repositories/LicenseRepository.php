@@ -65,17 +65,20 @@ class LicenseRepository {
     }
 
     public function hydrate(array $row): LicenseEntity {
+        // 1. Safely handle the person dependency
         $person = $this->personRepo->hydrate($row);
 
+        // 2. Use the "null coalescing operator" (??) for every field.
+        // This stops PHP from throwing an Error if the key is missing.
         return new LicenseEntity (
             $person,
-            $row["license_number"],
-            LicenseTypeEnum::from($row["license_type"]),
-            LicenseStatusEnum::from($row["license_status"]),
-            LicenseEntity::parseDLCodes($row['dl_codes']),
-            new DateTime($row['issue_date']),
-            new DateTime($row['expiry_date']),
-            (int)$row["license_id"]
+            $row["license_number"] ?? 'PENDING', 
+            LicenseTypeEnum::tryFrom($row["license_type"] ?? '') ?? LicenseTypeEnum::Student_Permit,
+            LicenseStatusEnum::tryFrom($row["license_status"] ?? '') ?? LicenseStatusEnum::Active,
+            LicenseEntity::parseDLCodes($row['dl_codes'] ?? ''),
+            new \DateTime($row['issue_date'] ?? 'now'),
+            new \DateTime($row['expiry_date'] ?? 'now'),
+            (int)($row["license_id"] ?? 0)
         );
     }
 
@@ -199,24 +202,23 @@ class LicenseRepository {
     }
 
     public function findByPersonId(int $personId): ?LicenseEntity {
-        $sql = "SELECT * FROM licenses WHERE person_id = ? LIMIT 1";
+        $sql = "SELECT l.*, p.* FROM licenses l
+                JOIN persons p ON l.person_id = p.person_id
+                WHERE l.person_id = ? 
+                LIMIT 1";
+
         $stmt = $this->conn->prepare($sql);
-        
-        if (!$stmt) {
-            throw new RuntimeException("Prepare Failed: {$this->conn->error}");
-        }
-
         $stmt->bind_param("i", $personId);
-
-        if (!$stmt->execute()) {
-            throw new RuntimeException("Execution Failed: {$stmt->error}");
-        }
-
+        $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $stmt->close();
 
-        if (!$row) return null;
+        // If $row is null, it means no license exists for this person.
+        // Return null instead of calling hydrate(), which prevents the "Undefined array key" crash.
+        if (!$row) {
+            return null;
+        }
 
         return $this->hydrate($row);
     }
