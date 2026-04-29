@@ -54,6 +54,9 @@ class LicenseService {
             $expiryOption = $request->getExpiryOption()->value;
             $expiryDate = (clone $issueDate)->modify("+$expiryOption years");
 
+            $personId = $this->personRepo->save($person);
+            $person->setId($personId);
+
             $license = new LicenseEntity(
                 $person,
                 $licenseNumber,
@@ -63,9 +66,6 @@ class LicenseService {
                 $issueDate,
                 $expiryDate
             );
-
-            $personId = $this->personRepo->save($person);
-            $person->setId($personId);
 
             $licenseId = $this->licenseRepo->save($license);
 

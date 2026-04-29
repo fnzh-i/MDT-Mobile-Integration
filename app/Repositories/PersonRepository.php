@@ -87,7 +87,7 @@ class PersonRepository {
         $row["weight"] ?? '0',              
         $row["eye_color"] ?? 'Unknown',     
         $row["blood_type"] ?? 'Unknown',    
-        (int)$row["person_id"]              
+        (int)($row["person_id"] ?? 0)              
       );
     }
 
@@ -100,6 +100,8 @@ class PersonRepository {
     //     }
 
     public function findById(int $id): ?PersonEntity {
+        if ($id <= 0) return null;
+
         $sql = "SELECT * FROM persons WHERE person_id = ?";
         $stmt = $this->conn->prepare($sql);
         
