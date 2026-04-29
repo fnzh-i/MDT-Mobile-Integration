@@ -18,10 +18,10 @@ use App\Http\Controllers\SupervisorController;
 
 // --- PUBLIC ROUTES (No Middleware) ---
 Route::get('/secret-login', function () { return view('auth.secret-login'); })->name('secret-login');
-Route::post('/secret-login', [AuthManager::class, 'Login']);
+Route::post('/secret-login', [AuthManager::class, 'Login'])->name('secret-login.submit');
 
 Route::get('/login-civilian', function () {return view('auth.login-civilian');})->name('login-civilian');
-Route::post('/login-civilian', [AuthManager::class, 'LoginCivilian']);
+Route::post('/login-civilian', [AuthManager::class, 'LoginCivilian'])->name('login-civilian.submit');
 
 Route::post('apilogin', [AuthManager::class, 'ApiLogin']);
 

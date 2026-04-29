@@ -17,7 +17,7 @@
                 <h1 class="form-title">SECRET LOGIN</h1>
                 <p class="form-subtitle">Authorized Personnel Only.<br>Please enter your credentials.</p>
 
-                <form method="POST" action="{{ route('secret-login') }}">
+                <form method="POST" action="{{ route('secret-login.submit') }}">
                     @csrf
 
                     <div class="mb-3">

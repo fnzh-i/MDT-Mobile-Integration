@@ -17,7 +17,7 @@
                 <h1 class="form-title">LOGIN</h1>
                 <p class="form-subtitle">Welcome to the MDT System.<br>Please login to continue.</p>
 
-                <form action="{{ route('login-civilian') }}" method="POST">
+                <form action="{{ route('login-civilian.submit') }}" method="POST">
                     @csrf
 
                     <div class="mb-3">

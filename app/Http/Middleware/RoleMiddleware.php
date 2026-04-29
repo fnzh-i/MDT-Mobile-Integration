@@ -37,8 +37,6 @@ class RoleMiddleware
         $requiredLevel = self::ROLE_LEVELS[$requiredRole] ?? PHP_INT_MAX;
 
         if ($userLevel < $requiredLevel) {
-            $redirectRoute = $this->dashboardForRole($userRole);
-
             if ($request->expectsJson()) {
                 return response()->json([
                     'status' => 'error',
@@ -46,7 +44,7 @@ class RoleMiddleware
                 ], 403);
             }
 
-            return redirect()->route($redirectRoute)->with('error', 'You are not authorized to access that page.');
+            abort(403, 'You are not authorized to access that page.');
         }
 
         return $next($request);
