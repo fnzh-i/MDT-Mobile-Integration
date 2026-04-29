@@ -152,5 +152,19 @@ class PersonRepository {
 
         return ($row && is_array($row)) ? $this->hydrate($row) : null;
     }
+    public function updateAddress(int $personId, string $address): bool {
+    $sql = "UPDATE persons SET address = ?, updated_at = NOW() WHERE person_id = ?";
+    $stmt = $this->conn->prepare($sql);
+
+    if (!$stmt) {
+        throw new \RuntimeException("Prepare Failed: {$this->conn->error}");
+    }
+
+    $stmt->bind_param("si", $address, $personId);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    return $success;
+}
 }
 ?>

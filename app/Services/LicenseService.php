@@ -108,12 +108,32 @@ class LicenseService {
         return $newLicenseNumber;
     }
     public function updateLicense(int $id, array $data): void {
+        $this->conn->begin_transaction();
 
-    $updated = $this->licenseRepo->update($id, $data);
+        try {
+            // Fetch the license first to get the associated person_id
+            $license = $this->licenseRepo->findById($id);
+            
+            if (!$license) {
+                throw new \Exception("License not found.");
+            }
 
-    if (!$updated) {
-        throw new Exception("Failed to update license record.");
+            // Update the license-specific data (number, status, type, etc.)
+            $updatedLicense = $this->licenseRepo->update($id, $data);
+
+            // Update the address in the persons table
+            // get the person object from the hydrated LicenseEntity
+            $personId = $license->getPerson()->getId();
+            
+            if (isset($data['address'])) {
+                $this->personRepo->updateAddress($personId, $data['address']);
+            }
+
+            $this->conn->commit();
+        } catch (\Exception $e) {
+            $this->conn->rollback();
+            throw $e;
+        }
     }
-}
 }
 ?>
