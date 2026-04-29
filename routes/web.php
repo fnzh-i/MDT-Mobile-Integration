@@ -122,9 +122,11 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/support-tickets/{id}/status', [AdminController::class, 'updateSupportTicketStatus'])->name('admin-update-ticket-status');
         Route::post('/support-tickets/{id}/email', [AdminController::class, 'sendSupportEmail'])->name('admin-send-support-email');
         Route::post('/support-tickets/{id}/password-reset', [AdminController::class, 'sendPasswordResetEmail'])->name('admin-send-password-reset');
+        
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
-
+        // for revocation
+        Route::patch('/admin/license/{id}/revoke', [AdminController::class, 'revokeLicense'])->name('admin-revoke-license');
         // API Routes for Support Tickets
         Route::get('/api/dashboard-totals', [AdminController::class, 'getDashboardTotals']);
         Route::get('/api/support-tickets/{id}', [AdminController::class, 'getTicketDetails']);

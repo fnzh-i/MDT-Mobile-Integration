@@ -135,5 +135,13 @@ class LicenseService {
     public function getLicenseById(int $id): ?LicenseEntity {
         return $this->licenseRepo->findById($id);
     }
+    public function updateLicenseStatus(int $id, \App\Enums\LicenseStatusEnum $status): void {
+        // Only updating the status field
+        $updated = $this->licenseRepo->updateStatus($id, $status->value);
+
+        if (!$updated) {
+            throw new \Exception("Database update failed. The license might not exist.");
+        }
+    }
 }
 ?>

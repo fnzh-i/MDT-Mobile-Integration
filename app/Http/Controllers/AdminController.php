@@ -298,8 +298,14 @@ class AdminController extends Controller
 
     public function revokeLicense($id)
     {
-        // TODO: Implement license revoke logic
-        return redirect()->back()->with('success', 'License revoked successfully');
+        try {
+            // We pass the Revoked enum specifically
+            $this->licenseService->updateLicenseStatus((int)$id, \App\Enums\LicenseStatusEnum::Revoked);
+
+            return redirect()->back()->with('success', 'License #' . $id . ' has been successfully REVOKED.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Revocation failed: ' . $e->getMessage());
+        }
     }
 
     public function updateUser(Request $request, $id)

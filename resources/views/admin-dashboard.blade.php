@@ -10,6 +10,24 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/admin-dashboard.css') }}">
 </head>
+<script>
+    function handleRevokeProcess(id) {
+        console.log("Handle Revoke triggered for ID:", id);
+        
+        const formId = 'revokeForm-' + id;
+        const form = document.getElementById(formId);
+        
+        if (!form) {
+            console.error("Target form not found:", formId);
+            alert("Error: Revoke form not found!");
+            return;
+        }
+
+        if (confirm("WARNING: Are you sure you want to REVOKE this license?")) {
+            form.submit();
+        }
+    }
+</script>
 <body>
     <div class="shell">
         <div class="topbar">
@@ -32,6 +50,10 @@
                     <div class="user-avatar"> <i class="bi bi-person"></i> </div>
                     <div class="user-role"> Admin </div>
                     <div class="user-name"> Sample User </div>
+                </div>
+                <div id="status-messages" 
+                    data-success="{{ session('success') }}" 
+                    data-error="{{ session('error') }}">
                 </div>
                 <nav>
                     <a href="{{ route('admin-dashboard') }}" class="nav-link {{ $section === 'dashboard' ? 'active' : '' }}"> <i class="bi bi-speedometer2 me-2"></i> Dashboard </a>
@@ -435,6 +457,10 @@
                         @endif
                     </div>
 
+                    @if(session('success'))
+                        <div id="php-success-message" data-message="{{ session('success') }}" style="display: none;"></div>
+                    @endif
+
                     @if ($searchedLicense)
                         <div class="search-card">
                             <h2 class="search-card-title">Edit License Details</h2>
@@ -495,14 +521,24 @@
                                 </div>
 
                                 <div class="result-actions mt-3">
-                                    <button type="submit" class="btn-form-submit">Update License</button>
-                            </form> <form action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" method="POST" style="display: inline">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="btn-revoke" onclick="return confirm('Revoke this license?')">Revoke</button>
-                                    </form>
+                                        <button type="submit" class="btn-form-submit">Update License</button>
+                                </form> 
+
+                                <form id="revokeForm-{{ $searchedLicense->license_id }}" 
+                                    action="{{ route('admin-revoke-license', $searchedLicense->license_id) }}" 
+                                    method="POST" 
+                                    style="display: inline">
+                                    @csrf 
+                                    @method('PATCH')
+                                    <button type="button" 
+                                            class="btn-revoke" 
+                                            onclick="handleRevokeProcess('{{ $searchedLicense->license_id }}')">
+                                        Revoke License
+                                    </button>
+                                </form>
                                 </div>
-                        </div>
-                    @endif
+                            </div>
+                        @endif
                 
                 @elseif ($section === 'search-vehicle')
                     @if ($searchedVehicle)

@@ -252,6 +252,20 @@ class LicenseRepository {
 
         return $success;
     }
+    public function updateStatus(int $id, string $status): bool {
+        $sql = "UPDATE licenses SET license_status = ?, updated_at = NOW() WHERE license_id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new \RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("si", $status, $id);
+        $success = $stmt->execute();
+        $stmt->close();
+
+        return $success;
+    }
 
     public function count(): int {
         $sql = "SELECT COUNT(*) as total FROM licenses";
