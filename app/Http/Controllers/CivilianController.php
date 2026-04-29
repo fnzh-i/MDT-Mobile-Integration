@@ -152,8 +152,16 @@ class CivilianController extends Controller
                 if ($request->has('plate')) {
                     $searchPlate = $request->input('plate');
                     $foundVehicle = $this->vehicleRepo->findByPlateOrMVFile($searchPlate);
-                    if ($foundVehicle && in_array($foundVehicle->getId(), array_column($vehicles, 'vehicle_id'))) {
-                        $selectedVehicle = $foundVehicle;
+                    
+                    if ($foundVehicle) {
+                        // Verify this vehicle belongs to the authenticated user
+                        // We compare the ID of the found vehicle against the user's vehicles
+                        foreach ($vehicles as $v) {
+                            if ($v->getId() === $foundVehicle->getId()) {
+                                $selectedVehicle = $foundVehicle;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -188,7 +196,7 @@ class CivilianController extends Controller
         }
 
         return view('civilian-dashboard', [
-            'section' => 'vehicles',
+            'section' => 'vehicle',
             'vehicles' => $vehicleList,
             'selectedVehicle' => $selectedVehicleData,
             'userName' => $this->getUserDisplayName(),
