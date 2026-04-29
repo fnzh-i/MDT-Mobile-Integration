@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class CivilianUserSeeder extends Seeder
 {
@@ -12,48 +13,71 @@ class CivilianUserSeeder extends Seeder
     {
         $civilians = [
             [
-                'username' => 'john_doe',
+                'username'      => 'juan_delacruz',
                 'lto_client_id' => '67-050818-1234568',
-                'first_name' => 'John',
-                'middle_name' => 'Michael',
-                'last_name' => 'Doe',
-                'email' => 'john@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'CIVILIAN',
+                'first_name'    => 'Juan',
+                'middle_name'   => 'Ponce',
+                'last_name'     => 'Dela Cruz',
+                'email'         => 'juan.delacruz@example.com',
+                'password'      => Hash::make('password123'),
+                'role'          => 'CIVILIAN',
             ],
             [
-                'username' => 'jane_smith',
+                'username'      => 'maria_ibarra',
                 'lto_client_id' => '67-050818-1234569',
-                'first_name' => 'Jane',
-                'middle_name' => 'Marie',
-                'last_name' => 'Smith',
-                'email' => 'jane@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'CIVILIAN',
+                'first_name'    => 'Maria Clara',
+                'middle_name'   => 'Santos',
+                'last_name'     => 'Ibarra',
+                'email'         => 'maria.clara@example.com',
+                'password'      => Hash::make('password123'),
+                'role'          => 'CIVILIAN',
             ],
             [
-                'username' => 'bob_wilson',
+                'username'      => 'rafael_luna',
                 'lto_client_id' => '67-050818-1234570',
-                'first_name' => 'Bob',
-                'middle_name' => 'James',
-                'last_name' => 'Wilson',
-                'email' => 'bob@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'CIVILIAN',
+                'first_name'    => 'Rafael',
+                'middle_name'   => 'Antonio',
+                'last_name'     => 'Luna',
+                'email'         => 'rafael.luna@example.com',
+                'password'      => Hash::make('password123'),
+                'role'          => 'CIVILIAN',
             ],
             [
-                'username' => 'maria_garcia',
+                'username'      => 'blessy_villanueva',
                 'lto_client_id' => '67-050818-1234571',
-                'first_name' => 'Maria',
-                'middle_name' => 'Isabel',
-                'last_name' => 'Garcia',
-                'email' => 'maria@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'CIVILIAN',
+                'first_name'    => 'Blessy',
+                'middle_name'   => 'Grace',
+                'last_name'     => 'Villanueva',
+                'email'         => 'blessy.grace@example.com',
+                'password'      => Hash::make('password123'),
+                'role'          => 'CIVILIAN',
+            ],
+            [
+                'username'      => 'emilio_aguinaldo',
+                'lto_client_id' => '67-050818-1234572',
+                'first_name'    => 'Emilio',
+                'middle_name'   => 'Kasilag',
+                'last_name'     => 'Aguinaldo',
+                'email'         => 'emilio.aguinaldo@example.com',
+                'password'      => Hash::make('password123'),
+                'role'          => 'CIVILIAN',
             ],
         ];
 
         foreach ($civilians as $civilian) {
+            // Search for the person by full name match
+            $person = DB::table('persons')
+                ->where('first_name', $civilian['first_name'])
+                ->where('last_name', $civilian['last_name'])
+                ->first();
+
+            if ($person) {
+                $civilian['person_id'] = $person->id;
+            } else {
+                // This will print in your terminal during seeding if a match isn't found
+                $this->command->warn("Could not find person record for: " . $civilian['first_name']);
+            }
+
             User::updateOrCreate(
                 ['username' => $civilian['username']],
                 $civilian

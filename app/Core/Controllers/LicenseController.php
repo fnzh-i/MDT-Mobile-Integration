@@ -19,6 +19,11 @@ class LicenseController extends BaseController {
         $licenseNumber = trim($_GET['license_number'] ?? '');
 
         if (empty($licenseNumber)) {
+            $data = $this->getJsonInput();
+            $licenseNumber = trim((string) ($data['license_number'] ?? ''));
+        }
+
+        if (empty($licenseNumber)) {
             $this->sendResponse("Please enter the license number.", 400);
             return;
         }
