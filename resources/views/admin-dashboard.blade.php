@@ -447,7 +447,9 @@
                                         <tbody>
                                             <tr> 
                                                 <td class="result-label">License Number</td> 
-                                                <td><input type="text" name="license_number" class="tbl-input" value="{{ $searchedLicense->licenseNumber }}"></td> 
+                                                <td>
+                                                    <input type="text" name="license_number" class="tbl-input input-readonly-gray" value="{{ $searchedLicense->licenseNumber }}" readonly>
+                                                </td> 
                                             </tr>
                                             <tr> 
                                                 <td class="result-label">Status</td> 
@@ -474,8 +476,15 @@
                                                 <td><input type="text" name="dl_codes" class="tbl-input" value="{{ $searchedLicense->dlCodes }}"></td> 
                                             </tr>
                                             <tr> 
-                                                <td class="result-label">Expiry Date</td> 
-                                                <td><input type="date" name="expiry_date" class="tbl-input" value="{{ \Carbon\Carbon::parse($searchedLicense->expiryDate)->format('Y-m-d') }}"></td> 
+                                                <td class="result-label">Extend Expiry</td> 
+                                                <td>
+                                                    <select name="expiry_extension" class="tbl-input">
+                                                        <option value="0" selected>No Change (Keep Current)</option>
+                                                        <option value="5">Extend by 5 Years</option>
+                                                        <option value="10">Extend by 10 Years</option>
+                                                    </select>
+                                                    <small class="text-muted">Current: {{ \Carbon\Carbon::parse($searchedLicense->expiryDate)->format('M d, Y') }}</small>
+                                                </td> 
                                             </tr>
                                             <tr> 
                                                 <td class="result-label">Address</td> 

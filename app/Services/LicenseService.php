@@ -111,20 +111,16 @@ class LicenseService {
         $this->conn->begin_transaction();
 
         try {
-            // Fetch the license first to get the associated person_id
+            // Find the license to get the linked person_id
             $license = $this->licenseRepo->findById($id);
-            
-            if (!$license) {
-                throw new \Exception("License not found.");
-            }
+            if (!$license) throw new \Exception("License not found.");
 
-            // Update the license-specific data (number, status, type, etc.)
-            $updatedLicense = $this->licenseRepo->update($id, $data);
-
-            // Update the address in the persons table
-            // get the person object from the hydrated LicenseEntity
             $personId = $license->getPerson()->getId();
-            
+
+            // Update License Table (License No. omitted in Repo SQL for readonly)
+            $this->licenseRepo->update($id, $data);
+
+            // Update Person Table (Address)
             if (isset($data['address'])) {
                 $this->personRepo->updateAddress($personId, $data['address']);
             }
@@ -134,6 +130,10 @@ class LicenseService {
             $this->conn->rollback();
             throw $e;
         }
+    }
+
+    public function getLicenseById(int $id): ?LicenseEntity {
+        return $this->licenseRepo->findById($id);
     }
 }
 ?>

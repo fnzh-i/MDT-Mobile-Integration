@@ -266,18 +266,31 @@ class AdminController extends Controller
     public function updateLicense(Request $request, $id)
     {
         $validated = $request->validate([
-            'license_number' => 'required|string|max:20',
-            'status'         => 'required|string|',
-            'type'           => 'required|string|',
-            'dl_codes'       => 'required|string',
-            'expiry_date'    => 'required|date',
-            'address'        => 'required|string|max:255',
+            'status'           => 'required|string',
+            'type'             => 'required|string',
+            'dl_codes'         => 'required|string',
+            'address'          => 'required|string|max:255',
+            'expiry_extension' => 'required|in:0,5,10',
         ]);
 
         try {
+            // 1. Fetch the entity to get current expiry
+            $license = $this->licenseService->getLicenseById((int)$id);
+            
+            // 2. Use Carbon to wrap the DateTime object from your Entity
+            $currentExpiry = \Carbon\Carbon::instance($license->getExpiryDate());
+
+            // 3. Calculate new date if extension is picked
+            if ($request->expiry_extension > 0) {
+                $validated['expiry_date'] = $currentExpiry->addYears((int)$request->expiry_extension)->format('Y-m-d');
+            } else {
+                $validated['expiry_date'] = $currentExpiry->format('Y-m-d');
+            }
+
+            // 4. Update via Service
             $this->licenseService->updateLicense((int)$id, $validated);
 
-            return redirect()->back()->with('success', 'License updated successfully');
+            return redirect()->back()->with('success', 'License and Address updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
         }

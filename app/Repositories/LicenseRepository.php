@@ -223,9 +223,8 @@ class LicenseRepository {
         return $this->hydrate($row);
     }
 
-    public function update(int $id, array $data): bool {        
+    public function update(int $id, array $data): bool {
         $sql = "UPDATE licenses SET 
-                license_number = ?, 
                 license_status = ?, 
                 license_type = ?, 
                 dl_codes = ?, 
@@ -240,16 +239,17 @@ class LicenseRepository {
         }
 
         $stmt->bind_param(
-            "sssssi",
-            $data['license_number'],
-            $data['status'],      // From Controller
-            $data['type'],        // From Controller
+            "ssssi",
+            $data['status'],
+            $data['type'],
             $data['dl_codes'],
             $data['expiry_date'],
-            $id                   // The license_id
+            $id
         );
 
         $success = $stmt->execute();
+        $stmt->close();
+
         return $success;
     }
 
