@@ -11,6 +11,7 @@ use App\Repositories\{UserRepository,
                       VehicleRepository,
                       TicketRepository};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -52,6 +53,11 @@ class AdminController extends Controller
         return response()->json([
             'licenseNumber' => $number
         ]);
+    }
+    private function getUserDisplayName()
+    {
+        $user = Auth::user();
+        return $user->first_name . ' ' . $user->last_name;
     }
     public function generateUserClientNumber()
     {
@@ -248,7 +254,9 @@ class AdminController extends Controller
 
     public function settings()
     {
-        return view('admin-dashboard', ['section' => 'settings']);
+        return view('admin-dashboard', [
+            'section' => 'settings',
+            'userName' => $this->getUserDisplayName(),]);
     }
 
     public function updateVehicle(Request $request, $id)
@@ -353,10 +361,30 @@ class AdminController extends Controller
         // TODO: Implement user archive logic
         return redirect()->back()->with('success', 'User archived successfully');
     }
-    public function updateSettings()
+    public function updateSettings(Request $request)
     {
-        return redirect()->back()->with('success', 'User archived successfully');
-        return view('admin-update-settings', ['section' => 'settings']);
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed|different:current_password',
+        ]);
+
+        try {
+            $user = Auth::user();
+
+            $this->userService->changePassword(
+                $user->username,
+                $request->current_password,
+                $request->new_password
+            );
+
+            return redirect()
+                ->route('admin-settings')
+                ->with('success', 'Password updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin-settings')
+                ->with('error', $e->getMessage());
+        }
     }
 
     public function supportTickets()

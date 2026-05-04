@@ -658,37 +658,46 @@
                 
                 @elseif ($section === 'settings')
                     <h1 class="dash-title">Settings</h1>
-                    <p class="dash-sub">Manage system and account preferences</p>
+                    <p class="dash-sub">Manage your administrative account preferences</p>
 
-                    <div class="form-card">
+                    <div class="form-card" style="max-width: 600px;">
                         <h2 class="form-card-title">Account Settings</h2>
+                        
                         <form action="{{ route('admin-update-settings') }}" method="POST">
-                            @csrf @method('PUT')
+                            @csrf
+                            @method('PUT')
+                            
                             <div class="form-section">
-                                <div class="form-field-label">Username</div>
-                                <input type="text" name="username" class="form-input" value="Sample" required> {{--{{ auth()->user()->username }}--}}
+                                <label class="form-field-label">Username</label>
+                                <input type="text" name="username" class="form-input" value="{{ auth()->user()->username }}" required>
                             </div>
+                            
                             <div class="form-section">
-                                <div class="form-field-label">Email</div>
-                                <input type="email" name="email" class="form-input" value="Sample Email" required> {{--{{ auth()->user()->email }}--}}
+                                <label class="form-field-label">Email Address</label>
+                                <input type="email" name="email" class="form-input" value="{{ auth()->user()->email }}" required>
                             </div>
-                            <div class="form-divider"></div>
+
+                            <div style="border-top: 1.5px solid #d0daea; margin: 20px 0 16px"></div>
+                            
                             <h2 class="form-card-title">Change Password</h2>
+                            
                             <div class="form-section">
-                                <div class="form-field-label">Current Password</div>
+                                <label class="form-field-label">Current Password</label>
                                 <input type="password" name="current_password" class="form-input" placeholder="Enter current password">
                             </div>
+
                             <div class="form-row-2">
                                 <div>
-                                    <div class="form-field-label">New Password</div>
+                                    <label class="form-field-label">New Password</label>
                                     <input type="password" name="new_password" class="form-input" placeholder="New password">
                                 </div>
                                 <div>
-                                    <div class="form-field-label">Confirm New Password</div>
+                                    <label class="form-field-label">Confirm New Password</label>
                                     <input type="password" name="new_password_confirmation" class="form-input" placeholder="Confirm new password">
                                 </div>
                             </div>
-                            <button type="submit" class="btn-form-submit">Save Changes</button>
+
+                            <button type="submit" class="btn-form-submit" style="width: 100%; margin-top: 20px;">Save Changes</button>
                         </form>
                     </div>
                 @elseif ($section === 'support-tickets')
