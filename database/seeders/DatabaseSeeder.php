@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             SupervisorUserSeeder::class,
             PersonLicenseSeeder::class,
+            EnforcerUserSeeder::class,
             CivilianUserSeeder::class,
             VehicleSeeder::class,
             ViolationsSeeder::class,

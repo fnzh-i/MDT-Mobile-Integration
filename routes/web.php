@@ -10,6 +10,7 @@ use App\Core\Controllers\LicenseController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\CivilianController; 
+use App\Http\Controllers\Auth\ManualPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SupervisorController;
 
@@ -31,6 +32,11 @@ Route::get('/register', function () { return view('auth.register'); })->name('re
 Route::post('/forgot-password', [AuthManager::class, 'ForgotPasswordTicket'])->name('forgot-password');
 Route::post('/support/email', [SupportController::class, 'sendEmail'])->name('support.email');
 Route::post('/logout', [AuthManager::class, 'logout'])->name('logout');
+
+Route::get('/reset-password/{token}', [ManualPasswordController::class, 'showResetForm'])->name('password.reset');
+
+// The logic that saves the new password
+Route::post('/reset-password', [ManualPasswordController::class, 'updatePassword'])->name('password.update');
 
 
 // --- PROTECTED ROUTES (Requires Login) ---
@@ -126,8 +132,6 @@ Route::middleware(['auth'])->group(function (){
         
         // for authorization
         // Route::get('/authorize', [AdminController::class, 'authorizeUsers'])->name('admin-authorize');
-        // for revocation
-        // API Routes for Support Tickets
         Route::get('/api/dashboard-totals', [AdminController::class, 'getDashboardTotals']);
         Route::get('/api/support-tickets/{id}', [AdminController::class, 'getTicketDetails']);
     });

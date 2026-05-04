@@ -13,6 +13,7 @@ use App\Repositories\{UserRepository,
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 
 
@@ -427,6 +428,31 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Error updating ticket status: ' . $e->getMessage());
         }
     }
+    public function sendPasswordResetAdmin(Request $request, $id)
+    {
+        try {
+            // 1. Get the ticket and the user
+            $ticket = $this->supportTicketService->getTicketById($id);
+            if (!$ticket) return redirect()->back()->with('error', 'Ticket not found');
+
+            $user = \App\Models\User::find($ticket->getUserId());
+            if (!$user) return redirect()->back()->with('error', 'User not found');
+
+            // 2. Define your reset link (e.g., your login page)
+            $resetUrl = url('/secret-login'); 
+
+            // 3. Send the Email (using the fixed ->html() method)
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $resetUrl) {
+                $message->to($user->email)
+                    ->subject('Password Reset - MDT System')
+                    ->html("An administrator has initiated a password reset for your account. Please log in here to update your credentials: <a href='{$resetUrl}'>{$resetUrl}</a>");
+            });
+
+            return redirect()->back()->with('success', 'Reset instructions sent to ' . $user->email);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Mail Error: ' . $e->getMessage());
+        }
+    }
 
     /**
      * Send password reset email for password change/forgot password tickets
@@ -435,30 +461,37 @@ class AdminController extends Controller
     {
         try {
             $ticket = $this->supportTicketService->getTicketById($id);
-            
-            if (!$ticket) {
-                return redirect()->back()->with('error', 'Ticket not found');
-            }
+            if (!$ticket) return redirect()->back()->with('error', 'Ticket not found');
 
-            // Get the user
             $user = \App\Models\User::find($ticket->getUserId());
-            
-            if (!$user) {
-                return redirect()->back()->with('error', 'User not found');
-            }
+            if (!$user) return redirect()->back()->with('error', 'User not found');
 
-            // Send password reset email
-            \Illuminate\Support\Facades\Password::sendResetLink(['email' => $user->email]);
+            // 1. Generate the secure token for your existing auth page
+            $token = \Illuminate\Support\Facades\Password::createToken($user);
 
-            // Mark ticket as resolved
+            // 2. Generate the URL to your ACTUAL reset page
+            $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+
+            // 3. Send the email using the working ->html() method
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $resetUrl) {
+                $message->to($user->email)
+                    ->subject('Password Reset Request - MDT System')
+                    ->html("
+                        <p>An administrator has initiated a password reset for your account.</p>
+                        <p>Please click the button below to set your new password:</p>
+                        <a href='{$resetUrl}' style='padding:10px 20px; background:#007bff; color:white; text-decoration:none; border-radius:5px;'>Reset Password</a>
+                        <br><br>
+                        <p>If the button doesn't work, copy this link: {$resetUrl}</p>
+                    ");
+            });
+
             $this->supportTicketService->updateTicketStatus($id, 'Resolved');
 
-            return redirect()->back()->with('success', 'Password reset email sent to ' . $user->email . ' and ticket marked as resolved');
+            return redirect()->back()->with('success', 'Reset link sent to ' . $user->email);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error sending password reset email: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-
     /**
      * Get ticket details (for API/AJAX)
      */
@@ -514,12 +547,13 @@ class AdminController extends Controller
                 return redirect()->back()->with('error', 'User not found');
             }
 
-            // Send email using Laravel Mail
+            // --- FIXED SECTION START ---
             \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $request) {
                 $message->to($user->email)
                     ->subject($request->email_subject)
-                    ->setBody($request->email_body, 'text/html');
+                    ->html($request->email_body);
             });
+            // --- FIXED SECTION END ---
 
             // Update ticket with admin response
             $this->supportTicketService->respondToTicket($id, "Email sent: " . $request->email_subject . "\n\n" . $request->email_body);
