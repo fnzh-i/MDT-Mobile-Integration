@@ -16,7 +16,12 @@
             <div class="form-header text-center mb-4">
                 <h1 class="form-title">LOGIN</h1>
                 <p class="form-subtitle">Welcome to the MDT System.<br>Please login to continue.</p>
-
+                @if(session('error'))
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" style="font-size: 0.9rem; padding: 10px 15px;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>{{ session('error') }}</div>
+                    </div>
+                @endif
                 <form action="{{ route('login-civilian.submit') }}" method="POST">
                     @csrf
 

@@ -14,9 +14,9 @@ class AdminUserSeeder extends Seeder
             ['username' => 'admin'], // Check if 'admin' exists
             [
                 'lto_client_id' => '67-050818-1234567',
-                'first_name' => 'admin',
+                'first_name' => 'Admin',
                 'middle_name' => null,
-                'last_name' => 'admin',
+                'last_name' => 'Nimda',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('nimda12345'),
                 'role' => 'ADMIN',

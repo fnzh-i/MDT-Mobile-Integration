@@ -91,6 +91,7 @@ class AdminController extends Controller
 
         return view('admin-dashboard', [
             'section' => 'dashboard',
+            'userName' => $this->getUserDisplayName(),
             'totalUsers' => $totalUsers,
             'totalLicenses' => $totalLicenses,
             'totalVehicles' => $totalVehicles,
@@ -166,15 +167,24 @@ class AdminController extends Controller
     }
     public function createLicense()
     {
-        return view('admin-dashboard', ['section' => 'create-license']);
+        return view('admin-dashboard', [
+            'section' => 'create-license',
+            'userName' => $this->getUserDisplayName()
+        ]);
     }
     public function createVehicles()
     {
-        return view('admin-dashboard', ['section' => 'create-vehicle']);
+        return view('admin-dashboard', [
+            'section' => 'create-vehicle',
+            'userName' => $this->getUserDisplayName()
+        ]);
     }
     public function createUsers()
     {
-        return view('admin-dashboard', ['section' => 'create-user']);
+        return view('admin-dashboard', [
+            'section' => 'create-user',
+            'userName' => $this->getUserDisplayName()
+        ]);
     }
     public function searchLicense(Request $request)
     {
@@ -197,6 +207,7 @@ class AdminController extends Controller
 
         return view('admin-dashboard', [
             'section' => 'search-license',
+            'userName' => $this->getUserDisplayName(),
             'searchedLicense' => $searchedLicense,
             'error' => $error,
         ]);
@@ -224,6 +235,7 @@ class AdminController extends Controller
             'section' => 'search-vehicle',
             'searchedVehicle' => $searchedVehicle,
             'error' => $error,
+            'userName' => $this->getUserDisplayName()
         ]);
     }
     public function searchUsers(Request $request)
@@ -249,6 +261,7 @@ class AdminController extends Controller
             'section' => 'search-users',
             'searchedUser' => $searchedUser,
             'error' => $error,
+            'userName' => $this->getUserDisplayName()
         ]);
     }
 
@@ -392,6 +405,7 @@ class AdminController extends Controller
         $tickets = $this->supportTicketService->getAllTickets();
         return view('admin-dashboard', [
             'section' => 'support-tickets',
+            'userName' => $this->getUserDisplayName(),
             'tickets' => $tickets
         ]);
     }

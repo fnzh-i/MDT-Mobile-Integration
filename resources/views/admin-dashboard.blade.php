@@ -62,7 +62,7 @@
                 <div class="user-block">
                     <div class="user-avatar"> <i class="bi bi-person"></i> </div>
                     <div class="user-role"> Admin </div>
-                    <div class="user-name"> Sample User </div>
+                    <span class="user-name">{{ $userName }}</span>
                 </div>
                 <div id="status-messages" 
                     data-success="{{ session('success') }}" 

@@ -200,92 +200,49 @@ class AuthManager extends Controller
     }
 
     function LoginCivilian (Request $request){
-        $validate = Validator::make($request->all(),
-        [
+        $validate = Validator::make($request->all(), [
             'email' => "required",
             'password' => "required|min:8",
-
         ]);
 
         if ($validate->fails()){
-            return response()->json(
-                [
-                    "status"=>"error",
-                    "message" => $validate->errors()->getMessages()
-                    ],200);
+            // FIX: Redirect back with validation errors instead of JSON
+            return redirect()->back()->withErrors($validate)->withInput();
         }
-        $validated = $validate -> validated();
 
-        if(Auth::attempt(
-            [
-                'email' => $validated['email'], 
-                'password' => $validated['password']
-            ])
-            ) {
+        $validated = $validate->validated();
+
+        if(Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             $user = Auth::user();
+            $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
+            return redirect()->intended(route($target));
+        }
 
-            if ($user instanceof User) {
-                $token = $user->createToken('mobile_token')->plainTextToken;
-            }
-
-                $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
-                return redirect()->intended(route($target));
-                // return response()->json(
-                //     [
-                //     "status"=>"success",
-                //     "data"=> ['user'=>$user,'token'=>$token],
-                //     "message" => "User has been logged in"
-                //     ],200);
-            }
-            return response()->json(
-            [
-                "status"=>"error",
-                "message" => "Something went wrong"
-                ],200);
+        // FIX: Redirect back with a custom error message instead of JSON
+        return redirect()->back()->with('error', 'Invalid email or password.');
     }
+
     function Login (Request $request){
-        $validate = Validator::make($request->all(),
-        [
+        $validate = Validator::make($request->all(), [
             'email' => "required",
             'password' => "required|min:8",
-
         ]);
 
         if ($validate->fails()){
-            return response()->json(
-                [
-                    "status"=>"error",
-                    "message" => $validate->errors()->getMessages()
-                    ],200);
+            // FIX: Redirect back with validation errors instead of JSON
+            return redirect()->back()->withErrors($validate)->withInput();
         }
-        $validated = $validate -> validated();
 
-        if(Auth::attempt(
-            [
-                'email' => $validated['email'], 
-                'password' => $validated['password']
-            ])
-            ) {
+        $validated = $validate->validated();
+
+        if(Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             $user = Auth::user();
+            $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
+            return redirect()->intended(route($target));
+        }
 
-            if ($user instanceof User) {
-                $token = $user->createToken('mobile_token')->plainTextToken;
-            }
-
-                $target = $this->dashboardForRole((string)($user->role ?? 'CIVILIAN'));
-                return redirect()->intended(route($target));
-                // return response()->json(
-                //     [
-                //     "status"=>"success",
-                //     "data"=> ['user'=>$user,'token'=>$token],
-                //     "message" => "User has been logged in"
-                //     ],200);
-            }
-            return response()->json(
-            [
-                "status"=>"error",
-                "message" => "Something went wrong"
-                ],200);
+        // FIX: Redirect back with a custom error message instead of JSON
+        return redirect()->back()->with('error', 'Invalid email or password.');
     }
     public function Logout(Request $request) {
         Auth::logout();
