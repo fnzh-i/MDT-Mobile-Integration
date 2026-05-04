@@ -449,7 +449,8 @@
                                                 <td><input type="text" class="tbl-input" name="email" value="{{ $searchedUser->email }}"></td>
                                                 <td class="action-cell">
                                                     <button type="submit" class="btn-update">Update</button>
-                                                        </form> <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
+                                                    </form> 
+                                                    <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
                                                         @csrf @method('PATCH')
                                                         <button type="submit" class="btn-archive" onclick="return confirm('Archive this user?')">Archive</button>
                                                     </form>
