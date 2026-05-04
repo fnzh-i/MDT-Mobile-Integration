@@ -115,6 +115,25 @@
         </div>
     </div>
 
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom text-center">
+                <div class="modal-body modal-body-custom py-5">
+                    <div class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="modal-title-custom mb-2">Request Submitted</h4>
+                    <p class="modal-desc">{{ session('ticket_submitted') }}</p>
+                    <button type="button" class="btn-login w-100 mt-3" data-bs-dismiss="modal">Got it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="session-metadata" 
+        data-submitted="{{ session('ticket_submitted') ? 'true' : 'false' }}">
+    </div>
+
     <div class="modal fade" id="callModal" tabindex="-1" aria-labelledby="callModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-custom">
@@ -196,5 +215,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/login-civilian.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const metadata = document.getElementById('session-metadata');
+            
+            if (metadata && metadata.dataset.submitted === 'true') {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }
+        });
+    </script>
 </body>
 </html>

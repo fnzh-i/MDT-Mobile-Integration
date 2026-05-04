@@ -28,7 +28,7 @@ Route::post('apilogin', [AuthManager::class, 'ApiLogin']);
 Route::post('/register', [AuthManager::class, 'Register']);
 Route::get('/register', function () { return view('auth.register'); })->name('register');
 
-Route::post('/forgot-password', [AuthManager::class, 'apiForgotPasswordTicket'])->name('forgot-password');
+Route::post('/forgot-password', [AuthManager::class, 'ForgotPasswordTicket'])->name('forgot-password');
 Route::post('/support/email', [SupportController::class, 'sendEmail'])->name('support.email');
 Route::post('/logout', [AuthManager::class, 'logout'])->name('logout');
 

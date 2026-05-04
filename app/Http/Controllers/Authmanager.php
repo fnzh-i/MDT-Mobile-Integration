@@ -167,6 +167,37 @@ class AuthManager extends Controller
             ], 500);
         }
     }
+    public function ForgotPasswordTicket(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validate->fails()) {
+            return back()->withErrors(['email' => $validate->errors()->first()])->withInput();
+        }
+
+        $email = trim((string) $request->input('email'));
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'No account found with that email.'])->withInput();
+        }
+
+        try {
+            $ticketId = app(SupportTicketService::class)->createTicket(
+                (int) $user->id,
+                'Forgot Password',
+                'Forgot password request submitted for: ' . $email
+            );
+
+            // Redirect back with a session flag
+            return back()->with('ticket_submitted', 'Your request has been sent! Ticket ID: #' . $ticketId);
+
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Unable to submit support ticket.');
+        }
+    }
 
     function LoginCivilian (Request $request){
         $validate = Validator::make($request->all(),
