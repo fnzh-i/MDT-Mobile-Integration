@@ -274,6 +274,15 @@
                             <li>Contact administrative support</li>
                         </ul>
 
+                        @if(session('error') || $errors->any())
+                            <div class="alert alert-danger" style="padding: 15px; background-color: #f8d7da; color: #721c24; border-radius: 5px; margin-bottom: 20px;">
+                                {{ session('error') }}
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
                         <form action="{{ route('civilian-support-submit') }}" method="POST">
                             @csrf
                             <div class="settings-field">

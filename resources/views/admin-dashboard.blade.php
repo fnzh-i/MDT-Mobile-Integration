@@ -68,6 +68,17 @@
                     data-success="{{ session('success') }}" 
                     data-error="{{ session('error') }}">
                 </div>
+                <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+                    <div id="statusToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body d-flex align-items-center gap-2">
+                                <i id="toastIcon" class="bi fs-5"></i>
+                                <span id="toastMessage"></span>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
                 <nav>
                     <a href="{{ route('admin-dashboard') }}" class="nav-link {{ $section === 'dashboard' ? 'active' : '' }}"> <i class="bi bi-speedometer2 me-2"></i> Dashboard </a>
                     <a href="{{ route('admin-create-users') }}" class="nav-link {{ $section === 'create-user' ? 'active' : '' }}"> <i class="bi bi-person-plus me-2"></i> Create Users </a>
@@ -262,7 +273,7 @@
                                 <div class="form-field-label">Expiry Option</div>
                                 <div class="radio-row">
                                     <label for="" class="radio-option"> <input type="radio" name="expiry_option" value="5" checked> 5 Years </label>
-                                    <label for="" class="radio-option"> <input type="radio" name="expiry_option" value="10"> On 10 Years </label>
+                                    <label for="" class="radio-option"> <input type="radio" name="expiry_option" value="10"> 10 Years </label>
                                 </div>
                             </div>
                             <div class="form-section">
@@ -439,7 +450,7 @@
                                                 <td><input type="text" class="tbl-input" name="email" value="{{ $searchedUser->email }}"></td>
                                                 <td class="action-cell">
                                                     <button type="submit" class="btn-update">Update</button>
-                                </form> <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
+                                                        </form> <form action="{{ route('admin-archive-user', $searchedUser->user_id) }}" method="POST" style="display: inline">
                                                         @csrf @method('PATCH')
                                                         <button type="submit" class="btn-archive" onclick="return confirm('Archive this user?')">Archive</button>
                                                     </form>
@@ -956,6 +967,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/admin-dashboard.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const statusData = document.getElementById('status-messages');
+            if (!statusData) return;
+
+            const successMsg = statusData.getAttribute('data-success');
+            const errorMsg = statusData.getAttribute('data-error');
+
+            if (successMsg || errorMsg) {
+                const toastElement = document.getElementById('statusToast');
+                const toastMessage = document.getElementById('toastMessage');
+                const toastIcon = document.getElementById('toastIcon');
+                
+                // Initialize the Bootstrap Toast (5 second duration)
+                const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+
+                if (successMsg) {
+                    toastElement.classList.add('bg-success');
+                    toastIcon.classList.add('bi-check-circle-fill');
+                    toastMessage.innerText = successMsg;
+                } else {
+                    toastElement.classList.add('bg-danger');
+                    toastIcon.classList.add('bi-exclamation-triangle-fill');
+                    toastMessage.innerText = errorMsg;
+                }
+
+                toast.show();
+            }
+        });
+    </script>
 
 </body>
 </html>
