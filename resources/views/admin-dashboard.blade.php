@@ -66,7 +66,7 @@
                 </div>
                 <div id="status-messages" 
                     data-success="{{ session('success') }}" 
-                    data-error="{{ session('error') }}">
+                    data-error="{{ session('error') ?? ($errors->any() ? $errors->first() : '') }}">
                 </div>
                 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
                     <div id="statusToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -97,7 +97,6 @@
                     <div class="max-w-4xl mx-auto mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                         <strong class="font-bold">Database Error:</strong>
                         <span class="block sm:inline">{{ $errors->first('error') }}</span>
-                    </div>
                 @elseif ($section === 'dashboard')
                     <h1 class="dash-title">Admin Dashboard</h1>
                     <p class="dash-sub">Administrative tools and Management actions</p>
@@ -689,11 +688,11 @@
                             <div class="form-row-2">
                                 <div>
                                     <label class="form-field-label">New Password</label>
-                                    <input type="password" name="new_password" class="form-input" placeholder="New password">
+                                    <input type="password" name="new_password" class="form-input" placeholder="New password" required>
                                 </div>
                                 <div>
                                     <label class="form-field-label">Confirm New Password</label>
-                                    <input type="password" name="new_password_confirmation" class="form-input" placeholder="Confirm new password">
+                                    <input type="password" name="new_password_confirmation" class="form-input" placeholder="Confirm new password" required>
                                 </div>
                             </div>
 
