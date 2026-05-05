@@ -13,7 +13,7 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['username' => 'admin'], // Check if 'admin' exists
             [
-                'lto_client_id' => '67-050818-1234567',
+                'lto_client_id' => '67-050818-1234566',
                 'first_name' => 'Admin',
                 'middle_name' => null,
                 'last_name' => 'Nimda',

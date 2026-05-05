@@ -223,5 +223,47 @@ class UserRepository{
 
         return $stmt->execute();
     }
+    // Inside App\Repositories\UserRepository.php
+
+    public function findByLicenseNumber(string $licenseNo): ?UserEntity {
+        $sql = "SELECT * FROM users WHERE lto_client_id = ? LIMIT 1";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $licenseNo);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return $row ? $this->hydrate($row) : null;
+    }
+
+    public function findByName(string $firstName, string $lastName, ?string $middleName = null): ?UserEntity {
+        if ($middleName) {
+            $sql = "SELECT * FROM users WHERE first_name = ? AND last_name = ? AND middle_name = ? LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+            }
+            $stmt->bind_param("sss", $firstName, $lastName, $middleName);
+        } else {
+            $sql = "SELECT * FROM users WHERE first_name = ? AND last_name = ? LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                throw new RuntimeException("Prepare Failed: {$this->conn->error}");
+            }
+            $stmt->bind_param("ss", $firstName, $lastName);
+        }
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execution Failed: {$stmt->error}");
+        }
+
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return $row ? $this->hydrate($row) : null;
+    }
 }
 ?>

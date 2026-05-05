@@ -47,7 +47,15 @@ class TicketEntity {
     public function getTotalFine(): int {return $this->totalFine;}
     public function getId(): ?int {return $this->id;}
     public function getCreatedAt(): ?string {return $this->createdAt;}
-    public function getProofImage(): ?string {return $this->proofImage;}
+    public function getProofImage(): ?string {return $this->proofImage;}private array $violations = []; // Array of ViolationLookupEntity
+
+    public function setViolations(array $violations) {
+        $this->violations = $violations;
+    }
+
+    public function getViolations(): array {
+        return $this->violations;
+    }
 
     public function setStatus(TicketStatusEnum $status) {
         $this->status = $status;

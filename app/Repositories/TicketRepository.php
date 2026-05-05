@@ -223,10 +223,24 @@ class TicketRepository {
     }
 
     public function findById(int $id): ?TicketEntity {
-        // We join the licenses table to get the name, address, etc.
-        $sql = "SELECT t.*, l.* FROM tickets t 
-                INNER JOIN licenses l ON t.license_id = l.license_id 
-                WHERE t.ticket_id = ? 
+        // Include person fields so LicenseRepository can hydrate the PersonEntity.
+        $sql = "SELECT t.*, l.*,
+                    p.first_name,
+                    p.last_name,
+                    p.middle_name,
+                    p.suffix,
+                    p.date_of_birth,
+                    p.gender,
+                    p.address,
+                    p.nationality,
+                    p.height,
+                    p.weight,
+                    p.eye_color,
+                    p.blood_type
+                FROM tickets t
+                INNER JOIN licenses l ON t.license_id = l.license_id
+                INNER JOIN persons p ON l.person_id = p.person_id
+                WHERE t.ticket_id = ?
                 LIMIT 1";
                 
         $stmt = $this->conn->prepare($sql);
@@ -382,6 +396,24 @@ class TicketRepository {
         
         $row = $result->fetch_assoc();
         return (int)($row['total'] ?? 0);
+    }
+    public function getTicketItems(int $ticketId): array {
+        $sql = "SELECT name, fine FROM ticket_items WHERE ticket_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new \RuntimeException("Prepare Failed: {$this->conn->error}");
+        }
+
+        $stmt->bind_param("i", $ticketId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+        return $items;
     }
 }
 ?>
