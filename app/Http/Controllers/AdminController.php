@@ -428,31 +428,6 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Error updating ticket status: ' . $e->getMessage());
         }
     }
-    public function sendPasswordResetAdmin(Request $request, $id)
-    {
-        try {
-            // 1. Get the ticket and the user
-            $ticket = $this->supportTicketService->getTicketById($id);
-            if (!$ticket) return redirect()->back()->with('error', 'Ticket not found');
-
-            $user = \App\Models\User::find($ticket->getUserId());
-            if (!$user) return redirect()->back()->with('error', 'User not found');
-
-            // 2. Define your reset link (e.g., your login page)
-            $resetUrl = url('/secret-login'); 
-
-            // 3. Send the Email (using the fixed ->html() method)
-            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $resetUrl) {
-                $message->to($user->email)
-                    ->subject('Password Reset - MDT System')
-                    ->html("An administrator has initiated a password reset for your account. Please log in here to update your credentials: <a href='{$resetUrl}'>{$resetUrl}</a>");
-            });
-
-            return redirect()->back()->with('success', 'Reset instructions sent to ' . $user->email);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Mail Error: ' . $e->getMessage());
-        }
-    }
 
     /**
      * Send password reset email for password change/forgot password tickets

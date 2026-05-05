@@ -47,7 +47,7 @@ class ManualPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('secret-login')->with('success', 'Password updated successfully.')
+            ? redirect()->route('login-civilian')->with('success', 'Password updated successfully.')
             : back()->withErrors(['email' => [__($status)]]);
     }
 }
