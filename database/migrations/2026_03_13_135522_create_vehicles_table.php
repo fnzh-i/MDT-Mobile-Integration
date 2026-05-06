@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('expiry_date');
             $table->enum('reg_status', ['Registered', 'Unregistered', 'Expired']);
             $table->timestamps();
+            $table->foreign('license_id')->references('license_id')->on('licenses')->onDelete('cascade');
         });
     }
 

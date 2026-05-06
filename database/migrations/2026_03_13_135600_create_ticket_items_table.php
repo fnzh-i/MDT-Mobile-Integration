@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ticket_items', function (Blueprint $table) {
-            $table->integer('ticket_id')->index('fk_ticket_items_cascade');
-            $table->integer('violation_id')->index('violation_id');
+            $table->integer('ticket_id'); 
+            $table->unsignedBigInteger('violation_id'); 
+            
             $table->string('name', 100);
             $table->integer('fine');
+            $table->foreign('ticket_id')->references('ticket_id')->on('tickets')->onDelete('cascade');
+            $table->foreign('violation_id')->references('violation_id')->on('violations_lookup');
         });
     }
 

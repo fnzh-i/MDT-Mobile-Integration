@@ -354,7 +354,7 @@ class AdminController extends Controller
     public function updateUser(Request $request, $id)
     {
         $validated = $request->validate([
-            'role'       => 'required|in:ADMIN',
+            'role'       => 'required|in:ADMIN,SUPERVISOR,TEAMLEADER,ENFORCER,CIVILIAN',
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'username'   => 'required|string|max:255',

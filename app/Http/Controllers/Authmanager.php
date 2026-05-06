@@ -187,11 +187,10 @@ class AuthManager extends Controller
         try {
             $ticketId = app(SupportTicketService::class)->createTicket(
                 (int) $user->id,
-                'Forgot Password',
-                'Forgot password request submitted for: ' . $email
+                'forgot_password', 
+                'Automated request: User requested a password reset for ' . $email
             );
 
-            // Redirect back with a session flag
             return back()->with('ticket_submitted', 'Your request has been sent! Ticket ID: #' . $ticketId);
 
         } catch (\Throwable $e) {

@@ -76,6 +76,7 @@
                             <div class="mb-3">
                                 <label for="forgot_email" class="form-label-custom">Email Address</label>
                                 <input type="email" id="forgot_email" name="email" class="input-custom" placeholder="example@example.com" required>
+                                <input type="hidden" name="category" value="forgot_password">
                             </div>
                             <button type="submit" class="btn-login w-100">Send Request</button>
                         </form>

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->integer('ticket_id', true);
-            $table->integer('license_id')->nullable()->index('license_id');
-            $table->integer('lto_client_id')->nullable()->index('lto_client_id');
+            $table->integer('license_id')->nullable(); 
+            $table->string('lto_client_id', 50)->nullable(); 
             $table->bigInteger('ref_number')->nullable()->unique('ref_number');
             $table->date('date_of_incident');
             $table->string('place_of_incident', 100);
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('total_fine');
             $table->string('proof_image')->nullable();
             $table->timestamps();
+            $table->foreign('license_id')->references('license_id')->on('licenses')->onDelete('set null');
+            $table->foreign('lto_client_id')->references('lto_client_id')->on('users')->onDelete('set null');
         });
     }
 
